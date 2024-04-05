@@ -5,6 +5,10 @@ import { Route } from "react-router-dom";
 import { Routes } from "react-router-dom";
 import Root from "./routes/Root";
 import FirstPage from "./components/FirstPage";
+import Home from "./components/Home";
+import { NavLink } from "react-router-dom";
+import { Button } from "antd";
+import Logout from "./components/Logout";
 
 const { Header, Content, Footer } = Layout;
 
@@ -33,6 +37,13 @@ const App = () => {
             defaultSelectedKeys={["2"]}
             style={{ flex: 1, minWidth: 0 }}
           />
+          <NavLink style={{ color: "white" }} to={`/firstpage`}>
+            Firstpage
+          </NavLink>
+          <NavLink style={{ color: "white" }} to={`/login`}>
+            Login
+          </NavLink>
+          <Logout></Logout>
         </Header>
         <Content style={{ padding: "0 48px" }}>
           <Breadcrumb style={{ margin: "16px 0" }}>
@@ -50,6 +61,7 @@ const App = () => {
             {" "}
             <Routes>
               <Route path="/" element={<Root />}>
+                <Route index element={<Home />} />
                 <Route path="login" element={<Login />} />
                 <Route path="firstpage" element={<FirstPage />} />
               </Route>
