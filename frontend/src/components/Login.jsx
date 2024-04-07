@@ -18,7 +18,6 @@ const onFinishFailed = (errorInfo) => {
 };
 const Login = () => {
   const [user, error] = useAuthState(auth);
-  //const auth = getAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
