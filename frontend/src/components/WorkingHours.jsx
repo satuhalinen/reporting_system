@@ -7,7 +7,7 @@ const WorkingHours = () => {
   const [data, setData] = useState([]);
   useEffect(() => {
     axios
-      .get("http://localhost:3000")
+      .get("http://localhost:3000/workinghours")
       .then((response) => {
         setData(response.data.data);
       })
@@ -18,9 +18,14 @@ const WorkingHours = () => {
 
   const columns = [
     {
-      title: "Employee",
-      dataIndex: "employee",
-      key: "employee",
+      title: "First name",
+      dataIndex: "firstname",
+      key: "first name",
+    },
+    {
+      title: "Last name",
+      dataIndex: "lastname",
+      key: "last name",
     },
 
     {
@@ -32,9 +37,10 @@ const WorkingHours = () => {
   return (
     <Table
       columns={columns}
-      dataSource={data.map((item) => ({
-        key: item.id,
-        employee: item.employee_id,
+      dataSource={data.map((item, index) => ({
+        key: index,
+        firstname: item.firstname,
+        lastname: item.lastname,
         "working hours": item.hours,
       }))}
     />
