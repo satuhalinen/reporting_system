@@ -9,6 +9,7 @@ import Home from "./components/Home";
 import { NavLink } from "react-router-dom";
 import Logout from "./components/Logout";
 import WorkingHours from "./components/WorkingHours";
+import MonthlyWorkingHours from "./components/MonthlyWorkingHours";
 
 const { Header, Content, Footer } = Layout;
 
@@ -40,6 +41,9 @@ const App = () => {
           <NavLink style={{ color: "white" }} to={`/workinghours`}>
             Working hours
           </NavLink>
+          <NavLink style={{ color: "white" }} to={`/monthlyworkinghours`}>
+            Monthly working hours
+          </NavLink>
           <NavLink style={{ color: "white" }} to={`/firstpage`}>
             Firstpage
           </NavLink>
@@ -68,6 +72,10 @@ const App = () => {
                 <Route path="login" element={<Login />} />
                 <Route path="firstpage" element={<FirstPage />} />
                 <Route path="workinghours" element={<WorkingHours />} />
+                <Route
+                  path="monthlyworkinghours"
+                  element={<MonthlyWorkingHours />}
+                />
               </Route>
             </Routes>
           </div>

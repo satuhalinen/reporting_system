@@ -30,6 +30,21 @@ app.get("/workinghours", (req, res) => {
   );
 });
 
+app.get("/monthlyworkinghours", (req, res) => {
+  console.log("Getting monthly working hours");
+  db.all(
+    "SELECT strftime('%Y', date) AS year, strftime('%m', date) AS month, SUM(worker_hours) AS total_hours FROM worklog_worklog GROUP BY year, month ORDER BY year, month",
+    (err, rows) => {
+      console.log(rows);
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({ data: rows });
+    }
+  );
+});
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}.`);
 });
