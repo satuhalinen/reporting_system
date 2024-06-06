@@ -26,13 +26,19 @@ const MonthlyWorkingHours = () => {
   }, []);
 
   const columns = [];
-  for (let i = 1; i < 12; i++) {
+  columns.push({ title: "Vuosi", dataIndex: "year", key: "year" });
+  for (let i = 0; i < 12; i++) {
     columns.push({
       title: `${i + 1}`,
       dataIndex: `${i + 1 < 10 ? `0${i + 1}` : i + 1}`,
       key: `${i + 1}`,
     });
   }
+  columns.push({
+    title: "Yhteensä",
+    dataIndex: "total",
+    key: "total",
+  });
   return <Table columns={columns} dataSource={data} />;
 };
 export default MonthlyWorkingHours;
