@@ -1,15 +1,12 @@
 import { Breadcrumb, Layout, Menu, theme } from "antd";
-import Login from "./components/Login";
-import { BrowserRouter } from "react-router-dom";
-import { Route } from "react-router-dom";
-import { Routes } from "react-router-dom";
+import Login from "./routes/Login";
+import { BrowserRouter, Route, Routes, NavLink } from "react-router-dom";
 import Root from "./routes/Root";
-import FirstPage from "./components/FirstPage";
-import Home from "./components/Home";
-import { NavLink } from "react-router-dom";
+import FirstPage from "./routes/FirstPage";
+import Home from "./routes/Home";
 import Logout from "./components/Logout";
-import WorkingHours from "./components/WorkingHours";
-import MonthlyWorkingHours from "./components/MonthlyWorkingHours";
+import WorkingHours from "./routes/WorkingHours";
+import MonthlyWorkingHours from "./routes/MonthlyWorkingHours";
 
 const { Header, Content, Footer } = Layout;
 

@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { Table } from "antd";
+import { Table, Col, Row } from "antd";
+import SideBar from "../components/SideBar";
 
 const MonthlyWorkingHours = () => {
   const [data, setData] = useState([]);
@@ -12,6 +12,7 @@ const MonthlyWorkingHours = () => {
         let transformedData = {};
         for (let i = 0; i < response.data.data.length; i++) {
           let item = response.data.data[i];
+
           if (!transformedData[item.year]) {
             transformedData[item.year] = { year: item.year, total: 0 };
           }
@@ -39,6 +40,19 @@ const MonthlyWorkingHours = () => {
     dataIndex: "total",
     key: "total",
   });
-  return <Table columns={columns} dataSource={data} />;
+
+  return (
+    <>
+      <Row>
+        <Col span={19} push={5}>
+          <Table columns={columns} dataSource={data} />{" "}
+        </Col>
+        <Col span={5} pull={19}>
+          Ajanjakso
+          <SideBar />
+        </Col>
+      </Row>
+    </>
+  );
 };
 export default MonthlyWorkingHours;
