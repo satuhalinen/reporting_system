@@ -1,14 +1,12 @@
 import { Breadcrumb, Layout, Menu, theme } from "antd";
-import Login from "./components/Login";
-import { BrowserRouter } from "react-router-dom";
-import { Route } from "react-router-dom";
-import { Routes } from "react-router-dom";
+import Login from "./routes/Login";
+import { BrowserRouter, Route, Routes, NavLink } from "react-router-dom";
 import Root from "./routes/Root";
-import FirstPage from "./components/FirstPage";
-import Home from "./components/Home";
-import { NavLink } from "react-router-dom";
+import FirstPage from "./routes/FirstPage";
+import Home from "./routes/Home";
 import Logout from "./components/Logout";
-import WorkingHours from "./components/WorkingHours";
+import WorkingHours from "./routes/WorkingHours";
+import MonthlyWorkingHours from "./routes/MonthlyWorkingHours";
 
 const { Header, Content, Footer } = Layout;
 
@@ -37,10 +35,13 @@ const App = () => {
             defaultSelectedKeys={["2"]}
             style={{ flex: 1, minWidth: 0 }}
           />
-          <NavLink style={{ color: "white" }} to={`/workinghours`}>
+          <NavLink style={{ color: "white" }} to={`/working-hours`}>
             Working hours
           </NavLink>
-          <NavLink style={{ color: "white" }} to={`/firstpage`}>
+          <NavLink style={{ color: "white" }} to={`/monthly-working-hours`}>
+            Monthly working hours
+          </NavLink>
+          <NavLink style={{ color: "white" }} to={`/first-page`}>
             Firstpage
           </NavLink>
           <NavLink style={{ color: "white" }} to={`/login`}>
@@ -66,8 +67,12 @@ const App = () => {
               <Route path="/" element={<Root />}>
                 <Route index element={<Home />} />
                 <Route path="login" element={<Login />} />
-                <Route path="firstpage" element={<FirstPage />} />
-                <Route path="workinghours" element={<WorkingHours />} />
+                <Route path="first-page" element={<FirstPage />} />
+                <Route path="working-hours" element={<WorkingHours />} />
+                <Route
+                  path="monthly-working-hours"
+                  element={<MonthlyWorkingHours />}
+                />
               </Route>
             </Routes>
           </div>

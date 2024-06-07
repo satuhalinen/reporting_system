@@ -1,19 +1,13 @@
-import { useState } from "react";
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { Table } from "antd";
 
 const WorkingHours = () => {
   const [data, setData] = useState([]);
   useEffect(() => {
-    axios
-      .get("http://localhost:3000/workinghours")
-      .then((response) => {
-        setData(response.data.data);
-      })
-      .catch((error) => {
-        console.error("Error!", error);
-      });
+    axios.get("http://localhost:3000/working-hours").then((response) => {
+      setData(response.data.data);
+    });
   }, []);
 
   const columns = [
