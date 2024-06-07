@@ -1,10 +1,15 @@
 import { Input, Select, Button } from "antd";
 
-const SideBar = () => {
+const SideBar = ({ drawTable, firstYear, printYear }) => {
   return (
     <>
       <p>Vuosi</p>
-      <Input maxLength={4} placeholder="Basic usage" />
+      <Input
+        onChange={drawTable}
+        maxLength={4}
+        placeholder="Basic usage"
+        value={firstYear}
+      />
       <p>Vertailu edelliset vuodet, lkm (0-3)</p>
       <Select
         showSearch
@@ -38,7 +43,7 @@ const SideBar = () => {
           },
         ]}
       />
-      <Button>Suorita</Button>
+      <Button onClick={printYear}>Suorita</Button>
     </>
   );
 };

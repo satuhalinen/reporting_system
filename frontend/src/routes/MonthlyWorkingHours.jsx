@@ -5,6 +5,15 @@ import SideBar from "../components/SideBar";
 
 const MonthlyWorkingHours = () => {
   const [data, setData] = useState([]);
+  const [firstYear, setFirstYear] = useState(2024);
+
+  const drawTable = (e) => {
+    setFirstYear(e.target.value);
+  };
+
+  const printYear = () => {
+    console.log(firstYear);
+  };
   useEffect(() => {
     axios
       .get("http://localhost:3000/monthlyworkinghours")
@@ -49,7 +58,11 @@ const MonthlyWorkingHours = () => {
         </Col>
         <Col span={5} pull={19}>
           Ajanjakso
-          <SideBar />
+          <SideBar
+            drawTable={drawTable}
+            firstYear={firstYear}
+            printYear={printYear}
+          />
         </Col>
       </Row>
     </>
