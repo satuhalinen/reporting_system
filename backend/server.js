@@ -43,4 +43,6 @@ app.get("/monthly-working-hours", (req, res) => {
   );
 });
 
-app.listen(port);
+app.listen(port, () => {
+  console.log(`Listening on port ${port}.`);
+});

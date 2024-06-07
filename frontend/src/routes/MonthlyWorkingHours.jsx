@@ -37,7 +37,7 @@ const MonthlyWorkingHours = () => {
   for (let i = 1; i < 13; i++) {
     columns.push({
       title: i,
-      dataIndex: i < 10 ? `0${i}` : i,
+      dataIndex: i < 10 ? `0${i}` : `${i}`,
       key: i,
     });
   }
