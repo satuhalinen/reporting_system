@@ -51,21 +51,19 @@ const MonthlyWorkingHours = () => {
   });
 
   return (
-    <>
-      <Row>
-        <Col span={19} push={5}>
-          <Table columns={columns} dataSource={data} />{" "}
-        </Col>
-        <Col span={5} pull={19}>
-          Ajanjakso
-          <SideBar
-            drawTable={drawTable}
-            firstYear={firstYear}
-            printYear={printYear}
-          />
-        </Col>
-      </Row>
-    </>
+    <Row>
+      <Col span={19} push={5}>
+        <Table columns={columns} dataSource={data} />{" "}
+      </Col>
+      <Col span={5} pull={19}>
+        Ajanjakso
+        <SideBar
+          drawTable={drawTable}
+          firstYear={firstYear}
+          printYear={printYear}
+        />
+      </Col>
+    </Row>
   );
 };
 export default MonthlyWorkingHours;

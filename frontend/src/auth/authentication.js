@@ -1,9 +1,7 @@
 import { initializeApp } from "firebase/app";
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
 
 import { getAuth } from "firebase/auth";
-// Your web app's Firebase configuration
+
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API,
   authDomain: "reporting-b086c.firebaseapp.com",
@@ -14,6 +12,5 @@ const firebaseConfig = {
 };
 export const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-// Initialize Firebase
 
 export { auth };
