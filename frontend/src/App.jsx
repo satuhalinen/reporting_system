@@ -35,13 +35,13 @@ const App = () => {
             defaultSelectedKeys={["2"]}
             style={{ flex: 1, minWidth: 0 }}
           />
-          <NavLink style={{ color: "white" }} to={`/workinghours`}>
+          <NavLink style={{ color: "white" }} to={`/working-hours`}>
             Working hours
           </NavLink>
-          <NavLink style={{ color: "white" }} to={`/monthlyworkinghours`}>
+          <NavLink style={{ color: "white" }} to={`/monthly-working-hours`}>
             Monthly working hours
           </NavLink>
-          <NavLink style={{ color: "white" }} to={`/firstpage`}>
+          <NavLink style={{ color: "white" }} to={`/first-page`}>
             Firstpage
           </NavLink>
           <NavLink style={{ color: "white" }} to={`/login`}>
@@ -67,10 +67,10 @@ const App = () => {
               <Route path="/" element={<Root />}>
                 <Route index element={<Home />} />
                 <Route path="login" element={<Login />} />
-                <Route path="firstpage" element={<FirstPage />} />
-                <Route path="workinghours" element={<WorkingHours />} />
+                <Route path="first-page" element={<FirstPage />} />
+                <Route path="working-hours" element={<WorkingHours />} />
                 <Route
-                  path="monthlyworkinghours"
+                  path="monthly-working-hours"
                   element={<MonthlyWorkingHours />}
                 />
               </Route>

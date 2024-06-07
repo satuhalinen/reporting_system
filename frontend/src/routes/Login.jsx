@@ -6,22 +6,17 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../auth/authentication";
 
 const onFinish = (values) => {
-  signInWithEmailAndPassword(auth, values.email, values.password)
-    .then(() => {})
-    .catch((error) => {
-      console.log(error);
-    });
-  console.log("Success:", values);
+  signInWithEmailAndPassword(auth, values.email, values.password).then(
+    () => {}
+  );
 };
-const onFinishFailed = (errorInfo) => {
-  console.log("Failed:", errorInfo);
-};
+
 const Login = () => {
   const [user] = useAuthState(auth);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) navigate("/firstpage");
+    if (user) navigate("/first-page");
   }, [user]);
 
   return (
@@ -40,7 +35,6 @@ const Login = () => {
         remember: true,
       }}
       onFinish={onFinish}
-      onFinishFailed={onFinishFailed}
       autoComplete="off"
     >
       <Form.Item
