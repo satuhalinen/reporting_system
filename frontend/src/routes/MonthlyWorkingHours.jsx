@@ -6,17 +6,25 @@ import SideBar from "../components/SideBar";
 const MonthlyWorkingHours = () => {
   const [data, setData] = useState([]);
   const [selectedYear, setSelectedYear] = useState(2024);
+  const [selectedAmount, setSelectedAmount] = useState(3);
 
   const onYearChange = (e) => {
     setSelectedYear(e.target.value);
   };
 
-  const applyFilters = () => {
-    console.log(selectedYear);
+  const onAmountChange = (value) => {
+    setSelectedAmount(value);
   };
-  useEffect(() => {
+
+  const applyFilters = () => {
+    getYears();
+  };
+
+  const getYears = () => {
     axios
-      .get("http://localhost:3000/monthly-working-hours")
+      .get(
+        `http://localhost:3000/monthly-working-hours/${selectedYear}/${selectedAmount}`
+      )
       .then((response) => {
         const transformedData = {};
         for (let i = 0; i < response.data.data.length; i++) {
@@ -30,6 +38,10 @@ const MonthlyWorkingHours = () => {
         }
         setData(Object.values(transformedData));
       });
+  };
+
+  useEffect(() => {
+    getYears();
   }, []);
 
   const columns = [];
@@ -58,6 +70,8 @@ const MonthlyWorkingHours = () => {
           onYearChange={onYearChange}
           selectedYear={selectedYear}
           applyFilters={applyFilters}
+          onAmountChange={onAmountChange}
+          selectedAmount={selectedAmount}
         />
       </Col>
     </Row>
