@@ -37,7 +37,7 @@ app.get("/monthly-working-hours/:year/:amount", (req, res) => {
   year = year.toString();
   lastYear = lastYear.toString();
   db.all(
-    "SELECT strftime('%Y', date) AS year, strftime('%m', date) AS month, SUM(worker_hours) AS total_hours FROM worklog_worklog WHERE strftime('%Y', date) between ? AND ? GROUP BY year, month ORDER BY year, month DESC",
+    "SELECT strftime('%Y', date) AS year, strftime('%m', date) AS month, SUM(hours) AS total_hours FROM worklog_worklog WHERE (strftime('%Y', date) between ? AND ?) AND (deleted = 0) GROUP BY year, month ORDER BY year, month DESC",
     [lastYear, year],
     (err, rows) => {
       if (err) {
