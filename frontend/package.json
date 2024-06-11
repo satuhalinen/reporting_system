@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@nivo/bar": "^0.87.0",
+    "@nivo/core": "^0.87.0",
     "antd": "^5.15.3",
     "axios": "^1.6.8",
     "firebase": "^10.9.0",
