@@ -7,15 +7,15 @@ import { ResponsiveBar } from "@nivo/bar";
 const MonthlyWorkingHours = () => {
   const [data, setData] = useState([]);
   const [selectedYear, setSelectedYear] = useState(2024);
-  const [selectedAmount, setSelectedAmount] = useState(3);
+  const [selectedYearsBack, setSelectedYearsBack] = useState(3);
   const [dataGraph, setDataGraph] = useState([]);
 
   const onYearChange = (e) => {
     setSelectedYear(e.target.value);
   };
 
-  const onAmountChange = (value) => {
-    setSelectedAmount(value);
+  const onYearsBackChange = (value) => {
+    setSelectedYearsBack(value);
   };
 
   const applyFilters = () => {
@@ -26,7 +26,7 @@ const MonthlyWorkingHours = () => {
   const getYears = () => {
     axios
       .get(
-        `http://localhost:3000/monthly-working-hours/${selectedYear}/${selectedAmount}`
+        `http://localhost:3000/monthly-working-hours/${selectedYear}/${selectedYearsBack}`
       )
       .then((response) => {
         const transformedData = {};
@@ -45,7 +45,7 @@ const MonthlyWorkingHours = () => {
   const updateGraph = () => {
     axios
       .get(
-        `http://localhost:3000/monthly-working-hours/${selectedYear}/${selectedAmount}`
+        `http://localhost:3000/monthly-working-hours/${selectedYear}/${selectedYearsBack}`
       )
       .then((response) => {
         const transformedData = {};
@@ -108,115 +108,113 @@ const MonthlyWorkingHours = () => {
   const years = data.map((item) => item.year);
 
   return (
-    <>
-      <Row>
-        <Col style={{ height: "250px" }} span={24}>
-          <ResponsiveBar
-            groupMode="grouped"
-            data={dataGraph}
-            keys={years}
-            indexBy="month"
-            margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
-            padding={0.3}
-            valueScale={{ type: "linear" }}
-            indexScale={{ type: "band", round: true }}
-            colors={{ scheme: "nivo" }}
-            defs={[
-              {
-                id: "dots",
-                type: "patternDots",
-                background: "inherit",
-                color: "#38bcb2",
-                size: 4,
-                padding: 1,
-                stagger: true,
-              },
-              {
-                id: "lines",
-                type: "patternLines",
-                background: "inherit",
-                color: "#eed312",
-                rotation: -45,
-                lineWidth: 6,
-                spacing: 10,
-              },
-            ]}
-            borderColor={{
-              from: "color",
-              modifiers: [["darker", 1.6]],
-            }}
-            axisTop={null}
-            axisRight={null}
-            axisBottom={{
-              tickSize: 5,
-              tickPadding: 5,
-              tickRotation: 0,
-              legend: "kuukausi",
-              legendPosition: "middle",
-              legendOffset: 32,
-              truncateTickAt: 0,
-            }}
-            axisLeft={{
-              tickSize: 5,
-              tickPadding: 5,
-              tickRotation: 0,
-              legend: "työtunnit",
-              legendPosition: "middle",
-              legendOffset: -40,
-              truncateTickAt: 0,
-            }}
-            labelSkipWidth={12}
-            labelSkipHeight={12}
-            labelTextColor={{
-              from: "color",
-              modifiers: [["darker", 1.6]],
-            }}
-            legends={[
-              {
-                dataFrom: "keys",
-                anchor: "bottom-right",
-                direction: "column",
-                justify: false,
-                translateX: 120,
-                translateY: 0,
-                itemsSpacing: 2,
-                itemWidth: 100,
-                itemHeight: 20,
-                itemDirection: "left-to-right",
-                itemOpacity: 0.85,
-                symbolSize: 20,
-                effects: [
-                  {
-                    on: "hover",
-                    style: {
-                      itemOpacity: 1,
-                    },
+    <Row>
+      <Col style={{ height: "250px" }} span={24}>
+        <ResponsiveBar
+          groupMode="grouped"
+          data={dataGraph}
+          keys={years}
+          indexBy="month"
+          margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
+          padding={0.3}
+          valueScale={{ type: "linear" }}
+          indexScale={{ type: "band", round: true }}
+          colors={{ scheme: "nivo" }}
+          defs={[
+            {
+              id: "dots",
+              type: "patternDots",
+              background: "inherit",
+              color: "#38bcb2",
+              size: 4,
+              padding: 1,
+              stagger: true,
+            },
+            {
+              id: "lines",
+              type: "patternLines",
+              background: "inherit",
+              color: "#eed312",
+              rotation: -45,
+              lineWidth: 6,
+              spacing: 10,
+            },
+          ]}
+          borderColor={{
+            from: "color",
+            modifiers: [["darker", 1.6]],
+          }}
+          axisTop={null}
+          axisRight={null}
+          axisBottom={{
+            tickSize: 5,
+            tickPadding: 5,
+            tickRotation: 0,
+            legend: "kuukausi",
+            legendPosition: "middle",
+            legendOffset: 32,
+            truncateTickAt: 0,
+          }}
+          axisLeft={{
+            tickSize: 5,
+            tickPadding: 5,
+            tickRotation: 0,
+            legend: "työtunnit",
+            legendPosition: "middle",
+            legendOffset: -40,
+            truncateTickAt: 0,
+          }}
+          labelSkipWidth={12}
+          labelSkipHeight={12}
+          labelTextColor={{
+            from: "color",
+            modifiers: [["darker", 1.6]],
+          }}
+          legends={[
+            {
+              dataFrom: "keys",
+              anchor: "bottom-right",
+              direction: "column",
+              justify: false,
+              translateX: 120,
+              translateY: 0,
+              itemsSpacing: 2,
+              itemWidth: 100,
+              itemHeight: 20,
+              itemDirection: "left-to-right",
+              itemOpacity: 0.85,
+              symbolSize: 20,
+              effects: [
+                {
+                  on: "hover",
+                  style: {
+                    itemOpacity: 1,
                   },
-                ],
-              },
-            ]}
-            role="application"
-            ariaLabel="Nivo bar chart demo"
-            barAriaLabel={(e) =>
-              e.id + ": " + e.formattedValue + " in vuosi: " + e.indexValue
-            }
-          />
-        </Col>
-        <Col span={19} push={5}>
-          <Table columns={columns} dataSource={data} />{" "}
-        </Col>
-        <Col span={5} pull={19}>
-          Ajanjakso
-          <SideBar
-            onYearChange={onYearChange}
-            selectedYear={selectedYear}
-            applyFilters={applyFilters}
-            onAmountChange={onAmountChange}
-            selectedAmount={selectedAmount}
-          />
-        </Col>
-      </Row>
-    </>
+                },
+              ],
+            },
+          ]}
+          role="application"
+          ariaLabel="Nivo bar chart demo"
+          barAriaLabel={(e) =>
+            e.id + ": " + e.formattedValue + " in vuosi: " + e.indexValue
+          }
+        />
+      </Col>
+      <Col span={19} push={5}>
+        <Table columns={columns} dataSource={data} />{" "}
+      </Col>
+      <Col span={5} pull={19}>
+        Ajanjakso
+        <SideBar
+          onYearChange={onYearChange}
+          selectedYear={selectedYear}
+          applyFilters={applyFilters}
+          onYearsBackChange={onYearsBackChange}
+          selectedYearsBack={selectedYearsBack}
+        />
+      </Col>
+    </Row>
   );
 };
 export default MonthlyWorkingHours;

@@ -30,10 +30,10 @@ app.get("/working-hours", (req, res) => {
   );
 });
 
-app.get("/monthly-working-hours/:year/:amount", (req, res) => {
+app.get("/monthly-working-hours/:year/:years_back", (req, res) => {
   let year = req.params.year;
-  const amount = req.params.amount;
-  let lastYear = Number(year) - Number(amount);
+  const yearsBack = req.params.years_back;
+  let lastYear = Number(year) - Number(yearsBack);
   year = year.toString();
   lastYear = lastYear.toString();
   db.all(
