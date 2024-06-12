@@ -19,11 +19,11 @@ const MonthlyWorkingHours = () => {
   };
 
   const applyFilters = () => {
-    getYears();
-    updateGraph();
+    makeTableData();
+    makeGraphData();
   };
 
-  const getYears = () => {
+  const makeTableData = () => {
     axios
       .get(
         `http://localhost:3000/monthly-working-hours/${selectedYear}/${selectedYearsBack}`
@@ -42,7 +42,7 @@ const MonthlyWorkingHours = () => {
       });
   };
 
-  const updateGraph = () => {
+  const makeGraphData = () => {
     axios
       .get(
         `http://localhost:3000/monthly-working-hours/${selectedYear}/${selectedYearsBack}`
@@ -86,8 +86,7 @@ const MonthlyWorkingHours = () => {
   };
 
   useEffect(() => {
-    getYears();
-    updateGraph();
+    applyFilters();
   }, []);
 
   const columns = [];
