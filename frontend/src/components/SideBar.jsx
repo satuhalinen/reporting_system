@@ -13,8 +13,11 @@ const SideBar = ({
       <Input
         onChange={onYearChange}
         maxLength={4}
-        placeholder="Basic usage"
+        placeholder="vuosi"
         value={selectedYear}
+        style={{
+          width: "35%",
+        }}
       />
       <p>Vertailu edelliset vuodet, lkm (0-3)</p>
       <Select
@@ -22,7 +25,7 @@ const SideBar = ({
         value={selectedYearsBack}
         showSearch
         style={{
-          width: 200,
+          width: "15%",
         }}
         placeholder="Search to Select"
         optionFilterProp="children"

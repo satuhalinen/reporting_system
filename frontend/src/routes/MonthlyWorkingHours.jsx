@@ -118,7 +118,7 @@ const MonthlyWorkingHours = () => {
       <Title>
         Työtunnit kuukausittain vuosina {years[0]} - {years[yearsAmount - 1]}
       </Title>
-      <Col style={{ height: "250px" }} span={24}>
+      <Col style={{ height: "250px" }} span={19} push={5}>
         <ResponsiveBar
           groupMode="grouped"
           data={dataGraph}
@@ -210,10 +210,7 @@ const MonthlyWorkingHours = () => {
           }
         />
       </Col>
-      <Col span={19} push={5}>
-        <Table columns={columns} dataSource={data} />{" "}
-      </Col>
-      <Col span={5} pull={19}>
+      <Col style={{ marginTop: "2%" }} span={5} pull={19}>
         Ajanjakso
         <SideBar
           onYearChange={onYearChange}
@@ -222,6 +219,9 @@ const MonthlyWorkingHours = () => {
           onYearsBackChange={onYearsBackChange}
           selectedYearsBack={selectedYearsBack}
         />
+      </Col>
+      <Col span={19} push={5}>
+        <Table columns={columns} dataSource={data} />{" "}
       </Col>
     </Row>
   );
