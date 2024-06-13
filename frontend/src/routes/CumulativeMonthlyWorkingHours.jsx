@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Table, Col, Row } from "antd";
+import { Table, Col, Row, Typography } from "antd";
 import SideBar from "../components/SideBar";
 import { ResponsiveBar } from "@nivo/bar";
 
@@ -9,6 +9,7 @@ const CumulativeMonthlyWorkingHours = () => {
   const [selectedYear, setSelectedYear] = useState(2024);
   const [selectedYearsBack, setSelectedYearsBack] = useState(3);
   const [dataGraph, setDataGraph] = useState([]);
+  const { Title } = Typography;
 
   const onYearChange = (e) => {
     setSelectedYear(e.target.value);
@@ -30,12 +31,15 @@ const CumulativeMonthlyWorkingHours = () => {
       )
       .then((response) => {
         const transformedData = {};
+        let cumulativeHours = 0;
         for (let i = 0; i < response.data.data.length; i++) {
           const item = response.data.data[i];
           if (!transformedData[item.year]) {
+            cumulativeHours = 0;
             transformedData[item.year] = { year: item.year, total: 0 };
           }
-          transformedData[item.year][item.month] = item.total_hours;
+          cumulativeHours = cumulativeHours + item.total_hours;
+          transformedData[item.year][item.month] = cumulativeHours;
           transformedData[item.year].total += item.total_hours;
         }
         setData(Object.values(transformedData));
@@ -49,12 +53,15 @@ const CumulativeMonthlyWorkingHours = () => {
       )
       .then((response) => {
         const transformedData = {};
+        let cumulativeHours = 0;
         for (let i = 0; i < response.data.data.length; i++) {
           const item = response.data.data[i];
           if (!transformedData[item.year]) {
+            cumulativeHours = 0;
             transformedData[item.year] = { year: item.year, total: 0 };
           }
-          transformedData[item.year][item.month] = item.total_hours;
+          cumulativeHours = cumulativeHours + item.total_hours;
+          transformedData[item.year][item.month] = cumulativeHours;
           transformedData[item.year].total += item.total_hours;
         }
 
@@ -90,7 +97,12 @@ const CumulativeMonthlyWorkingHours = () => {
   }, []);
 
   const columns = [];
-  columns.push({ title: "Vuosi", dataIndex: "year", key: "year" });
+  columns.push({
+    title: "Vuosi",
+    dataIndex: "year",
+    key: "year",
+    render: (text) => <b>{text}</b>,
+  });
   for (let i = 1; i < 13; i++) {
     columns.push({
       title: i,
@@ -105,9 +117,13 @@ const CumulativeMonthlyWorkingHours = () => {
   });
 
   const years = data.map((item) => item.year);
+  const yearsAmount = years.length;
 
   return (
     <Row>
+      <Title>
+        Työtunnit kuukausittain vuosina {years[0]} - {years[yearsAmount - 1]}
+      </Title>
       <Col style={{ height: "250px" }} span={24}>
         <ResponsiveBar
           groupMode="grouped"
