@@ -95,7 +95,7 @@ const MonthlyWorkingHours = () => {
     title: "Vuosi",
     dataIndex: "year",
     key: "year",
-    render: (text) => <b>{text}</b>,
+    render: (title) => <b>{title}</b>,
   });
   for (let i = 1; i < 13; i++) {
     columns.push({
