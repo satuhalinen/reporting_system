@@ -1,6 +1,12 @@
 import { Input, Select, Button } from "antd";
 
-const SideBar = ({ onYearChange, selectedYear, applyFilters }) => {
+const SideBar = ({
+  onYearChange,
+  onAmountChange,
+  selectedYear,
+  selectedAmount,
+  applyFilters,
+}) => {
   return (
     <>
       <p>Vuosi</p>
@@ -12,6 +18,8 @@ const SideBar = ({ onYearChange, selectedYear, applyFilters }) => {
       />
       <p>Vertailu edelliset vuodet, lkm (0-3)</p>
       <Select
+        onChange={onAmountChange}
+        value={selectedAmount}
         showSearch
         style={{
           width: 200,

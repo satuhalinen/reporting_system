@@ -28,6 +28,7 @@ const WorkingHours = () => {
       key: "working hours",
     },
   ];
+
   return (
     <Table
       columns={columns}
