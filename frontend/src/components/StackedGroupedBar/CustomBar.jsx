@@ -4,7 +4,9 @@ const getCustomToolTipHTML = (dayName = "", type, hours) => {
   return `<span><strong>${dayName} </strong> <span>${type}</span>: <strong>${hours}</strong> hrs</span>`;
 };
 
-const CustomBar = ({ barItemData, tooltipRef }) => {
+const colors = ['#4A8DF2', '#9155DD', '#e8c1a0', '#f47560', '#f1e15b', '#e8a838', '#61cdbb', '#97e3d5'];
+
+const CustomBar = ({ barItemData, tooltipRef, stackKeys }) => {
   //console.log(barItemData);
   const { x, y, width, height, data } = barItemData;
   const detailedData = data.data.detailedData;
@@ -53,30 +55,32 @@ const CustomBar = ({ barItemData, tooltipRef }) => {
     }
   };
 
+  let currentHeight = 0;
+
   return (
     <g>
-      <rect
-        fill={"#4A8DF2"}
-        height={internalHeightInPX}
-        width={width}
-        x={x}
-        y={internalHeightYCoordinate - clientHeightInPX}
-        onMouseEnter={(event) =>
-          onMouseHoverHandler(event, "enter", "internal")
-        }
-        onMouseMove={(event) => onMouseHoverHandler(event, "move", "internal")}
-        onMouseLeave={onMouseLeaveHandler}
-      />
-      <rect
-        fill={"#9155DD"}
-        height={clientHeightInPX}
-        width={width}
-        x={x}
-        y={clientHeightYCoordinate}
-        onMouseEnter={(event) => onMouseHoverHandler(event, "enter", "client")}
-        onMouseMove={(event) => onMouseHoverHandler(event, "move", "client")}
-        onMouseLeave={onMouseLeaveHandler}
-      />
+      {stackKeys.map((key, index) => {
+        const value = selectedDateData[key];
+        const rectElem = (
+          <rect
+            key={key}
+            fill={colors[index % colors.length]}
+            height={heightScalePercentage * value}
+            width={width}
+            x={x}
+            y={y + height - value * heightScalePercentage - currentHeight}
+            onMouseEnter={(event) =>
+              onMouseHoverHandler(event, "enter", key)
+            }
+            onMouseMove={(event) => onMouseHoverHandler(event, "move", key)}
+            onMouseLeave={onMouseLeaveHandler}
+          />
+        );
+
+        currentHeight += value * heightScalePercentage;
+
+        return rectElem;
+      })}
       <rect
         x={x}
         y={y + height + 2}
