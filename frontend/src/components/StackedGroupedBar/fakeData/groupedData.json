@@ -1,0 +1,112 @@
+[
+  {
+    "month": "JAN",
+
+    "week6": 10,
+    "totalWeek": 6,
+    "detailedData": {
+      "week1": {
+        "internal": 5,
+        "client": 5,
+        "scheduled": 10
+      },
+      "week2": {
+        "internal": 3,
+        "client": 5,
+        "scheduled": 5
+      },
+      "week3": {
+        "internal": 5,
+        "client": 5,
+        "scheduled": 15
+      },
+      "week4": {
+        "internal": 3,
+        "client": 2,
+        "scheduled": 2
+      },
+      "week5": {
+        "internal": 5,
+        "client": 5,
+        "scheduled": 10
+      },
+      "week6": {
+        "internal": 5,
+        "client": 5,
+        "scheduled": 8
+      }
+    }
+  },
+  {
+    "month": "FEB",
+    "week1": 10,
+    "week2": 8,
+    "week3": 15,
+    "week4": 5,
+    "week5": 10,
+    "totalWeek": 5,
+    "detailedData": {
+      "week1": {
+        "internal": 5,
+        "client": 5,
+        "scheduled": 10
+      },
+      "week2": {
+        "internal": 3,
+        "client": 5,
+        "scheduled": 5
+      },
+      "week3": {
+        "internal": 5,
+        "client": 5,
+        "scheduled": 15
+      },
+      "week4": {
+        "internal": 3,
+        "client": 2,
+        "scheduled": 2
+      },
+      "week5": {
+        "internal": 5,
+        "client": 5,
+        "scheduled": 10
+      }
+    }
+  },
+  {
+    "month": "MAR",
+    "week1": 10,
+    "week2": 8,
+    "week3": 15,
+    "week4": 5,
+    "week5": 10,
+    "totalWeek": 5,
+    "detailedData": {
+      "week1": {
+        "internal": 5,
+        "client": 5,
+        "scheduled": 10
+      },
+      "week2": {
+        "internal": 3,
+        "client": 5,
+        "scheduled": 5
+      },
+      "week3": {
+        "internal": 5,
+        "client": 5,
+        "scheduled": 15
+      },
+      "week4": {
+        "internal": 3,
+        "client": 2,
+        "scheduled": 2
+      },
+      "week5": {
+        "internal": 5,
+        "client": 5,
+        "scheduled": 10
+      }
+    }
+  }
+]
