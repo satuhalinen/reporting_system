@@ -7,7 +7,6 @@ const getCustomToolTipHTML = (dayName = "", type, hours) => {
 const colors = ['#4A8DF2', '#9155DD', '#e8c1a0', '#f47560', '#f1e15b', '#e8a838', '#61cdbb', '#97e3d5'];
 
 const CustomBar = ({ barItemData, tooltipRef, stackKeys }) => {
-  //console.log(barItemData);
   const { x, y, width, height, data } = barItemData;
   const detailedData = data.data.detailedData;
   const selectedDateData = detailedData[data.id];
@@ -17,11 +16,6 @@ const CustomBar = ({ barItemData, tooltipRef, stackKeys }) => {
 
   const heightValue = data.value;
   const heightScalePercentage = height / heightValue;
-  const internalHeightInPX = selectedDateData.internal * heightScalePercentage;
-  const clientHeightInPX = selectedDateData.client * heightScalePercentage;
-
-  const clientHeightYCoordinate = y + height - clientHeightInPX;
-  const internalHeightYCoordinate = y + height - internalHeightInPX;
 
   const onMouseHoverHandler = (event, action, type) => {
     const relativeXPos = event.pageX;
@@ -59,7 +53,8 @@ const CustomBar = ({ barItemData, tooltipRef, stackKeys }) => {
 
   return (
     <g>
-      {stackKeys.map((key, index) => {
+      {stackKeys.filter(k => Object.keys(selectedDateData).includes(k)).map((key) => {
+        const index = stackKeys.indexOf(key);
         const value = selectedDateData[key];
         const rectElem = (
           <rect

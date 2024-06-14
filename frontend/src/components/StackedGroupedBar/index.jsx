@@ -10,7 +10,6 @@ const StackedGroupedBar = ({ data, indexKey, groupKeys, stackKeys }) => {
   const customToolTipRef = useRef(null);
 
   const transformedData = data.map((item) => {
-    console.log(item);
     const transformedItem = { detailedData: { ...item }, [indexKey]: item[indexKey] };
     Object.keys(item).filter(key => groupKeys.includes(key)).forEach(
       (key) => transformedItem[key] = Object.values(item[key]).reduce((acc, curr) => acc + curr, 0)
@@ -18,8 +17,6 @@ const StackedGroupedBar = ({ data, indexKey, groupKeys, stackKeys }) => {
 
     return transformedItem;
   });
-
-  console.log(transformedData);
 
   return <>
       <ResponsiveBar
