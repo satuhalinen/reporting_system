@@ -1,57 +1,44 @@
 import React, { useRef } from "react";
 import { ResponsiveBar } from "@nivo/bar";
-import groupedData from "./fakeData/groupedData.json";
 import CustomBar from "./CustomBar";
 
-const keys = ["week1", "week2", "week3", "week4", "week5", "week6"];
 const commonProps = {
   margin: { top: 60, right: 80, bottom: 60, left: 80 },
 };
 
-const StackedGroupedBar = ({ data }) => {
-  const containerRef = useRef(null);
+const StackedGroupedBar = ({ data, indexKey, groupKeys }) => {
   const customToolTipRef = useRef(null);
 
+  const transformedData = data.map((item) => {
+    console.log(item);
+    const transformedItem = { detailedData: { ...item } };
+    Object.keys(item).filter(key => groupKeys.includes(key)).forEach(
+      (key) => transformedItem[key] = Object.values(item[key]).reduce((acc, curr) => acc + curr, 0)
+    );
+
+    return transformedItem;
+  });
+
+  console.log(transformedData);
+
   return <>
-    <div style={{ height: "250px", minWidth: "700px", paddingTop: "50px" }} ref={containerRef} >
       <ResponsiveBar
         {...commonProps}
-        data={groupedData}
-        indexBy="month"
-        keys={keys}
-        padding={0.1}
-        innerPadding={10}
+        data={transformedData}
+        indexBy={indexKey}
+        keys={groupKeys}
+        padding={0.15}
+        innerPadding={8}
         barComponent={(barProps) => {
-          const bar = barProps.bar;
-          const barItemData = {
-            x: bar.x,
-            y: bar.y,
-            width: bar.width,
-            height: bar.height,
-            data: bar.data,
-          };
           return (
             <CustomBar
-              barItemData={barItemData}
+              barItemData={barProps.bar}
               tooltipRef={customToolTipRef}
-              containerRef={containerRef}
             />
           );
         }}
         groupMode="grouped"
-        axisLeft={{
-          tickSize: 0,
-          tickPadding: 12,
-          tickValues: [3, 6, 9, 12, 15, 18, 21],
-        }}
-        axisBottom={{
-          tickSize: 0,
-          tickPadding: 10,
-        }}
-        gridYValues={[0, 3, 6, 9, 12, 15, 18, 21]}
-        enableLabel={false}
       />
-    </div>
     <div className="custom_tooltip" ref={customToolTipRef}></div>
   </>;
 };

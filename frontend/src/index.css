@@ -3,13 +3,12 @@ body {
 }
 
 .custom_tooltip {
-  display: none;
   position: absolute;
   top: 0px;
   left: 0px;
   pointer-events: none;
   z-index: 21;
-  display: inline-flex;
+  display: none;
   align-items: center;
   justify-items: center;
   width: auto;

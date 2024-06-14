@@ -4,7 +4,8 @@ const getCustomToolTipHTML = (dayName = "", type, hours) => {
   return `<span><strong>${dayName} </strong> <span>${type}</span>: <strong>${hours}</strong> hrs</span>`;
 };
 
-const CustomBar = ({ barItemData, tooltipRef, containerRef }) => {
+const CustomBar = ({ barItemData, tooltipRef }) => {
+  //console.log(barItemData);
   const { x, y, width, height, data } = barItemData;
   const detailedData = data.data.detailedData;
   const selectedDateData = detailedData[data.id];
@@ -21,13 +22,8 @@ const CustomBar = ({ barItemData, tooltipRef, containerRef }) => {
   const internalHeightYCoordinate = y + height - internalHeightInPX;
 
   const onMouseHoverHandler = (event, action, type) => {
-    const element = containerRef.current;
-    const rect = element.getBoundingClientRect();
-
-    // Calculate relative positions
-    const relativeXPos = event.pageX - rect.left - window.scrollX; // Adjusting for horizontal scroll
-    const relativeYPos = event.pageY - rect.top - window.scrollY; // Adjusting for vertical scroll
-    console.log(relativeXPos, relativeYPos)
+    const relativeXPos = event.pageX;
+    const relativeYPos = event.pageY;
 
     const xPosCenter = relativeXPos - 60; //60: Assumed width of tooltip
     const yPosCenter = relativeYPos - 40;
@@ -59,18 +55,6 @@ const CustomBar = ({ barItemData, tooltipRef, containerRef }) => {
 
   return (
     <g>
-      <rect
-        fill={"#E8EAEC"}
-        height={height}
-        width={width}
-        x={x}
-        y={y}
-        onMouseEnter={(event) =>
-          onMouseHoverHandler(event, "enter", "scheduled")
-        }
-        onMouseMove={(event) => onMouseHoverHandler(event, "move", "scheduled")}
-        onMouseLeave={onMouseLeaveHandler}
-      />
       <rect
         fill={"#4A8DF2"}
         height={internalHeightInPX}
