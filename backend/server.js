@@ -30,14 +30,14 @@ app.get("/working-hours", (req, res) => {
   );
 });
 
-app.get("/monthly-working-hours/:year/:amount", (req, res) => {
+app.get("/monthly-working-hours/:year/:years_back", (req, res) => {
   let year = req.params.year;
-  const amount = req.params.amount;
-  let lastYear = Number(year) - Number(amount);
+  const yearsBack = req.params.years_back;
+  let lastYear = Number(year) - Number(yearsBack);
   year = year.toString();
   lastYear = lastYear.toString();
   db.all(
-    "SELECT strftime('%Y', date) AS year, strftime('%m', date) AS month, SUM(hours) AS total_hours FROM worklog_worklog WHERE (strftime('%Y', date) between ? AND ?) AND (deleted = 0) GROUP BY year, month ORDER BY year, month DESC",
+    "SELECT CAST(strftime('%Y', date) AS INTEGER) AS year, CAST(strftime('%m', date) AS INTEGER) AS month, CAST(SUM(hours) AS INTEGER) AS total_hours FROM worklog_worklog WHERE (strftime('%Y', date) between ? AND ?) AND (deleted = 0) GROUP BY year, month ORDER BY year, month DESC",
     [lastYear, year],
     (err, rows) => {
       if (err) {

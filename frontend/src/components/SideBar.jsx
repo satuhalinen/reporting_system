@@ -2,9 +2,9 @@ import { Input, Select, Button } from "antd";
 
 const SideBar = ({
   onYearChange,
-  onAmountChange,
   selectedYear,
-  selectedAmount,
+  selectedYearsBack,
+  setSelectedYearsBack,
   applyFilters,
 }) => {
   return (
@@ -18,8 +18,8 @@ const SideBar = ({
       />
       <p>Vertailu edelliset vuodet, lkm (0-3)</p>
       <Select
-        onChange={onAmountChange}
-        value={selectedAmount}
+        onChange={(value) => setSelectedYearsBack(value)}
+        value={selectedYearsBack}
         showSearch
         style={{
           width: 200,
