@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { Table, Col, Row } from "antd";
+import { Table, Col, Row, Typography } from "antd";
 import SideBar from "../components/SideBar";
 import { ResponsiveBar } from "@nivo/bar";
+
+const { Title } = Typography;
 
 const MonthlyWorkingHours = () => {
   const [tableData, setTableData] = useState([]);
@@ -73,7 +75,12 @@ const MonthlyWorkingHours = () => {
   }, []);
 
   const columns = [];
-  columns.push({ title: "Vuosi", dataIndex: "year", key: "year" });
+  columns.push({
+    title: "Vuosi",
+    dataIndex: "year",
+    key: "year",
+    render: (title) => <b>{title}</b>,
+  });
   for (let i = 1; i < 13; i++) {
     columns.push({
       title: i,
@@ -88,9 +95,12 @@ const MonthlyWorkingHours = () => {
   });
 
   const years = tableData.map((item) => item.year);
-
+  const yearsAmount = years.length;
   return (
     <Row>
+      <Title>
+        Työtunnit kuukausittain vuosina {years[0]} - {years[yearsAmount - 1]}
+      </Title>
       <Col style={{ height: "250px" }} span={24}>
         <ResponsiveBar
           groupMode="grouped"

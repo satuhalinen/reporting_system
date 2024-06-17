@@ -51,7 +51,12 @@ const SideBar = ({
           },
         ]}
       />
-      <Button onClick={applyFilters}>Suorita</Button>
+      <Button
+        style={{ display: "flex", marginTop: "5%" }}
+        onClick={applyFilters}
+      >
+        Suorita
+      </Button>
     </>
   );
 };
