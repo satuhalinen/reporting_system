@@ -5,10 +5,10 @@ import SideBar from "../components/SideBar";
 import { ResponsiveBar } from "@nivo/bar";
 
 const CumulativeMonthlyWorkingHours = () => {
-  const [data, setData] = useState([]);
+  const [tableData, setTableData] = useState([]);
   const [selectedYear, setSelectedYear] = useState(2024);
   const [selectedYearsBack, setSelectedYearsBack] = useState(3);
-  const [dataGraph, setDataGraph] = useState([]);
+  const [graphData, setGraphData] = useState([]);
   const { Title } = Typography;
 
   const onYearChange = (e) => {
@@ -20,75 +20,61 @@ const CumulativeMonthlyWorkingHours = () => {
   };
 
   const applyFilters = () => {
-    makeTableData();
-    makeGraphData();
-  };
-
-  const makeTableData = () => {
     axios
       .get(
         `http://localhost:3000/monthly-working-hours/${selectedYear}/${selectedYearsBack}`
       )
       .then((response) => {
-        const transformedData = {};
-        let cumulativeHours = 0;
+        const transformedTableData = {};
+        let cumulativeTableHours = 0;
         for (let i = 0; i < response.data.data.length; i++) {
           const item = response.data.data[i];
-          if (!transformedData[item.year]) {
-            cumulativeHours = 0;
-            transformedData[item.year] = { year: item.year, total: 0 };
+          if (!transformedTableData[item.year]) {
+            cumulativeTableHours = 0;
+            transformedTableData[item.year] = { year: item.year, total: 0 };
           }
-          cumulativeHours = cumulativeHours + item.total_hours;
-          transformedData[item.year][item.month] = cumulativeHours;
-          transformedData[item.year].total += item.total_hours;
+          cumulativeTableHours = cumulativeTableHours + item.total_hours;
+          transformedTableData[item.year][item.month] = cumulativeTableHours;
+          transformedTableData[item.year].total += item.total_hours;
         }
-        setData(Object.values(transformedData));
-      });
-  };
-
-  const makeGraphData = () => {
-    axios
-      .get(
-        `http://localhost:3000/monthly-working-hours/${selectedYear}/${selectedYearsBack}`
-      )
-      .then((response) => {
-        const transformedData = {};
-        let cumulativeHours = 0;
+        setTableData(Object.values(transformedTableData));
+        const transformedGraphData = {};
+        let cumulativeGraphHours = 0;
         for (let i = 0; i < response.data.data.length; i++) {
           const item = response.data.data[i];
-          if (!transformedData[item.year]) {
-            cumulativeHours = 0;
-            transformedData[item.year] = { year: item.year, total: 0 };
+          if (!transformedGraphData[item.year]) {
+            cumulativeGraphHours = 0;
+            transformedGraphData[item.year] = { year: item.year, total: 0 };
           }
-          cumulativeHours = cumulativeHours + item.total_hours;
-          transformedData[item.year][item.month] = cumulativeHours;
-          transformedData[item.year].total += item.total_hours;
+          cumulativeGraphHours = cumulativeGraphHours + item.total_hours;
+          transformedGraphData[item.year][item.month] = cumulativeGraphHours;
+          transformedGraphData[item.year].total += item.total_hours;
         }
 
         const months = {};
         const dataForGraph = [];
 
-        for (const year in transformedData) {
-          for (const month in transformedData[year]) {
+        for (const year in transformedGraphData) {
+          for (const month in transformedGraphData[year]) {
             if (!isNaN(month)) {
               if (!months[month]) {
                 months[month] = {};
               }
-              months[month][year] = transformedData[year][month];
+              months[month][year] = transformedGraphData[year][month];
             }
           }
         }
 
         for (const month in months) {
           const entry = { month: parseInt(month) };
-          for (const year in transformedData) {
+          for (const year in transformedGraphData) {
             entry[year] = months[month][year] || 0;
           }
           dataForGraph.push(entry);
         }
         dataForGraph.sort((a, b) => a.month - b.month);
 
-        setDataGraph(dataForGraph);
+        setGraphData(dataForGraph);
       });
   };
 
@@ -116,7 +102,7 @@ const CumulativeMonthlyWorkingHours = () => {
     key: "total",
   });
 
-  const years = data.map((item) => item.year);
+  const years = tableData.map((item) => item.year);
   const yearsAmount = years.length;
 
   return (
@@ -128,7 +114,7 @@ const CumulativeMonthlyWorkingHours = () => {
       <Col style={{ height: "250px" }} span={19} push={5}>
         <ResponsiveBar
           groupMode="grouped"
-          data={dataGraph}
+          data={graphData}
           keys={years}
           indexBy="month"
           margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
@@ -229,7 +215,7 @@ const CumulativeMonthlyWorkingHours = () => {
         />
       </Col>
       <Col span={19} push={5}>
-        <Table columns={columns} dataSource={data} />{" "}
+        <Table columns={columns} dataSource={tableData} />{" "}
       </Col>
     </Row>
   );
