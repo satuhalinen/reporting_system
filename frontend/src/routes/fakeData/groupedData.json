@@ -1,0 +1,75 @@
+[
+    {
+        "month": "JAN",
+        "week1": {
+            "billable": 5,
+            "non-billable": 5
+        },
+        "week2": {
+            "billable": 3,
+            "non-billable": 5
+        },
+        "week3": {
+            "billable": 5,
+            "non-billable": 5
+        },
+        "week4": {
+            "billable": 3,
+            "non-billable": 2
+        },
+        "week5": {
+            "billable": 5,
+            "non-billable": 5
+        },
+        "week6": {
+            "billable": 5,
+            "non-billable": 5
+        }
+    },
+    {
+        "month": "FEB",
+        "week1": {
+            "billable": 5,
+            "non-billable": 5
+        },
+        "week2": {
+            "billable": 3,
+            "non-billable": 5
+        },
+        "week3": {
+            "billable": 5,
+            "non-billable": 5
+        },
+        "week4": {
+            "billable": 3,
+            "non-billable": 2
+        },
+        "week5": {
+            "billable": 5,
+            "non-billable": 5
+        }
+    },
+    {
+        "month": "MAR",
+        "week1": {
+            "billable": 1,
+            "non-billable": 2
+        },
+        "week2": {
+            "billable": 3,
+            "non-billable": 6
+        },
+        "week3": {
+            "billable": 5,
+            "non-billable": 5
+        },
+        "week4": {
+            "billable": 3,
+            "non-billable": 2
+        },
+        "week5": {
+            "billable": 5,
+            "non-billable": 5
+        }
+    }
+]

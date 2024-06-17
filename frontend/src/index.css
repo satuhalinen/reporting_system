@@ -1,3 +1,20 @@
 body {
   margin: 0;
 }
+
+.custom_tooltip {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  pointer-events: none;
+  z-index: 21;
+  display: none;
+  align-items: center;
+  justify-items: center;
+  width: auto;
+  height: 28px;
+  padding: 0 5px;
+  border: solid 1px black;
+  background-color: white;
+  border-radius: 4px;
+}
