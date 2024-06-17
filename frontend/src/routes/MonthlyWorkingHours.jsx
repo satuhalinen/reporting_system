@@ -4,12 +4,14 @@ import { Table, Col, Row, Typography } from "antd";
 import SideBar from "../components/SideBar";
 import { ResponsiveBar } from "@nivo/bar";
 
+const { Title } = Typography;
+
 const MonthlyWorkingHours = () => {
   const [tableData, setTableData] = useState([]);
   const [selectedYear, setSelectedYear] = useState(2024);
   const [selectedYearsBack, setSelectedYearsBack] = useState(3);
   const [graphData, setGraphData] = useState([]);
-  const { Title } = Typography;
+
   const onYearChange = (e) => {
     setSelectedYear(e.target.value);
   };
@@ -99,7 +101,7 @@ const MonthlyWorkingHours = () => {
       <Title>
         Työtunnit kuukausittain vuosina {years[0]} - {years[yearsAmount - 1]}
       </Title>
-      <Col style={{ height: "250px" }} span={19} push={5}>
+      <Col style={{ height: "250px" }} span={24}>
         <ResponsiveBar
           groupMode="grouped"
           data={graphData}
