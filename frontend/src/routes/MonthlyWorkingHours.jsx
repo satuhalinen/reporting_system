@@ -7,66 +7,79 @@ import { ResponsiveBar } from "@nivo/bar";
 const { Title } = Typography;
 
 const MonthlyWorkingHours = () => {
-  const [tableData, setTableData] = useState([]);
+  const [data, setData] = useState([]);
   const [selectedYear, setSelectedYear] = useState(2024);
   const [selectedYearsBack, setSelectedYearsBack] = useState(3);
-  const [graphData, setGraphData] = useState([]);
+  const [dataGraph, setDataGraph] = useState([]);
 
   const onYearChange = (e) => {
     setSelectedYear(e.target.value);
   };
 
   const applyFilters = () => {
+    makeTableData();
+    makeGraphData();
+  };
+
+  const makeTableData = () => {
     axios
       .get(
         `http://localhost:3000/monthly-working-hours/${selectedYear}/${selectedYearsBack}`
       )
       .then((response) => {
-        const transformedTableData = {};
+        const transformedData = {};
         for (let i = 0; i < response.data.data.length; i++) {
           const item = response.data.data[i];
-          if (!transformedTableData[item.year]) {
-            transformedTableData[item.year] = { year: item.year, total: 0 };
+          if (!transformedData[item.year]) {
+            transformedData[item.year] = { year: item.year, total: 0 };
           }
-          transformedTableData[item.year][item.month] = item.total_hours;
-          transformedTableData[item.year].total += item.total_hours;
+          transformedData[item.year][item.month] = item.total_hours;
+          transformedData[item.year].total += item.total_hours;
         }
-        setTableData(Object.values(transformedTableData));
+        setData(Object.values(transformedData));
+      });
+  };
 
-        const transformedGraphData = {};
+  const makeGraphData = () => {
+    axios
+      .get(
+        `http://localhost:3000/monthly-working-hours/${selectedYear}/${selectedYearsBack}`
+      )
+      .then((response) => {
+        const transformedData = {};
         for (let i = 0; i < response.data.data.length; i++) {
           const item = response.data.data[i];
-          if (!transformedGraphData[item.year]) {
-            transformedGraphData[item.year] = { year: item.year, total: 0 };
+          if (!transformedData[item.year]) {
+            transformedData[item.year] = { year: item.year, total: 0 };
           }
-          transformedGraphData[item.year][item.month] = item.total_hours;
-          transformedGraphData[item.year].total += item.total_hours;
+          transformedData[item.year][item.month] = item.total_hours;
+          transformedData[item.year].total += item.total_hours;
         }
 
         const months = {};
         const dataForGraph = [];
 
-        for (const year in transformedGraphData) {
-          for (const month in transformedGraphData[year]) {
+        for (const year in transformedData) {
+          for (const month in transformedData[year]) {
             if (!isNaN(month)) {
               if (!months[month]) {
                 months[month] = {};
               }
-              months[month][year] = transformedGraphData[year][month];
+              months[month][year] = transformedData[year][month];
             }
           }
         }
 
         for (const month in months) {
           const entry = { month: parseInt(month) };
-          for (const year in transformedGraphData) {
+          for (const year in transformedData) {
             entry[year] = months[month][year] || 0;
           }
           dataForGraph.push(entry);
         }
         dataForGraph.sort((a, b) => a.month - b.month);
 
-        setGraphData(dataForGraph);
+        setDataGraph(dataForGraph);
       });
   };
 
@@ -79,7 +92,7 @@ const MonthlyWorkingHours = () => {
     title: "Vuosi",
     dataIndex: "year",
     key: "year",
-    render: (title) => <b>{title}</b>,
+    render: (text) => <b>{text}</b>,
   });
   for (let i = 1; i < 13; i++) {
     columns.push({
@@ -94,8 +107,9 @@ const MonthlyWorkingHours = () => {
     key: "total",
   });
 
-  const years = tableData.map((item) => item.year);
+  const years = data.map((item) => item.year);
   const yearsAmount = years.length;
+
   return (
     <Row>
       <Title>
@@ -104,7 +118,7 @@ const MonthlyWorkingHours = () => {
       <Col style={{ height: "250px" }} span={24}>
         <ResponsiveBar
           groupMode="grouped"
-          data={graphData}
+          data={dataGraph}
           keys={years}
           indexBy="month"
           margin={{ top: 50, right: 130, bottom: 50, left: 60 }}
@@ -193,18 +207,18 @@ const MonthlyWorkingHours = () => {
           }
         />
       </Col>
-      <Col style={{ marginTop: "2%" }} span={5} pull={19}>
+      <Col span={19} push={5}>
+        <Table columns={columns} dataSource={data} />{" "}
+      </Col>
+      <Col span={5} pull={19}>
         Ajanjakso
         <SideBar
           onYearChange={onYearChange}
           selectedYear={selectedYear}
           applyFilters={applyFilters}
-          selectedYearsBack={selectedYearsBack}
           setSelectedYearsBack={setSelectedYearsBack}
+          selectedYearsBack={selectedYearsBack}
         />
-      </Col>
-      <Col span={19} push={5}>
-        <Table columns={columns} dataSource={tableData} />{" "}
       </Col>
     </Row>
   );
