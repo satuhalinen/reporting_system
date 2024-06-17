@@ -4,19 +4,16 @@ import { Table, Col, Row, Typography } from "antd";
 import SideBar from "../components/SideBar";
 import { ResponsiveBar } from "@nivo/bar";
 
+const { Title } = Typography;
+
 const CumulativeMonthlyWorkingHours = () => {
   const [tableData, setTableData] = useState([]);
   const [selectedYear, setSelectedYear] = useState(2024);
   const [selectedYearsBack, setSelectedYearsBack] = useState(3);
   const [graphData, setGraphData] = useState([]);
-  const { Title } = Typography;
 
   const onYearChange = (e) => {
     setSelectedYear(e.target.value);
-  };
-
-  const onYearsBackChange = (value) => {
-    setSelectedYearsBack(value);
   };
 
   const applyFilters = () => {
@@ -163,7 +160,7 @@ const CumulativeMonthlyWorkingHours = () => {
             tickRotation: 0,
             legend: "työtunnit",
             legendPosition: "middle",
-            legendOffset: -40,
+            legendOffset: -55,
             truncateTickAt: 0,
           }}
           labelSkipWidth={12}
@@ -210,7 +207,7 @@ const CumulativeMonthlyWorkingHours = () => {
           onYearChange={onYearChange}
           selectedYear={selectedYear}
           applyFilters={applyFilters}
-          onYearsBackChange={onYearsBackChange}
+          setSelectedYearsBack={setSelectedYearsBack}
           selectedYearsBack={selectedYearsBack}
         />
       </Col>
