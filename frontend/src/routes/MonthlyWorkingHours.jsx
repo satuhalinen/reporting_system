@@ -14,10 +14,6 @@ const MonthlyWorkingHours = () => {
     setSelectedYear(e.target.value);
   };
 
-  const onYearsBackChange = (value) => {
-    setSelectedYearsBack(value);
-  };
-
   const applyFilters = () => {
     makeTableData();
     makeGraphData();
@@ -209,8 +205,8 @@ const MonthlyWorkingHours = () => {
           onYearChange={onYearChange}
           selectedYear={selectedYear}
           applyFilters={applyFilters}
-          onYearsBackChange={onYearsBackChange}
           selectedYearsBack={selectedYearsBack}
+          setSelectedYearsBack={setSelectedYearsBack}
         />
       </Col>
     </Row>
