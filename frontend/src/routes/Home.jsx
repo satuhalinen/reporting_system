@@ -1,10 +1,10 @@
 import StackedGroupedBar from "../components/StackedGroupedBar";
-import groupedData from "./fakeData/groupedData2.json";
+import groupedData from "./fakeData/groupedData.json";
 
 const Home = () => {
   const indexKey = "month";
   const groupKeys = ["week1", "week2", "week3", "week4", "week5", "week6"];
-  const stackKeys = ["internal", "client"];
+  const stackKeys = ["billable", "non-billable"];
 
   return (
     <div>
