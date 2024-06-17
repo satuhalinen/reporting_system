@@ -6,7 +6,7 @@ import { ResponsiveBar } from "@nivo/bar";
 
 const { Title } = Typography;
 
-const MonthlyWorkingHours = () => {
+const CumulativeMonthlyWorkingHours = () => {
   const [tableData, setTableData] = useState([]);
   const [selectedYear, setSelectedYear] = useState(2024);
   const [selectedYearsBack, setSelectedYearsBack] = useState(3);
@@ -23,23 +23,28 @@ const MonthlyWorkingHours = () => {
       )
       .then((response) => {
         const transformedTableData = {};
+        let cumulativeTableHours = 0;
         for (let i = 0; i < response.data.data.length; i++) {
           const item = response.data.data[i];
           if (!transformedTableData[item.year]) {
+            cumulativeTableHours = 0;
             transformedTableData[item.year] = { year: item.year, total: 0 };
           }
-          transformedTableData[item.year][item.month] = item.total_hours;
+          cumulativeTableHours = cumulativeTableHours + item.total_hours;
+          transformedTableData[item.year][item.month] = cumulativeTableHours;
           transformedTableData[item.year].total += item.total_hours;
         }
         setTableData(Object.values(transformedTableData));
-
         const transformedGraphData = {};
+        let cumulativeGraphHours = 0;
         for (let i = 0; i < response.data.data.length; i++) {
           const item = response.data.data[i];
           if (!transformedGraphData[item.year]) {
+            cumulativeGraphHours = 0;
             transformedGraphData[item.year] = { year: item.year, total: 0 };
           }
-          transformedGraphData[item.year][item.month] = item.total_hours;
+          cumulativeGraphHours = cumulativeGraphHours + item.total_hours;
+          transformedGraphData[item.year][item.month] = cumulativeGraphHours;
           transformedGraphData[item.year].total += item.total_hours;
         }
 
@@ -79,7 +84,7 @@ const MonthlyWorkingHours = () => {
     title: "Vuosi",
     dataIndex: "year",
     key: "year",
-    render: (title) => <b>{title}</b>,
+    render: (text) => <b>{text}</b>,
   });
   for (let i = 1; i < 13; i++) {
     columns.push({
@@ -100,7 +105,8 @@ const MonthlyWorkingHours = () => {
   return (
     <Row>
       <Title>
-        Työtunnit kuukausittain vuosina {years[0]} - {years[yearsAmount - 1]}
+        Kumulatiiviset työtunnit kuukausittain vuosina {years[0]} -
+        {years[yearsAmount - 1]}
       </Title>
       <Col style={{ height: "250px" }} span={19} push={5}>
         <ResponsiveBar
@@ -194,6 +200,7 @@ const MonthlyWorkingHours = () => {
           }
         />
       </Col>
+
       <Col style={{ marginTop: "2%" }} span={5} pull={19}>
         Ajanjakso
         <SideBar
@@ -210,4 +217,4 @@ const MonthlyWorkingHours = () => {
     </Row>
   );
 };
-export default MonthlyWorkingHours;
+export default CumulativeMonthlyWorkingHours;

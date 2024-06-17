@@ -7,6 +7,7 @@ import Home from "./routes/Home";
 import Logout from "./components/Logout";
 import WorkingHours from "./routes/WorkingHours";
 import MonthlyWorkingHours from "./routes/MonthlyWorkingHours";
+import CumulativeMonthlyWorkingHours from "./routes/CumulativeMonthlyWorkingHours";
 
 const { Header, Content, Footer } = Layout;
 
@@ -35,6 +36,12 @@ const App = () => {
             defaultSelectedKeys={["2"]}
             style={{ flex: 1, minWidth: 0 }}
           />
+          <NavLink
+            style={{ color: "white" }}
+            to={`/cumulative-monthly-working-hours`}
+          >
+            Cumulative monthly working hours
+          </NavLink>
           <NavLink style={{ color: "white" }} to={`/working-hours`}>
             Working hours
           </NavLink>
@@ -62,7 +69,6 @@ const App = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            {" "}
             <Routes>
               <Route path="/" element={<Root />}>
                 <Route index element={<Home />} />
@@ -72,6 +78,10 @@ const App = () => {
                 <Route
                   path="monthly-working-hours"
                   element={<MonthlyWorkingHours />}
+                />
+                <Route
+                  path="cumulative-monthly-working-hours"
+                  element={<CumulativeMonthlyWorkingHours />}
                 />
               </Route>
             </Routes>
