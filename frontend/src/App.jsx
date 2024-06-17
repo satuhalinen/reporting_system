@@ -69,7 +69,6 @@ const App = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            {" "}
             <Routes>
               <Route path="/" element={<Root />}>
                 <Route index element={<Home />} />
