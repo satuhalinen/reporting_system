@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import { useRef } from "react";
 import { ResponsiveBar } from "@nivo/bar";
 import CustomBar from "./CustomBar";
 
@@ -10,15 +10,25 @@ const StackedGroupedBar = ({ data, indexKey, groupKeys, stackKeys }) => {
   const customToolTipRef = useRef(null);
 
   const transformedData = data.map((item) => {
-    const transformedItem = { detailedData: { ...item }, [indexKey]: item[indexKey] };
-    Object.keys(item).filter(key => groupKeys.includes(key)).forEach(
-      (key) => transformedItem[key] = Object.values(item[key]).reduce((acc, curr) => acc + curr, 0)
-    );
+    const transformedItem = {
+      detailedData: { ...item },
+      [indexKey]: item[indexKey],
+    };
+    Object.keys(item)
+      .filter((key) => groupKeys.includes(key))
+      .forEach(
+        (key) =>
+          (transformedItem[key] = Object.values(item[key]).reduce(
+            (acc, curr) => acc + curr,
+            0
+          ))
+      );
 
     return transformedItem;
   });
 
-  return <>
+  return (
+    <>
       <ResponsiveBar
         {...commonProps}
         data={transformedData}
@@ -37,8 +47,9 @@ const StackedGroupedBar = ({ data, indexKey, groupKeys, stackKeys }) => {
         }}
         groupMode="grouped"
       />
-    <div className="custom_tooltip" ref={customToolTipRef}></div>
-  </>;
+      <div className="custom_tooltip" ref={customToolTipRef}></div>
+    </>
+  );
 };
 
 export default StackedGroupedBar;

@@ -8,6 +8,7 @@ import Logout from "./components/Logout";
 import WorkingHours from "./routes/WorkingHours";
 import MonthlyWorkingHours from "./routes/MonthlyWorkingHours";
 import CumulativeMonthlyWorkingHours from "./routes/CumulativeMonthlyWorkingHours";
+import BillabilityMonthlyWorkingHours from "./routes/BillabilityMonthlyWorkingHours";
 
 const { Header, Content, Footer } = Layout;
 
@@ -41,6 +42,12 @@ const App = () => {
             to={`/cumulative-monthly-working-hours`}
           >
             Cumulative monthly working hours
+          </NavLink>
+          <NavLink
+            style={{ color: "white" }}
+            to={`/billability-monthly-working-hours`}
+          >
+            Billability monthly working hours
           </NavLink>
           <NavLink style={{ color: "white" }} to={`/working-hours`}>
             Working hours
@@ -79,9 +86,14 @@ const App = () => {
                   path="monthly-working-hours"
                   element={<MonthlyWorkingHours />}
                 />
+
                 <Route
                   path="cumulative-monthly-working-hours"
                   element={<CumulativeMonthlyWorkingHours />}
+                />
+                <Route
+                  path="billability-monthly-working-hours"
+                  element={<BillabilityMonthlyWorkingHours />}
                 />
               </Route>
             </Routes>

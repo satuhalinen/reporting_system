@@ -24,6 +24,7 @@ const CumulativeMonthlyWorkingHours = () => {
       .then((response) => {
         const transformedTableData = {};
         let cumulativeTableHours = 0;
+
         for (let i = 0; i < response.data.data.length; i++) {
           const item = response.data.data[i];
           if (!transformedTableData[item.year]) {
