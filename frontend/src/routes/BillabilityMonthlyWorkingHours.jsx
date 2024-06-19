@@ -5,35 +5,37 @@ import StackedGroupedBar from "../components/StackedGroupedBar";
 const BillabilityMonthlyWorkingHours = () => {
   const [graphData, setGraphData] = useState([]);
   const indexKey = "month";
-  const groupKeys = ["2024", "2023", "2022"];
-  const stackKeys = ["billable", "non-billable"];
+  const groupKeys = ["year2024", "year2023"];
+  const stackKeys = ["billable", "non_billable"];
+
   const applyFilters = () => {
     axios
-      .get(`http://localhost:3000/billability-working-hours/2024/2`)
+      .get(`http://localhost:3000/billability-working-hours/2024/1`)
       .then((response) => {
-        const result = [];
         const rawData = response.data.data;
+        var transformedData = {};
 
-        rawData.forEach((entry) => {
-          let monthEntry = result.find((e) => e.month === entry.month);
-
-          if (!monthEntry) {
-            monthEntry = { month: entry.month };
-            result.push(monthEntry);
+        for (var i = 0; i < rawData.length; i++) {
+          var year = rawData[i].year;
+          var month = rawData[i].month;
+          var total_hours = rawData[i].total_hours;
+          var billable = rawData[i].billable;
+          if (!transformedData[month]) {
+            transformedData[month] = { month: month };
           }
-
-          if (!monthEntry[entry.year]) {
-            monthEntry[entry.year] = { billable: 0, "non-billable": 0 };
+          if (!transformedData[month]["year" + year]) {
+            transformedData[month]["year" + year] = {
+              billable: 0,
+              non_billable: 0,
+            };
           }
-
-          if (entry.billable) {
-            monthEntry[entry.year].billable += 1;
+          if (billable === 1) {
+            transformedData[month]["year" + year].billable = total_hours;
           } else {
-            monthEntry[entry.year]["non-billable"] += 1;
+            transformedData[month]["year" + year].non_billable = total_hours;
           }
-        });
-
-        setGraphData(result);
+        }
+        setGraphData(Object.values(transformedData));
       });
   };
 
