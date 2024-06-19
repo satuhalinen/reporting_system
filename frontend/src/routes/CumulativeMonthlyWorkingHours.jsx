@@ -35,7 +35,26 @@ const CumulativeMonthlyWorkingHours = () => {
           transformedTableData[item.year][item.month] = cumulativeTableHours;
           transformedTableData[item.year].total += item.total_hours;
         }
-        setTableData(Object.values(transformedTableData));
+        const objectValues = Object.values(transformedTableData);
+
+        const roundToInt = (num) => {
+          return Math.round(num);
+        };
+
+        const roundTableData = (rawData) => {
+          return rawData.map((entry) => {
+            const roundedEntry = { year: entry.year };
+            for (const key in entry) {
+              if (key !== "year") {
+                roundedEntry[key] = roundToInt(entry[key]);
+              }
+            }
+            return roundedEntry;
+          });
+        };
+
+        setTableData(roundTableData(objectValues));
+
         const transformedGraphData = {};
         let cumulativeGraphHours = 0;
         for (let i = 0; i < response.data.data.length; i++) {

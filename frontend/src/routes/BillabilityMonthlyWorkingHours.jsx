@@ -34,9 +34,6 @@ const BillabilityMonthlyWorkingHours = () => {
         });
 
         setGraphData(result);
-      })
-      .catch((error) => {
-        console.error("There was an error!", error);
       });
   };
 
