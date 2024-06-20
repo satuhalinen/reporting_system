@@ -12,7 +12,12 @@ const BillabilityMonthlyWorkingHours = () => {
   const [selectedYearsBack, setSelectedYearsBack] = useState(3);
   const [graphData, setGraphData] = useState([]);
   const indexKey = "month";
-  const groupKeys = ["2024", "2023", "2022", "2021"];
+
+  const years = tableData.map((item) => item.year);
+  const yearsAmount = years.length;
+
+  const groupKeys = years.map((year) => String(year));
+
   const stackKeys = ["billable", "non_billable"];
 
   const onYearChange = (e) => {
@@ -99,7 +104,10 @@ const BillabilityMonthlyWorkingHours = () => {
 
   return (
     <Row>
-      <Title>Laskutettavat / ei-laskutettavat tunnit vuosina</Title>
+      <Title>
+        Tunnit - laskutettavat ja ei-laskutettavat vuosina {years[0]} -
+        {years[yearsAmount - 1]}
+      </Title>
       <Col style={{ height: "250px" }} span={19} push={5}>
         <StackedGroupedBar
           indexKey={indexKey}
