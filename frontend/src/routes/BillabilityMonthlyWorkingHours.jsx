@@ -7,13 +7,14 @@ import SideBar from "../components/SideBar";
 const { Title } = Typography;
 
 const BillabilityMonthlyWorkingHours = () => {
-  const [tableData, setTableData] = useState([]);
+  const [billableTableData, setBillableTableData] = useState([]);
+  const [nonBillableTableData, setNonBillableTableData] = useState([]);
   const [selectedYear, setSelectedYear] = useState(2024);
   const [selectedYearsBack, setSelectedYearsBack] = useState(3);
   const [graphData, setGraphData] = useState([]);
   const indexKey = "month";
 
-  const years = tableData.map((item) => item.year);
+  const years = billableTableData.map((item) => item.year);
   const yearsAmount = years.length;
 
   const groupKeys = years.map((year) => String(year));
@@ -49,7 +50,29 @@ const BillabilityMonthlyWorkingHours = () => {
           }
         }
 
-        setTableData(Object.values(transformedTableData));
+        setBillableTableData(Object.values(transformedTableData));
+
+        const transformedNonBillableTableData = {};
+        const rawNonBillableTableData = response.data.data;
+
+        for (let i = 0; i < rawNonBillableTableData.length; i++) {
+          const year = rawNonBillableTableData[i].year;
+          const month = rawNonBillableTableData[i].month;
+          const total_hours = rawNonBillableTableData[i].total_hours;
+          const billable = rawNonBillableTableData[i].billable;
+
+          if (!transformedNonBillableTableData[year]) {
+            transformedNonBillableTableData[year] = { year: year, total: 0 };
+          }
+          if (billable === 0) {
+            transformedNonBillableTableData[year][month] =
+              (transformedNonBillableTableData[year][month] || 0) + total_hours;
+            transformedNonBillableTableData[year].total += total_hours;
+          }
+        }
+
+        setNonBillableTableData(Object.values(transformedNonBillableTableData));
+
         const rawData = response.data.data;
         const transformedData = {};
 
@@ -130,7 +153,12 @@ const BillabilityMonthlyWorkingHours = () => {
         />
       </Col>
       <Col span={19} push={5}>
-        <Table columns={columns} dataSource={tableData} />
+        <Title level={2}>Laskutettavat tunnit</Title>
+        <Table columns={columns} dataSource={billableTableData} />
+      </Col>
+      <Col span={19} push={5}>
+        <Title level={2}>Ei-laskutettavat tunnit</Title>
+        <Table columns={columns} dataSource={nonBillableTableData} />
       </Col>
     </Row>
   );
