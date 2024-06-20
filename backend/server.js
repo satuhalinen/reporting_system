@@ -58,6 +58,19 @@ app.get("/billability-working-hours/:year/:years_back", (req, res) => {
   );
 });
 
+app.get("/salary", (req, res) => {
+  db.all(
+    "SELECT date FROM payday_payday WHERE deleted = 0 ORDER BY date DESC",
+    (err, rows) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({ data: rows });
+    }
+  );
+});
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}.`);
 });
