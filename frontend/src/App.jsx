@@ -9,6 +9,7 @@ import WorkingHours from "./routes/WorkingHours";
 import MonthlyWorkingHours from "./routes/MonthlyWorkingHours";
 import CumulativeMonthlyWorkingHours from "./routes/CumulativeMonthlyWorkingHours";
 import BillabilityMonthlyWorkingHours from "./routes/BillabilityMonthlyWorkingHours";
+import Salary from "./routes/Salary";
 
 const { Header, Content, Footer } = Layout;
 
@@ -37,6 +38,9 @@ const App = () => {
             defaultSelectedKeys={["2"]}
             style={{ flex: 1, minWidth: 0 }}
           />
+          <NavLink style={{ color: "white" }} to={`/salary`}>
+            Salary
+          </NavLink>
           <NavLink
             style={{ color: "white" }}
             to={`/cumulative-monthly-working-hours`}
@@ -95,6 +99,7 @@ const App = () => {
                   path="billability-monthly-working-hours"
                   element={<BillabilityMonthlyWorkingHours />}
                 />
+                <Route path="salary" element={<Salary />} />
               </Route>
             </Routes>
           </div>
