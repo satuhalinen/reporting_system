@@ -105,6 +105,7 @@ const CumulativeMonthlyWorkingHours = () => {
     dataIndex: "year",
     key: "year",
     render: (text) => <b>{text}</b>,
+    align: "right",
   });
   for (let i = 1; i < 13; i++) {
     columns.push({
@@ -117,6 +118,7 @@ const CumulativeMonthlyWorkingHours = () => {
         }
         return value;
       },
+      align: "right",
     });
   }
   columns.push({
@@ -129,6 +131,7 @@ const CumulativeMonthlyWorkingHours = () => {
       }
       return value;
     },
+    align: "right",
   });
 
   const years = tableData.map((item) => item.year);

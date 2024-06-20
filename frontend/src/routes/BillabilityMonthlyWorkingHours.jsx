@@ -129,6 +129,7 @@ const BillabilityMonthlyWorkingHours = () => {
     dataIndex: "year",
     key: "year",
     render: (title) => <b>{title}</b>,
+    align: "right",
   });
   for (let i = 1; i < 13; i++) {
     columns.push({
@@ -141,6 +142,7 @@ const BillabilityMonthlyWorkingHours = () => {
         }
         return value;
       },
+      align: "right",
     });
   }
   columns.push({
@@ -153,6 +155,7 @@ const BillabilityMonthlyWorkingHours = () => {
       }
       return value;
     },
+    align: "right",
   });
 
   return (
