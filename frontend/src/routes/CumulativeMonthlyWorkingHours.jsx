@@ -125,8 +125,11 @@ const CumulativeMonthlyWorkingHours = () => {
   return (
     <Row>
       <Title>
-        Kumulatiiviset työtunnit kuukausittain vuosina {years[0]} -
-        {years[yearsAmount - 1]}
+        {yearsAmount !== 1
+          ? ` Kumulatiiviset työtunnit kuukausittain vuosina ${years[0]} - ${
+              years[yearsAmount - 1]
+            }`
+          : ` Kumulatiiviset työtunnit kuukausittain vuotena ${years[0]}`}
       </Title>
       <Col style={{ height: "250px" }} span={19} push={5}>
         <ResponsiveBar

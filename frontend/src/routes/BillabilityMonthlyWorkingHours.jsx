@@ -105,8 +105,11 @@ const BillabilityMonthlyWorkingHours = () => {
   return (
     <Row>
       <Title>
-        Tunnit - laskutettavat ja ei-laskutettavat vuosina {years[0]} -
-        {years[yearsAmount - 1]}
+        {yearsAmount !== 1
+          ? `Tunnit - laskutettavat ja ei-laskutettavat vuosina ${years[0]} - ${
+              years[yearsAmount - 1]
+            }`
+          : `Tunnit - laskutettavat ja ei-laskutettavat vuotena ${years[0]}`}
       </Title>
       <Col style={{ height: "250px" }} span={19} push={5}>
         <StackedGroupedBar
