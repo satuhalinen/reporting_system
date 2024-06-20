@@ -103,12 +103,24 @@ const MonthlyWorkingHours = () => {
       title: i,
       dataIndex: i,
       key: i,
+      render: (value) => {
+        if (typeof value === "number") {
+          return value.toLocaleString("fi-FI");
+        }
+        return value;
+      },
     });
   }
   columns.push({
     title: "Yhteensä",
     dataIndex: "total",
     key: "total",
+    render: (value) => {
+      if (typeof value === "number") {
+        return value.toLocaleString("fi-FI");
+      }
+      return value;
+    },
   });
 
   const years = tableData.map((item) => item.year);

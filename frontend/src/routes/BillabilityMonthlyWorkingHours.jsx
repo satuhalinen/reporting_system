@@ -49,8 +49,24 @@ const BillabilityMonthlyWorkingHours = () => {
             transformedTableData[year].total += total_hours;
           }
         }
+        const roundToInt = (num) => {
+          return Math.round(num);
+        };
 
-        setBillableTableData(Object.values(transformedTableData));
+        const roundTableData = (rawData) => {
+          return rawData.map((entry) => {
+            const roundedEntry = { year: entry.year };
+            for (const key in entry) {
+              if (key !== "year") {
+                roundedEntry[key] = roundToInt(entry[key]);
+              }
+            }
+            return roundedEntry;
+          });
+        };
+        setBillableTableData(
+          roundTableData(Object.values(transformedTableData))
+        );
 
         const transformedNonBillableTableData = {};
         const rawNonBillableTableData = response.data.data;
@@ -71,7 +87,9 @@ const BillabilityMonthlyWorkingHours = () => {
           }
         }
 
-        setNonBillableTableData(Object.values(transformedNonBillableTableData));
+        setNonBillableTableData(
+          roundTableData(Object.values(transformedNonBillableTableData))
+        );
 
         const rawData = response.data.data;
         const transformedData = {};
@@ -117,12 +135,24 @@ const BillabilityMonthlyWorkingHours = () => {
       title: i,
       dataIndex: i,
       key: i,
+      render: (value) => {
+        if (typeof value === "number") {
+          return value.toLocaleString("fi-FI");
+        }
+        return value;
+      },
     });
   }
   columns.push({
     title: "Yhteensä",
     dataIndex: "total",
     key: "total",
+    render: (value) => {
+      if (typeof value === "number") {
+        return value.toLocaleString("fi-FI");
+      }
+      return value;
+    },
   });
 
   return (
