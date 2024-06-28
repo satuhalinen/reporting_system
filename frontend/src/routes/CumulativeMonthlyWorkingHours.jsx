@@ -24,6 +24,7 @@ const CumulativeMonthlyWorkingHours = () => {
       .then((response) => {
         const transformedTableData = {};
         let cumulativeTableHours = 0;
+
         for (let i = 0; i < response.data.data.length; i++) {
           const item = response.data.data[i];
           if (!transformedTableData[item.year]) {
@@ -34,7 +35,10 @@ const CumulativeMonthlyWorkingHours = () => {
           transformedTableData[item.year][item.month] = cumulativeTableHours;
           transformedTableData[item.year].total += item.total_hours;
         }
-        setTableData(Object.values(transformedTableData));
+        const objectValues = Object.values(transformedTableData);
+
+        setTableData(objectValues);
+
         const transformedGraphData = {};
         let cumulativeGraphHours = 0;
         for (let i = 0; i < response.data.data.length; i++) {
@@ -84,19 +88,30 @@ const CumulativeMonthlyWorkingHours = () => {
     title: "Vuosi",
     dataIndex: "year",
     key: "year",
-    render: (text) => <b>{text}</b>,
+    render: (title) => <b>{title}</b>,
   });
   for (let i = 1; i < 13; i++) {
     columns.push({
       title: i,
       dataIndex: i,
       key: i,
+      render: (hours) => {
+        if (typeof hours === "number") {
+          return Math.round(hours);
+        }
+      },
     });
   }
+
   columns.push({
     title: "Yhteensä",
     dataIndex: "total",
     key: "total",
+    render: (hours) => {
+      if (typeof hours === "number") {
+        return Math.round(hours);
+      }
+    },
   });
 
   const years = tableData.map((item) => item.year);
@@ -105,8 +120,11 @@ const CumulativeMonthlyWorkingHours = () => {
   return (
     <Row>
       <Title>
-        Kumulatiiviset työtunnit kuukausittain vuosina {years[0]} -
-        {years[yearsAmount - 1]}
+        {yearsAmount !== 1
+          ? ` Kumulatiiviset työtunnit kuukausittain vuosina ${years[0]} - ${
+              years[yearsAmount - 1]
+            }`
+          : ` Kumulatiiviset työtunnit kuukausittain vuotena ${years[0]}`}
       </Title>
       <Col style={{ height: "250px" }} span={19} push={5}>
         <ResponsiveBar

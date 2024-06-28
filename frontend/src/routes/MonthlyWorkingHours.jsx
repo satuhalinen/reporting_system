@@ -31,7 +31,9 @@ const MonthlyWorkingHours = () => {
           transformedTableData[item.year][item.month] = item.total_hours;
           transformedTableData[item.year].total += item.total_hours;
         }
-        setTableData(Object.values(transformedTableData));
+        const objectValues = Object.values(transformedTableData);
+
+        setTableData(objectValues);
 
         const transformedGraphData = {};
         for (let i = 0; i < response.data.data.length; i++) {
@@ -65,7 +67,6 @@ const MonthlyWorkingHours = () => {
           dataForGraph.push(entry);
         }
         dataForGraph.sort((a, b) => a.month - b.month);
-
         setGraphData(dataForGraph);
       });
   };
@@ -86,12 +87,22 @@ const MonthlyWorkingHours = () => {
       title: i,
       dataIndex: i,
       key: i,
+      render: (hours) => {
+        if (typeof hours === "number") {
+          return Math.round(hours);
+        }
+      },
     });
   }
   columns.push({
     title: "Yhteensä",
     dataIndex: "total",
     key: "total",
+    render: (hours) => {
+      if (typeof hours === "number") {
+        return Math.round(hours);
+      }
+    },
   });
 
   const years = tableData.map((item) => item.year);
@@ -100,7 +111,11 @@ const MonthlyWorkingHours = () => {
   return (
     <Row>
       <Title>
-        Työtunnit kuukausittain vuosina {years[0]} - {years[yearsAmount - 1]}
+        {yearsAmount !== 1
+          ? `Työtunnit kuukausittain vuosina ${years[0]} - ${
+              years[yearsAmount - 1]
+            }`
+          : `Työtunnit kuukausittain vuotena ${years[0]}`}
       </Title>
       <Col style={{ height: "250px" }} span={19} push={5}>
         <ResponsiveBar
