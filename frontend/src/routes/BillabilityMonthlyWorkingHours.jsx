@@ -33,6 +33,7 @@ const BillabilityMonthlyWorkingHours = () => {
       .then((response) => {
         const transformedTableData = {};
         const transformedNonBillableTableData = {};
+        const transformedData = {};
         const rawData = response.data.data;
 
         for (let i = 0; i < rawData.length; i++) {
@@ -44,11 +45,6 @@ const BillabilityMonthlyWorkingHours = () => {
           if (!transformedTableData[year]) {
             transformedTableData[year] = { year: year, total: 0 };
           }
-          if (billable === 1) {
-            transformedTableData[year][month] =
-              (transformedTableData[year][month] || 0) + total_hours;
-            transformedTableData[year].total += total_hours;
-          }
           if (!transformedNonBillableTableData[year]) {
             transformedNonBillableTableData[year] = { year: year, total: 0 };
           }
@@ -57,34 +53,27 @@ const BillabilityMonthlyWorkingHours = () => {
               (transformedNonBillableTableData[year][month] || 0) + total_hours;
             transformedNonBillableTableData[year].total += total_hours;
           }
-        }
-
-        setBillableTableData(Object.values(transformedTableData));
-        setNonBillableTableData(Object.values(transformedNonBillableTableData));
-
-        const transformedData = {};
-
-        for (let j = 0; j < rawData.length; j++) {
-          const graphYear = rawData[j].year;
-          const graphMonth = rawData[j].month;
-          const graphTotal_hours = rawData[j].total_hours;
-          const graphBillable = rawData[j].billable;
-          if (!transformedData[graphMonth]) {
-            transformedData[graphMonth] = { month: graphMonth };
+          if (!transformedData[month]) {
+            transformedData[month] = { month: month };
           }
-          if (!transformedData[graphMonth][graphYear]) {
-            transformedData[graphMonth][graphYear] = {
+          if (!transformedData[month][year]) {
+            transformedData[month][year] = {
               billable: 0,
               non_billable: 0,
             };
           }
-          if (graphBillable === 1) {
-            transformedData[graphMonth][graphYear].billable = graphTotal_hours;
+          if (billable === 1) {
+            transformedTableData[year][month] =
+              (transformedTableData[year][month] || 0) + total_hours;
+            transformedTableData[year].total += total_hours;
+            transformedData[month][year].billable = total_hours;
           } else {
-            transformedData[graphMonth][graphYear].non_billable =
-              graphTotal_hours;
+            transformedData[month][year].non_billable = total_hours;
           }
         }
+
+        setBillableTableData(Object.values(transformedTableData));
+        setNonBillableTableData(Object.values(transformedNonBillableTableData));
         setGraphData(Object.values(transformedData));
       });
   };
