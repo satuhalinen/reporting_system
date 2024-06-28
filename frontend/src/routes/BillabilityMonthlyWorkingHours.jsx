@@ -32,13 +32,14 @@ const BillabilityMonthlyWorkingHours = () => {
       )
       .then((response) => {
         const transformedTableData = {};
-        const rawTableData = response.data.data;
+        const transformedNonBillableTableData = {};
+        const rawData = response.data.data;
 
-        for (let i = 0; i < rawTableData.length; i++) {
-          const year = rawTableData[i].year;
-          const month = rawTableData[i].month;
-          const total_hours = rawTableData[i].total_hours;
-          const billable = rawTableData[i].billable;
+        for (let i = 0; i < rawData.length; i++) {
+          const year = rawData[i].year;
+          const month = rawData[i].month;
+          const total_hours = rawData[i].total_hours;
+          const billable = rawData[i].billable;
 
           if (!transformedTableData[year]) {
             transformedTableData[year] = { year: year, total: 0 };
@@ -48,19 +49,6 @@ const BillabilityMonthlyWorkingHours = () => {
               (transformedTableData[year][month] || 0) + total_hours;
             transformedTableData[year].total += total_hours;
           }
-        }
-
-        setBillableTableData(Object.values(transformedTableData));
-
-        const transformedNonBillableTableData = {};
-        const rawNonBillableTableData = response.data.data;
-
-        for (let i = 0; i < rawNonBillableTableData.length; i++) {
-          const year = rawNonBillableTableData[i].year;
-          const month = rawNonBillableTableData[i].month;
-          const total_hours = rawNonBillableTableData[i].total_hours;
-          const billable = rawNonBillableTableData[i].billable;
-
           if (!transformedNonBillableTableData[year]) {
             transformedNonBillableTableData[year] = { year: year, total: 0 };
           }
@@ -71,9 +59,9 @@ const BillabilityMonthlyWorkingHours = () => {
           }
         }
 
+        setBillableTableData(Object.values(transformedTableData));
         setNonBillableTableData(Object.values(transformedNonBillableTableData));
 
-        const rawData = response.data.data;
         const transformedData = {};
 
         for (let j = 0; j < rawData.length; j++) {
