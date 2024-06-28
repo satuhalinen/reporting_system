@@ -3,7 +3,7 @@ import axios from "axios";
 import { Table, Col, Row, Typography } from "antd";
 import StackedGroupedBar from "../components/StackedGroupedBar";
 import SideBar from "../components/SideBar";
-import FormatNumber from "../components/FormatNumber";
+import renderFormattedNumber from "../helpers";
 
 const { Title } = Typography;
 
@@ -96,12 +96,7 @@ const BillabilityMonthlyWorkingHours = () => {
       title: i,
       dataIndex: i,
       key: i,
-      render: (hours) => {
-        if (typeof hours === "number") {
-          return FormatNumber(hours);
-        }
-        return hours;
-      },
+      render: renderFormattedNumber,
       align: "right",
     });
   }
@@ -109,12 +104,7 @@ const BillabilityMonthlyWorkingHours = () => {
     title: "Yhteensä",
     dataIndex: "total",
     key: "total",
-    render: (hours) => {
-      if (typeof hours === "number") {
-        return FormatNumber(hours);
-      }
-      return hours;
-    },
+    render: renderFormattedNumber,
     align: "right",
   });
 
