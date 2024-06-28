@@ -3,6 +3,7 @@ import axios from "axios";
 import { Table, Col, Row, Typography } from "antd";
 import SideBar from "../components/SideBar";
 import { ResponsiveBar } from "@nivo/bar";
+import FormatNumber from "../components/FormatNumber";
 
 const { Title } = Typography;
 
@@ -89,6 +90,7 @@ const CumulativeMonthlyWorkingHours = () => {
     dataIndex: "year",
     key: "year",
     render: (title) => <b>{title}</b>,
+    align: "right",
   });
   for (let i = 1; i < 13; i++) {
     columns.push({
@@ -98,8 +100,9 @@ const CumulativeMonthlyWorkingHours = () => {
 
       render: (hours) => {
         if (typeof hours === "number") {
-          return Math.round(hours).toLocaleString("fi-FI");
+          return FormatNumber(hours);
         }
+        return hours;
       },
       align: "right",
     });
@@ -111,7 +114,7 @@ const CumulativeMonthlyWorkingHours = () => {
     key: "total",
     render: (hours) => {
       if (typeof hours === "number") {
-        return Math.round(hours).toLocaleString("fi-FI");
+        return FormatNumber(hours);
       }
       return hours;
     },
