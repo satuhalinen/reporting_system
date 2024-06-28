@@ -58,6 +58,32 @@ app.get("/billability-working-hours/:endYear/:years_back", (req, res) => {
   );
 });
 
+app.get("/salary", (req, res) => {
+  db.all(
+    "SELECT date FROM payday_payday WHERE deleted = 0 ORDER BY date DESC",
+    (err, rows) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({ data: rows });
+    }
+  );
+});
+
+app.get("/salary_report", (req, res) => {
+  db.all(
+    "SELECT tuntikirjaus_employee.lastname, tuntikirjaus_employee.firstname, workphase_workphase.report_name, SUM(worklog_worklog.worker_hours) FROM worklog_worklog JOIN payday_payday ON worklog_worklog.payday_id = payday_payday.id JOIN workphase_workphase ON worklog_worklog.workphase_id = workphase_workphase.id JOIN tuntikirjaus_employee ON worklog_worklog.employee_id = tuntikirjaus_employee.id GROUP BY tuntikirjaus_employee.id, workphase_workphase.report_name ORDER BY tuntikirjaus_employee.lastname, tuntikirjaus_employee.firstname",
+    (err, rows) => {
+      if (err) {
+        res.status(400).json({ error: err.message });
+        return;
+      }
+      res.json({ data: rows });
+    }
+  );
+});
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}.`);
 });
