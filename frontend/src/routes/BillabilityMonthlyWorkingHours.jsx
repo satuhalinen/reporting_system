@@ -108,6 +108,13 @@ const BillabilityMonthlyWorkingHours = () => {
     title: "Yhteensä",
     dataIndex: "total",
     key: "total",
+    render: (hours) => {
+      if (typeof hours === "number") {
+        return Math.round(hours).toLocaleString("fi-FI");
+      }
+      return hours;
+    },
+    align: "right",
   });
 
   return (
