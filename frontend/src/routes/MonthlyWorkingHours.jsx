@@ -3,6 +3,7 @@ import axios from "axios";
 import { Table, Col, Row, Typography } from "antd";
 import SideBar from "../components/SideBar";
 import { ResponsiveBar } from "@nivo/bar";
+import renderFormattedNumber from "../helpers";
 
 const { Title } = Typography;
 
@@ -33,23 +34,7 @@ const MonthlyWorkingHours = () => {
         }
         const objectValues = Object.values(transformedTableData);
 
-        const roundToInt = (num) => {
-          return Math.round(num);
-        };
-
-        const roundTableData = (rawData) => {
-          return rawData.map((entry) => {
-            const roundedEntry = { year: entry.year };
-            for (const key in entry) {
-              if (key !== "year") {
-                roundedEntry[key] = roundToInt(entry[key]);
-              }
-            }
-            return roundedEntry;
-          });
-        };
-
-        setTableData(roundTableData(objectValues));
+        setTableData(objectValues);
 
         const transformedGraphData = {};
         for (let i = 0; i < response.data.data.length; i++) {
@@ -104,12 +89,7 @@ const MonthlyWorkingHours = () => {
       title: i,
       dataIndex: i,
       key: i,
-      render: (value) => {
-        if (typeof value === "number") {
-          return value.toLocaleString("fi-FI");
-        }
-        return value;
-      },
+      render: renderFormattedNumber,
       align: "right",
     });
   }
@@ -117,12 +97,7 @@ const MonthlyWorkingHours = () => {
     title: "Yhteensä",
     dataIndex: "total",
     key: "total",
-    render: (value) => {
-      if (typeof value === "number") {
-        return value.toLocaleString("fi-FI");
-      }
-      return value;
-    },
+    render: renderFormattedNumber,
     align: "right",
   });
 

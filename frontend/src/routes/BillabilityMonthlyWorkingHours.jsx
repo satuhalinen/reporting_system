@@ -3,6 +3,7 @@ import axios from "axios";
 import { Table, Col, Row, Typography } from "antd";
 import StackedGroupedBar from "../components/StackedGroupedBar";
 import SideBar from "../components/SideBar";
+import renderFormattedNumber from "../helpers";
 
 const { Title } = Typography;
 
@@ -32,51 +33,19 @@ const BillabilityMonthlyWorkingHours = () => {
       )
       .then((response) => {
         const transformedTableData = {};
-        const rawTableData = response.data.data;
+        const transformedNonBillableTableData = {};
+        const transformedData = {};
+        const rawData = response.data.data;
 
-        for (let i = 0; i < rawTableData.length; i++) {
-          const year = rawTableData[i].year;
-          const month = rawTableData[i].month;
-          const total_hours = rawTableData[i].total_hours;
-          const billable = rawTableData[i].billable;
+        for (let i = 0; i < rawData.length; i++) {
+          const year = rawData[i].year;
+          const month = rawData[i].month;
+          const total_hours = rawData[i].total_hours;
+          const billable = rawData[i].billable;
 
           if (!transformedTableData[year]) {
             transformedTableData[year] = { year: year, total: 0 };
           }
-          if (billable === 1) {
-            transformedTableData[year][month] =
-              (transformedTableData[year][month] || 0) + total_hours;
-            transformedTableData[year].total += total_hours;
-          }
-        }
-        const roundToInt = (num) => {
-          return Math.round(num);
-        };
-
-        const roundTableData = (rawData) => {
-          return rawData.map((entry) => {
-            const roundedEntry = { year: entry.year };
-            for (const key in entry) {
-              if (key !== "year") {
-                roundedEntry[key] = roundToInt(entry[key]);
-              }
-            }
-            return roundedEntry;
-          });
-        };
-        setBillableTableData(
-          roundTableData(Object.values(transformedTableData))
-        );
-
-        const transformedNonBillableTableData = {};
-        const rawNonBillableTableData = response.data.data;
-
-        for (let i = 0; i < rawNonBillableTableData.length; i++) {
-          const year = rawNonBillableTableData[i].year;
-          const month = rawNonBillableTableData[i].month;
-          const total_hours = rawNonBillableTableData[i].total_hours;
-          const billable = rawNonBillableTableData[i].billable;
-
           if (!transformedNonBillableTableData[year]) {
             transformedNonBillableTableData[year] = { year: year, total: 0 };
           }
@@ -85,36 +54,27 @@ const BillabilityMonthlyWorkingHours = () => {
               (transformedNonBillableTableData[year][month] || 0) + total_hours;
             transformedNonBillableTableData[year].total += total_hours;
           }
-        }
-
-        setNonBillableTableData(
-          roundTableData(Object.values(transformedNonBillableTableData))
-        );
-
-        const rawData = response.data.data;
-        const transformedData = {};
-
-        for (let j = 0; j < rawData.length; j++) {
-          const graphYear = rawData[j].year;
-          const graphMonth = rawData[j].month;
-          const graphTotal_hours = rawData[j].total_hours;
-          const graphBillable = rawData[j].billable;
-          if (!transformedData[graphMonth]) {
-            transformedData[graphMonth] = { month: graphMonth };
+          if (!transformedData[month]) {
+            transformedData[month] = { month: month };
           }
-          if (!transformedData[graphMonth][graphYear]) {
-            transformedData[graphMonth][graphYear] = {
+          if (!transformedData[month][year]) {
+            transformedData[month][year] = {
               billable: 0,
               non_billable: 0,
             };
           }
-          if (graphBillable === 1) {
-            transformedData[graphMonth][graphYear].billable = graphTotal_hours;
+          if (billable === 1) {
+            transformedTableData[year][month] =
+              (transformedTableData[year][month] || 0) + total_hours;
+            transformedTableData[year].total += total_hours;
+            transformedData[month][year].billable = total_hours;
           } else {
-            transformedData[graphMonth][graphYear].non_billable =
-              graphTotal_hours;
+            transformedData[month][year].non_billable = total_hours;
           }
         }
+
+        setBillableTableData(Object.values(transformedTableData));
+        setNonBillableTableData(Object.values(transformedNonBillableTableData));
         setGraphData(Object.values(transformedData));
       });
   };
@@ -136,12 +96,7 @@ const BillabilityMonthlyWorkingHours = () => {
       title: i,
       dataIndex: i,
       key: i,
-      render: (value) => {
-        if (typeof value === "number") {
-          return value.toLocaleString("fi-FI");
-        }
-        return value;
-      },
+      render: renderFormattedNumber,
       align: "right",
     });
   }
@@ -149,12 +104,7 @@ const BillabilityMonthlyWorkingHours = () => {
     title: "Yhteensä",
     dataIndex: "total",
     key: "total",
-    render: (value) => {
-      if (typeof value === "number") {
-        return value.toLocaleString("fi-FI");
-      }
-      return value;
-    },
+    render: renderFormattedNumber,
     align: "right",
   });
 

@@ -3,6 +3,7 @@ import axios from "axios";
 import { Table, Col, Row, Typography } from "antd";
 import SideBar from "../components/SideBar";
 import { ResponsiveBar } from "@nivo/bar";
+import renderFormattedNumber from "../helpers";
 
 const { Title } = Typography;
 
@@ -37,23 +38,7 @@ const CumulativeMonthlyWorkingHours = () => {
         }
         const objectValues = Object.values(transformedTableData);
 
-        const roundToInt = (num) => {
-          return Math.round(num);
-        };
-
-        const roundTableData = (rawData) => {
-          return rawData.map((entry) => {
-            const roundedEntry = { year: entry.year };
-            for (const key in entry) {
-              if (key !== "year") {
-                roundedEntry[key] = roundToInt(entry[key]);
-              }
-            }
-            return roundedEntry;
-          });
-        };
-
-        setTableData(roundTableData(objectValues));
+        setTableData(objectValues);
 
         const transformedGraphData = {};
         let cumulativeGraphHours = 0;
@@ -104,7 +89,7 @@ const CumulativeMonthlyWorkingHours = () => {
     title: "Vuosi",
     dataIndex: "year",
     key: "year",
-    render: (text) => <b>{text}</b>,
+    render: (title) => <b>{title}</b>,
     align: "right",
   });
   for (let i = 1; i < 13; i++) {
@@ -112,25 +97,16 @@ const CumulativeMonthlyWorkingHours = () => {
       title: i,
       dataIndex: i,
       key: i,
-      render: (value) => {
-        if (typeof value === "number") {
-          return value.toLocaleString("fi-FI");
-        }
-        return value;
-      },
+      render: renderFormattedNumber,
       align: "right",
     });
   }
+
   columns.push({
     title: "Yhteensä",
     dataIndex: "total",
     key: "total",
-    render: (value) => {
-      if (typeof value === "number") {
-        return value.toLocaleString("fi-FI");
-      }
-      return value;
-    },
+    render: renderFormattedNumber,
     align: "right",
   });
 
