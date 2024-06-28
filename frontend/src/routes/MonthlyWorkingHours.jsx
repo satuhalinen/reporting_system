@@ -33,19 +33,7 @@ const MonthlyWorkingHours = () => {
         }
         const objectValues = Object.values(transformedTableData);
 
-        const roundTableData = (rawData) => {
-          return rawData.map((entry) => {
-            const roundedEntry = { year: entry.year };
-            for (const key in entry) {
-              if (key !== "year") {
-                roundedEntry[key] = Math.round(entry[key]);
-              }
-            }
-            return roundedEntry;
-          });
-        };
-
-        setTableData(roundTableData(objectValues));
+        setTableData(objectValues);
 
         const transformedGraphData = {};
         for (let i = 0; i < response.data.data.length; i++) {
@@ -99,12 +87,22 @@ const MonthlyWorkingHours = () => {
       title: i,
       dataIndex: i,
       key: i,
+      render: (hours) => {
+        if (typeof hours === "number") {
+          return Math.round(hours);
+        }
+      },
     });
   }
   columns.push({
     title: "Yhteensä",
     dataIndex: "total",
     key: "total",
+    render: (hours) => {
+      if (typeof hours === "number") {
+        return Math.round(hours);
+      }
+    },
   });
 
   const years = tableData.map((item) => item.year);

@@ -117,12 +117,22 @@ const BillabilityMonthlyWorkingHours = () => {
       title: i,
       dataIndex: i,
       key: i,
+      render: (hours) => {
+        if (typeof hours === "number") {
+          return Math.round(hours);
+        }
+      },
     });
   }
   columns.push({
     title: "Yhteensä",
     dataIndex: "total",
     key: "total",
+    render: (hours) => {
+      if (typeof hours === "number") {
+        return Math.round(hours);
+      }
+    },
   });
 
   return (
