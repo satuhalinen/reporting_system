@@ -33,16 +33,12 @@ const MonthlyWorkingHours = () => {
         }
         const objectValues = Object.values(transformedTableData);
 
-        const roundToInt = (num) => {
-          return Math.round(num);
-        };
-
         const roundTableData = (rawData) => {
           return rawData.map((entry) => {
             const roundedEntry = { year: entry.year };
             for (const key in entry) {
               if (key !== "year") {
-                roundedEntry[key] = roundToInt(entry[key]);
+                roundedEntry[key] = Math.round(entry[key]);
               }
             }
             return roundedEntry;
