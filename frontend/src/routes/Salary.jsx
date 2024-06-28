@@ -12,15 +12,11 @@ const Salary = () => {
   const getDate = () => {
     axios.get(`http://localhost:3000/salary`).then((response) => {
       const rawSalaryDateData = response.data.data;
-      const transformedSalaryDate = rawSalaryDateData.map((dateObject) =>
-        Object.values(dateObject)
-      );
-      let salaryDatesArray = [];
-
-      for (let i = 0; i < transformedSalaryDate.length; i++) {
-        salaryDatesArray[i] = { value: i, label: transformedSalaryDate[i][0] };
-      }
-      setSalaryDates(salaryDatesArray);
+      const transformedSalaryDate = rawSalaryDateData.map((dateObject) => ({
+        value: dateObject.date,
+        label: dateObject.date,
+      }));
+      setSalaryDates(transformedSalaryDate);
     });
   };
 
