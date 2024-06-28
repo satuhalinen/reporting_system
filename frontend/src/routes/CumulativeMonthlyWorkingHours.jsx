@@ -37,23 +37,7 @@ const CumulativeMonthlyWorkingHours = () => {
         }
         const objectValues = Object.values(transformedTableData);
 
-        const roundToInt = (num) => {
-          return Math.round(num);
-        };
-
-        const roundTableData = (rawData) => {
-          return rawData.map((entry) => {
-            const roundedEntry = { year: entry.year };
-            for (const key in entry) {
-              if (key !== "year") {
-                roundedEntry[key] = roundToInt(entry[key]);
-              }
-            }
-            return roundedEntry;
-          });
-        };
-
-        setTableData(roundTableData(objectValues));
+        setTableData(objectValues);
 
         const transformedGraphData = {};
         let cumulativeGraphHours = 0;
@@ -104,32 +88,32 @@ const CumulativeMonthlyWorkingHours = () => {
     title: "Vuosi",
     dataIndex: "year",
     key: "year",
-    render: (text) => <b>{text}</b>,
-    align: "right",
+    render: (title) => <b>{title}</b>,
   });
   for (let i = 1; i < 13; i++) {
     columns.push({
       title: i,
       dataIndex: i,
       key: i,
-      render: (value) => {
-        if (typeof value === "number") {
-          return value.toLocaleString("fi-FI");
+
+      render: (hours) => {
+        if (typeof hours === "number") {
+          return Math.round(hours).toLocaleString("fi-FI");
         }
-        return value;
       },
       align: "right",
     });
   }
+
   columns.push({
     title: "Yhteensä",
     dataIndex: "total",
     key: "total",
-    render: (value) => {
-      if (typeof value === "number") {
-        return value.toLocaleString("fi-FI");
+    render: (hours) => {
+      if (typeof hours === "number") {
+        return Math.round(hours).toLocaleString("fi-FI");
       }
-      return value;
+      return hours;
     },
     align: "right",
   });
