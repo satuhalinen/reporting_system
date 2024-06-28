@@ -39,15 +39,15 @@ app.get("/monthly-working-hours/:endYear/:years_back", (req, res) => {
   );
 });
 
-app.get("/billability-working-hours/:startYear/:years_back", (req, res) => {
-  let startYear = req.params.startYear;
+app.get("/billability-working-hours/:endYear/:years_back", (req, res) => {
+  let endYear = req.params.endYear;
   const yearsBack = req.params.years_back;
-  let endYear = Number(startYear) - Number(yearsBack);
-  startYear = startYear.toString();
+  let startYear = Number(endYear) - Number(yearsBack);
   endYear = endYear.toString();
+  startYear = startYear.toString();
   db.all(
     "SELECT CAST(strftime('%Y', date) AS INTEGER) AS year, CAST(strftime('%m', date) AS INTEGER) AS month, SUM(hours) AS total_hours, billable FROM worklog_worklog WHERE (strftime('%Y', date) between ? AND ?) AND (deleted = 0) GROUP BY year, month, billable ORDER BY year, month",
-    [endYear, startYear],
+    [startYear, endYear],
     (err, rows) => {
       if (err) {
         res.status(400).json({ error: err.message });
