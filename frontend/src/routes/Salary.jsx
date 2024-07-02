@@ -28,91 +28,95 @@ const Salary = () => {
   }, []);
 
   const getHours = () => {
-    axios.get(`http://localhost:3000/salary_report`).then((response) => {
-      const rawSalaryHoursData = response.data.data;
-      const groupedData = {};
-      const reportNames = [];
+    axios
+      .get(`http://localhost:3000/salary_report/${selectedSalaryDate}`)
+      .then((response) => {
+        const rawSalaryHoursData = response.data.data;
+        const groupedData = {};
+        const reportNames = [];
 
-      rawSalaryHoursData.forEach((record) => {
-        const key = `${record.lastname},${record.firstname}`;
-        if (!groupedData[key]) {
-          groupedData[key] = {
-            lastname: record.lastname,
-            firstname: record.firstname,
-          };
-        }
-        groupedData[key][record.report_name] =
-          record["SUM(worklog_worklog.worker_hours)"];
-        if (!reportNames.includes(record.report_name)) {
-          reportNames.push(record.report_name);
-        }
-      });
-
-      const groupedDataWithTotal = Object.values(groupedData).map((person) => {
-        let yhteensä = 0;
-        reportNames.forEach((reportName) => {
-          if (person[reportName] !== undefined) {
-            yhteensä += person[reportName];
-          } else {
-            person[reportName] = 0;
+        rawSalaryHoursData.forEach((record) => {
+          const key = `${record.lastname},${record.firstname}`;
+          if (!groupedData[key]) {
+            groupedData[key] = {
+              lastname: record.lastname,
+              firstname: record.firstname,
+            };
+          }
+          groupedData[key][record.report_name] =
+            record["SUM(worklog_worklog.worker_hours)"];
+          if (!reportNames.includes(record.report_name)) {
+            reportNames.push(record.report_name);
           }
         });
-        return { ...person, yhteensä };
-      });
 
-      setTableData(groupedDataWithTotal);
+        const groupedDataWithTotal = Object.values(groupedData).map(
+          (person) => {
+            let yhteensä = 0;
+            reportNames.forEach((reportName) => {
+              if (person[reportName] !== undefined) {
+                yhteensä += person[reportName];
+              } else {
+                person[reportName] = 0;
+              }
+            });
+            return { ...person, yhteensä };
+          }
+        );
 
-      const columnTitles = [];
+        setTableData(groupedDataWithTotal);
 
-      reportNames.forEach((reportName) => {
+        const columnTitles = [];
+
+        reportNames.forEach((reportName) => {
+          columnTitles.push({
+            title: reportName,
+            dataIndex: reportName,
+            key: reportName,
+            render: renderFormattedNumber,
+            align: "right",
+          });
+        });
+
+        columnTitles.sort((columnTitleA, columnTitleB) => {
+          const titleA = columnTitleA.title;
+          const titleB = columnTitleB.title;
+          if (titleA < titleB) {
+            return -1;
+          }
+          if (titleA > titleB) {
+            return 1;
+          }
+          return 0;
+        });
+
+        columnTitles.unshift(
+          {
+            title: "Sukunimi",
+            dataIndex: "lastname",
+            key: "lastname",
+            render: renderFormattedNumber,
+            align: "right",
+          },
+          {
+            title: "Etunimi",
+            dataIndex: "firstname",
+            key: "firstname",
+            render: renderFormattedNumber,
+            align: "right",
+          }
+        );
+
         columnTitles.push({
-          title: reportName,
-          dataIndex: reportName,
-          key: reportName,
+          title: "Kaikki yhteensä",
+          dataIndex: "yhteensä",
+          key: "yhteensä",
           render: renderFormattedNumber,
           align: "right",
         });
+
+        setColumnNames(columnTitles);
       });
-
-      columnTitles.sort((columnTitleA, columnTitleB) => {
-        const titleA = columnTitleA.title;
-        const titleB = columnTitleB.title;
-        if (titleA < titleB) {
-          return -1;
-        }
-        if (titleA > titleB) {
-          return 1;
-        }
-        return 0;
-      });
-
-      columnTitles.unshift(
-        {
-          title: "Sukunimi",
-          dataIndex: "lastname",
-          key: "lastname",
-          render: renderFormattedNumber,
-          align: "right",
-        },
-        {
-          title: "Etunimi",
-          dataIndex: "firstname",
-          key: "firstname",
-          render: renderFormattedNumber,
-          align: "right",
-        }
-      );
-
-      columnTitles.push({
-        title: "Kaikki yhteensä",
-        dataIndex: "yhteensä",
-        key: "yhteensä",
-        render: renderFormattedNumber,
-        align: "right",
-      });
-
-      setColumnNames(columnTitles);
-    });
   };
 
   return (
