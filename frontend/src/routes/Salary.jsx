@@ -3,6 +3,7 @@ import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { Table } from "antd";
+import renderFormattedNumber from "../helpers";
 
 const { Title } = Typography;
 
@@ -68,6 +69,8 @@ const Salary = () => {
           title: reportName,
           dataIndex: reportName,
           key: reportName,
+          render: renderFormattedNumber,
+          align: "right",
         });
       });
 
@@ -84,14 +87,28 @@ const Salary = () => {
       });
 
       columnTitles.unshift(
-        { title: "Sukunimi", dataIndex: "lastname", key: "lastname" },
-        { title: "Etunimi", dataIndex: "firstname", key: "firstname" }
+        {
+          title: "Sukunimi",
+          dataIndex: "lastname",
+          key: "lastname",
+          render: renderFormattedNumber,
+          align: "right",
+        },
+        {
+          title: "Etunimi",
+          dataIndex: "firstname",
+          key: "firstname",
+          render: renderFormattedNumber,
+          align: "right",
+        }
       );
 
       columnTitles.push({
         title: "Kaikki yhteensä",
         dataIndex: "yhteensä",
         key: "yhteensä",
+        render: renderFormattedNumber,
+        align: "right",
       });
 
       setColumnNames(columnTitles);
