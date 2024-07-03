@@ -1,17 +1,11 @@
 import { Button } from "antd";
 
-const CreateCsv = () => {
-  const testData = [
-    { title1: "firstRow1", title2: "firstRow2" },
-    { title1: "secondRow1", title2: "secondRow2" },
-    { title1: "thirdRow1", title2: "thirdRow2" },
-  ];
-
+const CreateCsv = ({ tableData }) => {
   const generateCsv = () => {
-    const titleKeys = Object.keys(testData[0]);
+    const titleKeys = Object.keys(tableData[0]);
     const transformedData = [];
     transformedData.push(titleKeys);
-    testData.forEach((row) => {
+    tableData.forEach((row) => {
       transformedData.push(Object.values(row));
     });
     let csvContent = "";
@@ -32,7 +26,9 @@ const CreateCsv = () => {
 
   return (
     <div>
-      <Button onClick={generateCsv}>Luo CSV-tiedosto</Button>
+      <Button onClick={generateCsv} disabled={tableData.length === 0}>
+        Luo CSV-tiedosto
+      </Button>
     </div>
   );
 };

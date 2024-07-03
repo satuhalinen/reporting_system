@@ -121,9 +121,9 @@ const Salary = () => {
 
   return (
     <>
-      <Title>Welcome to salary report!</Title>
+      <Title>Palkkaraportti</Title>
       <Select
-        placeholder="Select salary date"
+        placeholder="Valitse palkanmaksupäivä"
         style={{
           width: "15%",
         }}
@@ -135,7 +135,7 @@ const Salary = () => {
         <SearchOutlined />
         Hae
       </Button>
-      <CreateCsv></CreateCsv>
+      <CreateCsv tableData={tableData}></CreateCsv>
       <Table columns={columnNames} dataSource={tableData}></Table>
     </>
   );
