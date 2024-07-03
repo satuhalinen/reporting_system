@@ -10,7 +10,7 @@ const { Title } = Typography;
 const Salary = () => {
   const [salaryDates, setSalaryDates] = useState([]);
   const [selectedSalaryDate, setSelectedSalaryDate] = useState(null);
-  const [columnNames, setColumnNames] = useState([]);
+  const [columns, setColumns] = useState([]);
   const [tableData, setTableData] = useState([]);
   const getDate = () => {
     axios.get(`http://localhost:3000/salary`).then((response) => {
@@ -43,8 +43,7 @@ const Salary = () => {
               firstname: record.firstname,
             };
           }
-          groupedData[key][record.report_name] =
-            record["SUM(worklog_worklog.worker_hours)"];
+          groupedData[key][record.report_name] = record.hours;
           if (!reportNames.includes(record.report_name)) {
             reportNames.push(record.report_name);
           }
@@ -52,35 +51,31 @@ const Salary = () => {
 
         const groupedDataWithTotal = Object.values(groupedData).map(
           (person) => {
-            let yhteensä = 0;
+            let total = 0;
             reportNames.forEach((reportName) => {
               if (person[reportName] !== undefined) {
-                yhteensä += person[reportName];
+                total += person[reportName];
               } else {
                 person[reportName] = 0;
               }
             });
-            return { ...person, yhteensä };
+            return { ...person, total };
           }
         );
 
         setTableData(groupedDataWithTotal);
 
-        const columnTitles = [];
+        const newColumns = reportNames.map((reportName) => ({
+          title: reportName,
+          dataIndex: reportName,
+          key: reportName,
+          render: renderFormattedNumber,
+          align: "right",
+        }));
 
-        reportNames.forEach((reportName) => {
-          columnTitles.push({
-            title: reportName,
-            dataIndex: reportName,
-            key: reportName,
-            render: renderFormattedNumber,
-            align: "right",
-          });
-        });
-
-        columnTitles.sort((columnTitleA, columnTitleB) => {
-          const titleA = columnTitleA.title;
-          const titleB = columnTitleB.title;
+        newColumns.sort((columnA, columnB) => {
+          const titleA = columnA.title;
+          const titleB = columnB.title;
           if (titleA < titleB) {
             return -1;
           }
@@ -90,32 +85,28 @@ const Salary = () => {
           return 0;
         });
 
-        columnTitles.unshift(
+        newColumns.unshift(
           {
             title: "Sukunimi",
             dataIndex: "lastname",
             key: "lastname",
-            render: renderFormattedNumber,
-            align: "right",
           },
           {
             title: "Etunimi",
             dataIndex: "firstname",
             key: "firstname",
-            render: renderFormattedNumber,
-            align: "right",
           }
         );
 
-        columnTitles.push({
+        newColumns.push({
           title: "Kaikki yhteensä",
-          dataIndex: "yhteensä",
-          key: "yhteensä",
+          dataIndex: "total",
+          key: "total",
           render: renderFormattedNumber,
           align: "right",
         });
 
-        setColumnNames(columnTitles);
+        setColumns(newColumns);
       });
   };
 
@@ -136,7 +127,7 @@ const Salary = () => {
         Hae
       </Button>
       <CreateCsv tableData={tableData}></CreateCsv>
-      <Table columns={columnNames} dataSource={tableData}></Table>
+      <Table columns={columns} dataSource={tableData}></Table>
     </>
   );
 };
