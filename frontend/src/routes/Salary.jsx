@@ -1,9 +1,9 @@
-import { Select, Button, Typography } from "antd";
+import { Select, Button, Typography, Table } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { Table } from "antd";
 import renderFormattedNumber from "../helpers";
+import CreateCsv from "../components/CreateCsv";
 
 const { Title } = Typography;
 
@@ -135,7 +135,7 @@ const Salary = () => {
         <SearchOutlined />
         Hae
       </Button>
-      <Button>Tee CSV</Button>
+      <CreateCsv></CreateCsv>
       <Table columns={columnNames} dataSource={tableData}></Table>
     </>
   );
