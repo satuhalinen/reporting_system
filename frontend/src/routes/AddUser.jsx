@@ -1,4 +1,6 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, Typography } from "antd";
+
+const { Title } = Typography;
 
 const AddUser = () => {
   return (
@@ -15,6 +17,7 @@ const AddUser = () => {
       }}
       autoComplete="off"
     >
+      <Title>Käyttäjän lisääminen</Title>
       <Form.Item
         label="Sukunimi"
         name="lastname"
