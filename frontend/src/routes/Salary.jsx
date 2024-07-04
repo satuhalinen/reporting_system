@@ -12,6 +12,18 @@ const Salary = () => {
   const [selectedSalaryDate, setSelectedSalaryDate] = useState(null);
   const [columns, setColumns] = useState([]);
   const [tableData, setTableData] = useState([]);
+
+  let finnishDate = "";
+  let finnishDateNoDots = "";
+
+  if (selectedSalaryDate) {
+    let year = selectedSalaryDate.slice(0, 4);
+    const month = selectedSalaryDate.slice(5, 7);
+    const day = selectedSalaryDate.slice(8, 10);
+    finnishDate = day + "." + month + "." + year;
+    finnishDateNoDots = year + month + day;
+  }
+
   const getDate = () => {
     axios.get(`http://localhost:3000/salary`).then((response) => {
       const rawSalaryDateData = response.data.data;
@@ -39,8 +51,8 @@ const Salary = () => {
           const key = `${record.lastname},${record.firstname}`;
           if (!groupedData[key]) {
             groupedData[key] = {
-              lastname: record.lastname,
-              firstname: record.firstname,
+              Sukunimi: record.lastname,
+              Etunimi: record.firstname,
             };
           }
           groupedData[key][record.report_name] = record.hours;
@@ -51,15 +63,15 @@ const Salary = () => {
 
         const groupedDataWithTotal = Object.values(groupedData).map(
           (person) => {
-            let total = 0;
+            let yhteensä = 0;
             reportNames.forEach((reportName) => {
               if (person[reportName] !== undefined) {
-                total += person[reportName];
+                yhteensä += person[reportName];
               } else {
                 person[reportName] = 0;
               }
             });
-            return { ...person, total };
+            return { ...person, "Kaikki yhteensä": yhteensä };
           }
         );
 
@@ -88,20 +100,20 @@ const Salary = () => {
         newColumns.unshift(
           {
             title: "Sukunimi",
-            dataIndex: "lastname",
-            key: "lastname",
+            dataIndex: "Sukunimi",
+            key: "Sukunimi",
           },
           {
             title: "Etunimi",
-            dataIndex: "firstname",
-            key: "firstname",
+            dataIndex: "Etunimi",
+            key: "Etunimi",
           }
         );
 
         newColumns.push({
           title: "Kaikki yhteensä",
-          dataIndex: "total",
-          key: "total",
+          dataIndex: "Kaikki yhteensä",
+          key: "Kaikki yhteensä",
           render: renderFormattedNumber,
           align: "right",
         });
@@ -112,7 +124,9 @@ const Salary = () => {
 
   return (
     <>
-      <Title>Palkkaraportti</Title>
+      <Title>
+        Palkkaraportti {tableData.length !== 0 ? finnishDate : null}
+      </Title>
       <Select
         placeholder="Valitse palkanmaksupäivä"
         style={{
@@ -126,7 +140,11 @@ const Salary = () => {
         <SearchOutlined />
         Hae
       </Button>
-      <CreateCsv tableData={tableData}></CreateCsv>
+      <CreateCsv
+        tableData={tableData}
+        selectedSalaryDate={selectedSalaryDate}
+        finnishDateNoDots={finnishDateNoDots}
+      ></CreateCsv>
       <Table columns={columns} dataSource={tableData}></Table>
     </>
   );
