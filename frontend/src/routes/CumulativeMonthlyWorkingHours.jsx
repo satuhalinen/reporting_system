@@ -212,6 +212,7 @@ const CumulativeMonthlyWorkingHours = () => {
           barAriaLabel={(e) =>
             e.id + ": " + e.formattedValue + " in vuosi: " + e.indexValue
           }
+          enableLabel={false}
         />
       </Col>
 

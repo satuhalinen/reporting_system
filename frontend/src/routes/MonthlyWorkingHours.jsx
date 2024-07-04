@@ -203,6 +203,7 @@ const MonthlyWorkingHours = () => {
           barAriaLabel={(e) =>
             e.id + ": " + e.formattedValue + " in vuosi: " + e.indexValue
           }
+          enableLabel={false}
         />
       </Col>
       <Col style={{ marginTop: "2%" }} span={5} pull={19}>
