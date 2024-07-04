@@ -1,24 +1,6 @@
 import { Button, Form, Input } from "antd";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth } from "../auth/authentication";
 
-const onFinish = (values) => {
-  signInWithEmailAndPassword(auth, values.email, values.password).then(
-    () => {}
-  );
-};
-
-const Login = () => {
-  const [user] = useAuthState(auth);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user) navigate("/first-page");
-  }, [user]);
-
+const AddUser = () => {
   return (
     <Form
       name="basic"
@@ -31,17 +13,40 @@ const Login = () => {
       style={{
         maxWidth: 600,
       }}
-      onFinish={onFinish}
       autoComplete="off"
     >
       <Form.Item
-        label="email"
+        label="Sukunimi"
+        name="lastname"
+        rules={[
+          {
+            required: true,
+            message: "Syötä käyttäjän sukunimi!",
+          },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        label="Etunimi"
+        name="firstname"
+        rules={[
+          {
+            required: true,
+            message: "Syötä käyttäjän etunimi!",
+          },
+        ]}
+      >
+        <Input />
+      </Form.Item>
+      <Form.Item
+        label="Sähköpostiosoite"
         name="email"
         value="email"
         rules={[
           {
             required: true,
-            message: "Please input your username!",
+            message: "Syötä käyttäjän sähköpostiosoite!",
           },
         ]}
       >
@@ -49,13 +54,13 @@ const Login = () => {
       </Form.Item>
 
       <Form.Item
-        label="Password"
+        label="Salasana"
         name="password"
         value="password"
         rules={[
           {
             required: true,
-            message: "Please input your password!",
+            message: "Syötä käyttäjän salasana!",
           },
         ]}
       >
@@ -68,10 +73,10 @@ const Login = () => {
         }}
       >
         <Button type="primary" htmlType="submit">
-          Login
+          Lisää käyttäjä
         </Button>
       </Form.Item>
     </Form>
   );
 };
-export default Login;
+export default AddUser;
