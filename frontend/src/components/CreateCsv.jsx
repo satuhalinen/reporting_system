@@ -1,6 +1,6 @@
 import { Button } from "antd";
 
-const CreateCsv = ({ tableData, selectedSalaryDate, finnishDateNoDots }) => {
+const CreateCsv = ({ tableData, fileName }) => {
   const generateCsv = () => {
     const titleKeys = Object.keys(tableData[0]);
     const transformedData = [];
@@ -20,7 +20,7 @@ const CreateCsv = ({ tableData, selectedSalaryDate, finnishDateNoDots }) => {
 
       transformedData.push(transformedRow);
     });
-    let csvContent = "\ufeff";
+    let csvContent = "\ufeff"; // Byte Order Mark (BOM) for that Excel encodes diaeresis (¨) correctly
     transformedData.forEach((row) => {
       csvContent += row.join(";") + "\n";
     });
@@ -30,7 +30,7 @@ const CreateCsv = ({ tableData, selectedSalaryDate, finnishDateNoDots }) => {
     const objUrl = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.href = objUrl;
-    link.download = `palkat_${finnishDateNoDots}.csv`;
+    link.download = `${fileName}.csv`;
     link.style.display = "none";
     document.body.appendChild(link);
     link.click();

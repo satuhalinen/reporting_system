@@ -15,6 +15,7 @@ const Salary = () => {
 
   let finnishDate = "";
   let finnishDateNoDots = "";
+  let fileName = "";
 
   if (selectedSalaryDate) {
     let year = selectedSalaryDate.slice(0, 4);
@@ -22,6 +23,7 @@ const Salary = () => {
     const day = selectedSalaryDate.slice(8, 10);
     finnishDate = day + "." + month + "." + year;
     finnishDateNoDots = year + month + day;
+    fileName = `palkat_${finnishDateNoDots}`;
   }
 
   const getDate = () => {
@@ -143,7 +145,7 @@ const Salary = () => {
       <CreateCsv
         tableData={tableData}
         selectedSalaryDate={selectedSalaryDate}
-        finnishDateNoDots={finnishDateNoDots}
+        fileName={fileName}
       ></CreateCsv>
       <Table columns={columns} dataSource={tableData}></Table>
     </>
