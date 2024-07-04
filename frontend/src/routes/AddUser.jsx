@@ -13,9 +13,6 @@ const AddUser = () => {
       style={{
         maxWidth: 600,
       }}
-      initialValues={{
-        remember: true,
-      }}
       autoComplete="off"
     >
       <Form.Item
@@ -69,16 +66,6 @@ const AddUser = () => {
       >
         <Input.Password />
       </Form.Item>
-
-      <Form.Item
-        name="remember"
-        valuePropName="checked"
-        wrapperCol={{
-          offset: 8,
-          span: 16,
-        }}
-      ></Form.Item>
-
       <Form.Item
         wrapperCol={{
           offset: 8,
