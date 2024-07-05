@@ -28,7 +28,7 @@ async function addUser(email, password) {
   }
 }
 
-addUser("user@mailexample.com", "passwordExample")
+addUser("user@emailexample.com", "passwordExample")
   .then((userRecord) => {
     console.log(userRecord);
   })
