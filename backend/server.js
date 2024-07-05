@@ -3,9 +3,38 @@ const cors = require("cors");
 const app = express();
 const port = 3000;
 
+const admin = require("firebase-admin");
+const serviceAccount = require("./serviceAccountKey.json");
+const { getAuth } = require("firebase-admin/auth");
 app.use(cors());
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("db.sqlite3");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+async function addUser(email, password) {
+  try {
+    const userRecord = await getAuth().createUser({
+      email: email,
+      password: password,
+    });
+    console.log("Successfully created new user:", userRecord.uid);
+    return userRecord;
+  } catch (error) {
+    console.error("Error creating new user:", error);
+    throw error;
+  }
+}
+
+addUser("user@mailexample.com", "passwordExample")
+  .then((userRecord) => {
+    console.log(userRecord);
+  })
+  .catch((error) => {
+    console.error(error);
+  });
 
 app.get("/working-hours", (req, res) => {
   db.all(
