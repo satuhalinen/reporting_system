@@ -7,6 +7,7 @@ const admin = require("firebase-admin");
 const serviceAccount = require("./serviceAccountKey.json");
 const { getAuth } = require("firebase-admin/auth");
 app.use(cors());
+app.use(express.json());
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("db.sqlite3");
 
@@ -27,14 +28,11 @@ async function addUser(email, password) {
     throw error;
   }
 }
-
-addUser("user@emailexample.com", "passwordExample")
-  .then((userRecord) => {
-    console.log(userRecord);
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+app.post("/add-user", (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  addUser(email, password);
+});
 
 app.get("/working-hours", (req, res) => {
   db.all(

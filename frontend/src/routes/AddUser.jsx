@@ -1,8 +1,16 @@
 import { Button, Form, Input, Typography } from "antd";
+import axios from "axios";
 
 const { Title } = Typography;
 
 const AddUser = () => {
+  const onFinish = (values) => {
+    axios.post("http://localhost:3000/add-user", {
+      email: values.email,
+      password: values.password,
+    });
+  };
+
   return (
     <Form
       name="basic"
@@ -16,6 +24,7 @@ const AddUser = () => {
         maxWidth: 600,
       }}
       autoComplete="off"
+      onFinish={onFinish}
     >
       <Title>Käyttäjän lisääminen</Title>
       <Form.Item
