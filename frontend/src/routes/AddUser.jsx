@@ -1,14 +1,21 @@
 import { Button, Form, Input, Typography } from "antd";
 import axios from "axios";
+import { useState } from "react";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const AddUser = () => {
+  const [message, setMessage] = useState("");
+
   const onFinish = (values) => {
-    axios.post("http://localhost:3000/add-user", {
-      email: values.email,
-      password: values.password,
-    });
+    axios
+      .post("http://localhost:3000/add-user", {
+        email: values.email,
+        password: values.password,
+      })
+      .then((response) => {
+        setMessage(response.data.message);
+      });
   };
 
   return (
@@ -87,6 +94,7 @@ const AddUser = () => {
         <Button type="primary" htmlType="submit">
           Lisää käyttäjä
         </Button>
+        <Text>{message}</Text>
       </Form.Item>
     </Form>
   );

@@ -31,7 +31,9 @@ async function addUser(email, password) {
 app.post("/add-user", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  addUser(email, password);
+  addUser(email, password).then(() => {
+    res.status(201).json({ message: "Käyttäjä luotu!" });
+  });
 });
 
 app.get("/working-hours", (req, res) => {
