@@ -1,19 +1,21 @@
+const { initializeApp, cert } = require("firebase-admin/app");
 const express = require("express");
 const cors = require("cors");
 const app = express();
 const port = 3000;
 
-const admin = require("firebase-admin");
 const serviceAccount = require("./serviceAccountKey.json");
 const { getAuth } = require("firebase-admin/auth");
+const { getFirestore } = require("firebase-admin/firestore");
 app.use(cors());
 app.use(express.json());
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("db.sqlite3");
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
+initializeApp({
+  credential: cert(serviceAccount),
 });
+const firebaseDb = getFirestore();
 
 async function addUser(email, password) {
   try {
@@ -22,12 +24,22 @@ async function addUser(email, password) {
       password: password,
     });
     console.log("Successfully created new user:", userRecord.uid);
-    return userRecord;
+    const data = {
+      firstname: "Satu",
+      lastname: "Halinen",
+    };
+
+    const res = await firebaseDb
+      .collection("users")
+      .doc(userRecord.uid)
+      .set(data);
+    return { userRecord, res };
   } catch (error) {
     console.error("Error creating new user:", error);
     throw error;
   }
 }
+
 app.post("/add-user", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
