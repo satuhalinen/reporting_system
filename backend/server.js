@@ -45,9 +45,13 @@ app.post("/add-user", (req, res) => {
   const password = req.body.password;
   const lastname = req.body.lastname;
   const firstname = req.body.firstname;
-  addUser(email, password, lastname, firstname).then(() => {
-    res.status(201).json({ message: "Käyttäjä luotu!" });
-  });
+  addUser(email, password, lastname, firstname)
+    .then(() => {
+      res.status(201).json({ message: "Käyttäjä luotu!" });
+    })
+    .catch(() => {
+      res.status(500).json({ message: "Virhe!" });
+    });
 });
 
 app.get("/working-hours", (req, res) => {

@@ -17,6 +17,9 @@ const AddUser = () => {
       })
       .then((response) => {
         setMessage(response.data.message);
+      })
+      .catch((error) => {
+        setMessage(error.response.data.message);
       });
   };
 
