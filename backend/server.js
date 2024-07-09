@@ -17,7 +17,7 @@ initializeApp({
 });
 const firebaseDb = getFirestore();
 
-async function addUser(email, password) {
+async function addUser(email, password, lastname, firstname) {
   try {
     const userRecord = await getAuth().createUser({
       email: email,
@@ -25,8 +25,8 @@ async function addUser(email, password) {
     });
     console.log("Successfully created new user:", userRecord.uid);
     const data = {
-      firstname: "Satu",
-      lastname: "Halinen",
+      firstname: firstname,
+      lastname: lastname,
     };
 
     const res = await firebaseDb
@@ -43,7 +43,9 @@ async function addUser(email, password) {
 app.post("/add-user", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  addUser(email, password).then(() => {
+  const lastname = req.body.lastname;
+  const firstname = req.body.firstname;
+  addUser(email, password, lastname, firstname).then(() => {
     res.status(201).json({ message: "Käyttäjä luotu!" });
   });
 });

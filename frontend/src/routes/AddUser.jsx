@@ -12,6 +12,8 @@ const AddUser = () => {
       .post("http://localhost:3000/add-user", {
         email: values.email,
         password: values.password,
+        lastname: values.lastname,
+        firstname: values.firstname,
       })
       .then((response) => {
         setMessage(response.data.message);
@@ -61,7 +63,6 @@ const AddUser = () => {
       <Form.Item
         label="Sähköpostiosoite"
         name="email"
-        value="email"
         rules={[
           {
             required: true,
@@ -75,7 +76,6 @@ const AddUser = () => {
       <Form.Item
         label="Salasana"
         name="password"
-        value="password"
         rules={[
           {
             required: true,
