@@ -23,7 +23,7 @@ async function addUser(email, password, lastname, firstname) {
       email: email,
       password: password,
     });
-    console.log("Successfully created new user:", userRecord.uid);
+
     const data = {
       firstname: firstname,
       lastname: lastname,
@@ -35,7 +35,6 @@ async function addUser(email, password, lastname, firstname) {
       .set(data);
     return { userRecord, res };
   } catch (error) {
-    console.error("Error creating new user:", error);
     throw error;
   }
 }
@@ -52,6 +51,26 @@ app.post("/add-user", (req, res) => {
     .catch(() => {
       res.status(500).json({ message: "Virhe!" });
     });
+});
+
+const listAllUsers = (nextPageToken) => {
+  getAuth()
+    .listUsers(1000, nextPageToken)
+    .then((listUsersResult) => {
+      listUsersResult.users.forEach((userRecord) => {
+        console.log("user", userRecord.toJSON());
+      });
+      if (listUsersResult.pageToken) {
+        listAllUsers(listUsersResult.pageToken);
+      }
+    })
+    .catch((error) => {
+      console.log("Error listing users:", error);
+    });
+};
+
+app.get("/user-list", (req, res) => {
+  listAllUsers();
 });
 
 app.get("/working-hours", (req, res) => {
