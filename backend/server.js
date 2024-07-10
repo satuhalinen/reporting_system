@@ -18,25 +18,21 @@ initializeApp({
 const firebaseDb = getFirestore();
 
 async function addUser(email, password, lastname, firstname) {
-  try {
-    const userRecord = await getAuth().createUser({
-      email: email,
-      password: password,
-    });
+  const userRecord = await getAuth().createUser({
+    email: email,
+    password: password,
+  });
 
-    const data = {
-      firstname: firstname,
-      lastname: lastname,
-    };
+  const data = {
+    firstname: firstname,
+    lastname: lastname,
+  };
 
-    const res = await firebaseDb
-      .collection("users")
-      .doc(userRecord.uid)
-      .set(data);
-    return { userRecord, res };
-  } catch (error) {
-    throw error;
-  }
+  const res = await firebaseDb
+    .collection("users")
+    .doc(userRecord.uid)
+    .set(data);
+  return { userRecord, res };
 }
 
 app.post("/add-user", (req, res) => {
@@ -53,24 +49,19 @@ app.post("/add-user", (req, res) => {
     });
 });
 
-const listAllUsers = (nextPageToken) => {
+app.get("/user-list", (req, res) => {
   getAuth()
-    .listUsers(1000, nextPageToken)
+    .listUsers(1000)
     .then((listUsersResult) => {
-      listUsersResult.users.forEach((userRecord) => {
-        console.log("user", userRecord.toJSON());
-      });
-      if (listUsersResult.pageToken) {
-        listAllUsers(listUsersResult.pageToken);
-      }
+      const records = listUsersResult.users.map((userRecord) =>
+        userRecord.toJSON()
+      );
+      const emails = records.map((record) => record.email);
+      res.json(emails);
     })
     .catch((error) => {
       console.log("Error listing users:", error);
     });
-};
-
-app.get("/user-list", (req, res) => {
-  listAllUsers();
 });
 
 app.get("/working-hours", (req, res) => {
