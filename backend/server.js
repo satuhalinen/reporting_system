@@ -17,59 +17,6 @@ initializeApp({
 });
 const firebaseDb = getFirestore();
 
-async function addUser(email, password, lastname, firstname) {
-  const userRecord = await getAuth().createUser({
-    email: email,
-    password: password,
-  });
-
-  const data = {
-    firstname: firstname,
-    lastname: lastname,
-  };
-
-  const res = await firebaseDb
-    .collection("users")
-    .doc(userRecord.uid)
-    .set(data);
-  return { userRecord, res };
-}
-
-app.post("/add-user", (req, res) => {
-  const email = req.body.email;
-  const password = req.body.password;
-  const lastname = req.body.lastname;
-  const firstname = req.body.firstname;
-  addUser(email, password, lastname, firstname)
-    .then(() => {
-      res.status(201).json({ message: "Käyttäjä luotu!" });
-    })
-    .catch(() => {
-      res.status(500).json({ message: "Virhe!" });
-    });
-});
-
-app.get("/user-list", (req, res) => {
-  const listAllUsers = (nextPageToken) => {
-    getAuth()
-      .listUsers(1000, nextPageToken)
-      .then((listUsersResult) => {
-        const records = listUsersResult.users.map((userRecord) =>
-          userRecord.toJSON()
-        );
-        const emails = records.map((record) => record.email);
-        res.json(emails);
-        if (listUsersResult.pageToken) {
-          listAllUsers(listUsersResult.pageToken);
-        }
-      })
-      .catch((error) => {
-        console.log("Error listing users:", error);
-      });
-  };
-  listAllUsers();
-});
-
 app.get("/working-hours", (req, res) => {
   db.all(
     "SELECT tuntikirjaus_employee.firstname, tuntikirjaus_employee.lastname, worklog_worklog.hours FROM tuntikirjaus_employee JOIN worklog_worklog ON tuntikirjaus_employee.id = worklog_worklog.employee_id",
@@ -146,6 +93,70 @@ app.get("/salary_report", (req, res) => {
     }
   );
 });
+
+async function addUser(email, password, lastname, firstname) {
+  const userRecord = await getAuth().createUser({
+    email: email,
+    password: password,
+  });
+
+  const data = {
+    firstname: firstname,
+    lastname: lastname,
+  };
+
+  const res = await firebaseDb
+    .collection("users")
+    .doc(userRecord.uid)
+    .set(data);
+  return { userRecord, res };
+}
+
+app.post("/add-user", (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  const lastname = req.body.lastname;
+  const firstname = req.body.firstname;
+  addUser(email, password, lastname, firstname)
+    .then(() => {
+      res.status(201).json({ message: "Käyttäjä luotu!" });
+    })
+    .catch(() => {
+      res.status(500).json({ message: "Virhe!" });
+    });
+});
+
+app.get("/user-list", (req, res) => {
+  const listAllUsers = (nextPageToken) => {
+    getAuth()
+      .listUsers(1000, nextPageToken)
+      .then((listUsersResult) => {
+        const records = listUsersResult.users.map((userRecord) =>
+          userRecord.toJSON()
+        );
+        const emails = records.map((record) => record.email);
+        res.json(emails);
+        if (listUsersResult.pageToken) {
+          listAllUsers(listUsersResult.pageToken);
+        }
+      })
+      .catch((error) => {
+        console.log("Error listing users:", error);
+      });
+  };
+  listAllUsers();
+  getDocument();
+});
+
+const getDocument = async () => {
+  const cityRef = firebaseDb.collection("users").doc("123");
+  const doc = await cityRef.get();
+  if (!doc.exists) {
+    console.log("No such document!");
+  } else {
+    console.log("Document data:", doc.data());
+  }
+};
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}.`);
