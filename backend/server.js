@@ -127,33 +127,29 @@ app.post("/add-user", (req, res) => {
 });
 
 app.get("/user-list", (req, res) => {
-  const listAllUsers = (nextPageToken) => {
-    getAuth()
-      .listUsers(1000, nextPageToken)
-      .then((listUsersResult) => {
-        const records = listUsersResult.users.map((userRecord) =>
-          userRecord.toJSON()
-        );
-        const emails = records.map((record) => record.email);
-        res.json(emails);
-        if (listUsersResult.pageToken) {
-          listAllUsers(listUsersResult.pageToken);
-        }
-      })
-      .catch((error) => {
-        console.log("Error listing users:", error);
-      });
+  const listAllUsers = async (nextPageToken) => {
+    try {
+      const listUsersResult = await getAuth().listUsers(1000, nextPageToken);
+      const records = listUsersResult.users.map((userRecord) =>
+        userRecord.toJSON()
+      );
+      const emails = records.map((record) => record.email);
+
+      const usersRef = firebaseDb.collection("users");
+      const snapshot = await usersRef.get();
+      const users = snapshot.docs.map((doc) => doc.data());
+
+      res.json({ emails, users });
+
+      if (listUsersResult.pageToken) {
+        listAllUsers(listUsersResult.pageToken);
+      }
+    } catch (error) {
+      console.log("Error listing users:", error);
+    }
   };
   listAllUsers();
-  getAllDocuments();
 });
-
-const getAllDocuments = async () => {
-  const usersRef = firebaseDb.collection("users");
-  const snapshot = await usersRef.get();
-  const users = snapshot.docs.map((doc) => doc.data());
-  console.log("users", users);
-};
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}.`);

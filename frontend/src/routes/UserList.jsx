@@ -8,7 +8,7 @@ const UserList = () => {
 
   const fetchEmails = () => {
     axios.get("http://localhost:3000/user-list").then((response) => {
-      const emailsWithKeys = response.data.map((email, index) => ({
+      const emailsWithKeys = response.data.emails.map((email, index) => ({
         key: index + 1,
         email: email,
       }));
