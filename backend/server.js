@@ -50,18 +50,24 @@ app.post("/add-user", (req, res) => {
 });
 
 app.get("/user-list", (req, res) => {
-  getAuth()
-    .listUsers(1000)
-    .then((listUsersResult) => {
-      const records = listUsersResult.users.map((userRecord) =>
-        userRecord.toJSON()
-      );
-      const emails = records.map((record) => record.email);
-      res.json(emails);
-    })
-    .catch((error) => {
-      console.log("Error listing users:", error);
-    });
+  const listAllUsers = (nextPageToken) => {
+    getAuth()
+      .listUsers(1000, nextPageToken)
+      .then((listUsersResult) => {
+        const records = listUsersResult.users.map((userRecord) =>
+          userRecord.toJSON()
+        );
+        const emails = records.map((record) => record.email);
+        res.json(emails);
+        if (listUsersResult.pageToken) {
+          listAllUsers(listUsersResult.pageToken);
+        }
+      })
+      .catch((error) => {
+        console.log("Error listing users:", error);
+      });
+  };
+  listAllUsers();
 });
 
 app.get("/working-hours", (req, res) => {
