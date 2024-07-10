@@ -145,17 +145,14 @@ app.get("/user-list", (req, res) => {
       });
   };
   listAllUsers();
-  getDocument();
+  getAllDocuments();
 });
 
-const getDocument = async () => {
-  const cityRef = firebaseDb.collection("users").doc("123");
-  const doc = await cityRef.get();
-  if (!doc.exists) {
-    console.log("No such document!");
-  } else {
-    console.log("Document data:", doc.data());
-  }
+const getAllDocuments = async () => {
+  const usersRef = firebaseDb.collection("users");
+  const snapshot = await usersRef.get();
+  const users = snapshot.docs.map((doc) => doc.data());
+  console.log("users", users);
 };
 
 app.listen(port, () => {
