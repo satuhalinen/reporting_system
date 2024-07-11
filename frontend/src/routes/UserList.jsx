@@ -8,16 +8,35 @@ const UserList = () => {
 
   const fetchEmails = () => {
     axios.get("http://localhost:3000/user-list").then((response) => {
-      const firstnames = response.data.users.map((person) => person.firstname);
-      const lastnames = response.data.users.map((person) => person.lastname);
-      const emails = response.data.emails;
-
-      const information = lastnames.map((lastname, index) => ({
-        lastname: lastname,
-        firstname: firstnames[index],
-        email: emails[index],
+      const emailsWithIds = response.data.emails;
+      const namesWithIds = response.data.names;
+      const transformedUsers = namesWithIds.map((user) => ({
+        id: user.id,
+        firstname: user.data.firstname,
+        lastname: user.data.lastname,
       }));
-      setUserData(information);
+
+      const emailsNamesWithIds = [];
+
+      for (let i = 0; i < transformedUsers.length; i++) {
+        const name = transformedUsers[i];
+        let emailObj = null;
+        for (let j = 0; j < emailsWithIds.length; j++) {
+          if (emailsWithIds[j].uid === name.id) {
+            emailObj = emailsWithIds[j];
+            break;
+          }
+        }
+
+        const newEmailsNamesWithIds = {
+          ...name,
+          email: emailObj ? emailObj.email : null,
+        };
+
+        emailsNamesWithIds.push(newEmailsNamesWithIds);
+      }
+
+      setUserData(emailsNamesWithIds);
     });
   };
 

@@ -133,13 +133,19 @@ app.get("/user-list", (req, res) => {
       const records = listUsersResult.users.map((userRecord) =>
         userRecord.toJSON()
       );
-      const emails = records.map((record) => record.email);
+      const emails = records.map((record) => ({
+        uid: record.uid,
+        email: record.email,
+      }));
 
       const usersRef = firebaseDb.collection("users");
       const snapshot = await usersRef.get();
-      const users = snapshot.docs.map((doc) => doc.data());
+      const names = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        data: doc.data(),
+      }));
 
-      res.json({ emails, users });
+      res.json({ emails, names });
 
       if (listUsersResult.pageToken) {
         listAllUsers(listUsersResult.pageToken);
