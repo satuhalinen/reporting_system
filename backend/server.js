@@ -195,14 +195,10 @@ async function deleteUser(id) {
   return userRecord;
 }
 
-app.delete("/user-list/id", (req, res) => {
-  deleteUser("123")
-    .then(() => {
-      res.status(201).json({ message: "Käyttäjä poistettu!" });
-    })
-    .catch(() => {
-      res.status(500).json({ message: "Virhe!" });
-    });
+app.delete("/user-list/:uid", (req, res) => {
+  const uid = req.params.uid;
+  deleteUser(uid);
+  res.json(uid);
 });
 
 app.listen(port, () => {

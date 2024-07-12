@@ -5,7 +5,6 @@ import DeleteOutlined from "@ant-design/icons/DeleteOutlined";
 
 const UserList = () => {
   const [userData, setUserData] = useState([]);
-  const [message, setMessage] = useState("");
 
   const fetchEmails = () => {
     axios.get("http://localhost:3000/user-list").then((response) => {
@@ -14,11 +13,8 @@ const UserList = () => {
     });
   };
 
-  const deleteUser = () => {
-    axios.delete(`http://localhost:3000/user-list/id`).then((response) => {
-      const emailsNamesWithIds = response.data;
-      setMessage(emailsNamesWithIds);
-    });
+  const deleteUser = (record) => {
+    axios.delete(`http://localhost:3000/user-list/${record.id}`);
   };
 
   const columns = [
@@ -41,8 +37,8 @@ const UserList = () => {
       title: "Toimenpiteet",
       dataIndex: "actions",
       key: "actions",
-      render: () => (
-        <Button onClick={deleteUser} icon={<DeleteOutlined />}>
+      render: (text, record) => (
+        <Button onClick={() => deleteUser(record)} icon={<DeleteOutlined />}>
           Poista
         </Button>
       ),
@@ -55,8 +51,7 @@ const UserList = () => {
 
   return (
     <>
-      <Table columns={columns} dataSource={userData}></Table>
-      <p>{message.message}</p>
+      <Table columns={columns} dataSource={userData} rowKey="email"></Table>
     </>
   );
 };
