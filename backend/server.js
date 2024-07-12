@@ -145,7 +145,33 @@ app.get("/user-list", (req, res) => {
         data: doc.data(),
       }));
 
-      res.json({ emails, names });
+      const transformedUsers = names.map((user) => ({
+        id: user.id,
+        firstname: user.data.firstname,
+        lastname: user.data.lastname,
+      }));
+
+      const emailsNamesWithIds = [];
+
+      for (let i = 0; i < transformedUsers.length; i++) {
+        const name = transformedUsers[i];
+        let emailObj = null;
+        for (let j = 0; j < emails.length; j++) {
+          if (emails[j].uid === name.id) {
+            emailObj = emails[j];
+            break;
+          }
+        }
+
+        const newEmailsNamesWithIds = {
+          ...name,
+          email: emailObj ? emailObj.email : null,
+        };
+
+        emailsNamesWithIds.push(newEmailsNamesWithIds);
+      }
+
+      res.json(emailsNamesWithIds);
 
       if (listUsersResult.pageToken) {
         listAllUsers(listUsersResult.pageToken);
