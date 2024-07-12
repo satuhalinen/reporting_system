@@ -183,6 +183,28 @@ app.get("/user-list", (req, res) => {
   listAllUsers();
 });
 
+async function deleteUser(id) {
+  const userRecord = await getAuth()
+    .deleteUser(id)
+    .then(() => {
+      console.log("Successfully deleted user");
+    })
+    .catch((error) => {
+      console.log("Error deleting user:", error);
+    });
+  return userRecord;
+}
+
+app.delete("/user-list/id", (req, res) => {
+  deleteUser("123")
+    .then(() => {
+      res.status(201).json({ message: "Käyttäjä poistettu!" });
+    })
+    .catch(() => {
+      res.status(500).json({ message: "Virhe!" });
+    });
+});
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}.`);
 });
