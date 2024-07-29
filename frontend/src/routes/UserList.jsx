@@ -1,21 +1,20 @@
 import axios from "axios";
-import { Table, Button } from "antd";
+import { Table, Button, Popconfirm, message } from "antd";
 import { useState, useEffect } from "react";
 import DeleteOutlined from "@ant-design/icons/DeleteOutlined";
 
 const UserList = () => {
   const [userData, setUserData] = useState([]);
 
-  const fetchEmails = () => {
-    axios.get("http://localhost:3000/user-list").then((response) => {
-      const emailsNamesWithIds = response.data;
-      setUserData(emailsNamesWithIds);
-    });
+  const fetchEmails = async () => {
+    const response = await axios.get("http://localhost:3000/user-list");
+    const emailsNamesWithIds = response.data;
+    setUserData(emailsNamesWithIds);
   };
 
-  const deleteUser = (record) => {
+  const deleteUser = async (record) => {
     axios.delete(`http://localhost:3000/user-list/${record.id}`);
-    fetchEmails();
+    await fetchEmails();
   };
 
   const columns = [
@@ -39,9 +38,15 @@ const UserList = () => {
       dataIndex: "actions",
       key: "actions",
       render: (text, record) => (
-        <Button onClick={() => deleteUser(record)} icon={<DeleteOutlined />}>
-          Poista
-        </Button>
+        <Popconfirm
+          title="Haluatko varmasti poistaa käyttäjän?"
+          okText="Kyllä"
+          cancelText="En"
+          onConfirm={() => confirm(record)}
+          onCancel={cancel}
+        >
+          <Button icon={<DeleteOutlined />}>Poista</Button>
+        </Popconfirm>
       ),
     },
   ];
@@ -49,6 +54,15 @@ const UserList = () => {
   useEffect(() => {
     fetchEmails();
   }, []);
+
+  const confirm = async (user) => {
+    deleteUser(user);
+    message.success("Käyttäjä on poistettu.");
+  };
+
+  const cancel = () => {
+    message.error("Käyttäjää ei poistettu.");
+  };
 
   return <Table columns={columns} dataSource={userData} rowKey="email"></Table>;
 };
