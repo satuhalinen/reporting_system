@@ -1,6 +1,8 @@
 const renderFormattedNumber = (hours) => {
   if (typeof hours === "number") {
-    return Math.round(hours).toLocaleString("fi-FI");
+    return Number(hours.toFixed(2)).toLocaleString("fi-FI", {
+      minimumFractionDigits: 1,
+    });
   }
   return hours;
 };

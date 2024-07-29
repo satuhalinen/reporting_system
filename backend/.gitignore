@@ -25,6 +25,8 @@ dist-ssr
 
 # Environment files
 .env
-
-# Database
+# Database: SQLite
 db.sqlite3
+
+# Database: Firebase 
+serviceAccountKey.json
