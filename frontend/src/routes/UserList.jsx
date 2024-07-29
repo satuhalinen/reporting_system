@@ -13,7 +13,7 @@ const UserList = () => {
   };
 
   const deleteUser = async (record) => {
-    axios.delete(`http://localhost:3000/user-list/${record.id}`);
+    await axios.delete(`http://localhost:3000/user-list/${record.id}`);
     await fetchEmails();
   };
 
@@ -56,7 +56,7 @@ const UserList = () => {
   }, []);
 
   const confirm = async (user) => {
-    deleteUser(user);
+    await deleteUser(user);
     message.success("Käyttäjä on poistettu.");
   };
 
@@ -64,7 +64,7 @@ const UserList = () => {
     message.error("Käyttäjää ei poistettu.");
   };
 
-  return <Table columns={columns} dataSource={userData} rowKey="email"></Table>;
+  return <Table columns={columns} dataSource={userData} rowKey="id"></Table>;
 };
 
 export default UserList;
