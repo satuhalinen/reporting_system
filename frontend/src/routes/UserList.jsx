@@ -15,6 +15,7 @@ const UserList = () => {
 
   const deleteUser = (record) => {
     axios.delete(`http://localhost:3000/user-list/${record.id}`);
+    fetchEmails();
   };
 
   const columns = [
@@ -49,11 +50,7 @@ const UserList = () => {
     fetchEmails();
   }, []);
 
-  return (
-    <>
-      <Table columns={columns} dataSource={userData} rowKey="email"></Table>
-    </>
-  );
+  return <Table columns={columns} dataSource={userData} rowKey="email"></Table>;
 };
 
 export default UserList;

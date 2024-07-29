@@ -128,76 +128,71 @@ app.post("/add-user", (req, res) => {
 
 app.get("/user-list", (req, res) => {
   const listAllUsers = async (nextPageToken) => {
-    try {
-      const listUsersResult = await getAuth().listUsers(1000, nextPageToken);
-      const records = listUsersResult.users.map((userRecord) =>
-        userRecord.toJSON()
-      );
-      const emails = records.map((record) => ({
-        uid: record.uid,
-        email: record.email,
-      }));
+    const listUsersResult = await getAuth().listUsers(1000, nextPageToken);
+    const records = listUsersResult.users.map((userRecord) =>
+      userRecord.toJSON()
+    );
+    const emails = records.map((record) => ({
+      uid: record.uid,
+      email: record.email,
+    }));
 
-      const usersRef = firebaseDb.collection("users");
-      const snapshot = await usersRef.get();
-      const names = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        data: doc.data(),
-      }));
+    const usersRef = firebaseDb.collection("users");
+    const snapshot = await usersRef.get();
+    const names = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      data: doc.data(),
+    }));
 
-      const transformedUsers = names.map((user) => ({
-        id: user.id,
-        firstname: user.data.firstname,
-        lastname: user.data.lastname,
-      }));
+    const transformedUsers = names.map((user) => ({
+      id: user.id,
+      firstname: user.data.firstname,
+      lastname: user.data.lastname,
+    }));
 
-      const emailsNamesWithIds = [];
+    const emailsNamesWithIds = [];
 
-      for (let i = 0; i < transformedUsers.length; i++) {
-        const name = transformedUsers[i];
-        let emailObj = null;
-        for (let j = 0; j < emails.length; j++) {
-          if (emails[j].uid === name.id) {
-            emailObj = emails[j];
-            break;
-          }
+    for (let i = 0; i < transformedUsers.length; i++) {
+      const name = transformedUsers[i];
+      let emailObj = null;
+      for (let j = 0; j < emails.length; j++) {
+        if (emails[j].uid === name.id) {
+          emailObj = emails[j];
+          break;
         }
-
-        const newEmailsNamesWithIds = {
-          ...name,
-          email: emailObj ? emailObj.email : null,
-        };
-
-        emailsNamesWithIds.push(newEmailsNamesWithIds);
       }
 
-      res.json(emailsNamesWithIds);
+      const newEmailsNamesWithIds = {
+        ...name,
+        email: emailObj ? emailObj.email : null,
+      };
 
-      if (listUsersResult.pageToken) {
-        listAllUsers(listUsersResult.pageToken);
-      }
-    } catch (error) {
-      console.log("Error listing users:", error);
+      emailsNamesWithIds.push(newEmailsNamesWithIds);
+    }
+
+    res.json(emailsNamesWithIds);
+
+    if (listUsersResult.pageToken) {
+      listAllUsers(listUsersResult.pageToken);
     }
   };
   listAllUsers();
 });
 
-async function deleteUser(id) {
-  const userRecord = await getAuth()
-    .deleteUser(id)
-    .then(() => {
-      console.log("Successfully deleted user");
-    })
-    .catch((error) => {
-      console.log("Error deleting user:", error);
-    });
+async function deleteAuthUser(id) {
+  const userRecord = await getAuth().deleteUser(id);
   return userRecord;
+}
+
+async function deleteDatabaseUser(id) {
+  const res = await firebaseDb.collection("users").doc(id).delete();
+  return res;
 }
 
 app.delete("/user-list/:uid", (req, res) => {
   const uid = req.params.uid;
-  deleteUser(uid);
+  deleteAuthUser(uid);
+  deleteDatabaseUser(uid);
   res.json(uid);
 });
 
