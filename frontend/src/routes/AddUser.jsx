@@ -97,7 +97,7 @@ const AddUser = () => {
         <Button type="primary" htmlType="submit">
           Lisää käyttäjä
         </Button>
-        <Text>{message}</Text>
+        <Text style={{ margin: "10px" }}>{message}</Text>
       </Form.Item>
     </Form>
   );
