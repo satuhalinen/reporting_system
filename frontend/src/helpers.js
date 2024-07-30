@@ -1,6 +1,6 @@
 const renderFormattedNumber = (hours) => {
   if (typeof hours === "number") {
-    return Number(hours.toFixed(2)).toLocaleString("fi-FI", {
+    return hours.toLocaleString("fi-FI", {
       minimumFractionDigits: 1,
     });
   }
