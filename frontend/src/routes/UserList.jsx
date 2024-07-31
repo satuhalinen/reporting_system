@@ -2,6 +2,8 @@ import axios from "axios";
 import { Table, Button, Popconfirm, message } from "antd";
 import { useState, useEffect } from "react";
 import DeleteOutlined from "@ant-design/icons/DeleteOutlined";
+import ToolOutlined from "@ant-design/icons/ToolOutlined";
+import { NavLink } from "react-router-dom";
 
 const UserList = () => {
   const [userData, setUserData] = useState([]);
@@ -38,15 +40,21 @@ const UserList = () => {
       dataIndex: "actions",
       key: "actions",
       render: (text, record) => (
-        <Popconfirm
-          title="Haluatko varmasti poistaa käyttäjän?"
-          okText="Kyllä"
-          cancelText="En"
-          onConfirm={() => confirm(record)}
-          onCancel={cancel}
-        >
-          <Button icon={<DeleteOutlined />}>Poista</Button>
-        </Popconfirm>
+        <>
+          <Popconfirm
+            title="Haluatko varmasti poistaa käyttäjän?"
+            okText="Kyllä"
+            cancelText="En"
+            onConfirm={() => confirm(record)}
+            onCancel={cancel}
+          >
+            <Button icon={<DeleteOutlined />}>Poista</Button>
+          </Popconfirm>
+          <NavLink style={{ color: "white" }} to={`/modify-user`}>
+            Add user
+            <Button icon={<ToolOutlined />}>Muokkaa tietoja</Button>
+          </NavLink>
+        </>
       ),
     },
   ];

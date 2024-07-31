@@ -12,6 +12,7 @@ import BillabilityMonthlyWorkingHours from "./routes/BillabilityMonthlyWorkingHo
 import Salary from "./routes/Salary";
 import AddUser from "./routes/AddUser";
 import UserList from "./routes/UserList";
+import ModifyUser from "./routes/ModifyUser";
 
 const { Header, Content, Footer } = Layout;
 
@@ -110,6 +111,7 @@ const App = () => {
                 <Route path="salary" element={<Salary />} />
                 <Route path="add-user" element={<AddUser />} />
                 <Route path="user-list" element={<UserList />} />
+                <Route path="modify-user" element={<ModifyUser />} />
               </Route>
             </Routes>
           </div>
