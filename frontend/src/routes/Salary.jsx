@@ -77,6 +77,27 @@ const Salary = () => {
           }
         );
 
+        const totals = {};
+
+        for (const item of groupedDataWithTotal) {
+          for (const [key, value] of Object.entries(item)) {
+            if (typeof value === "number") {
+              if (!totals[key]) {
+                totals[key] = 0;
+              }
+              totals[key] += value;
+            }
+          }
+        }
+
+        const newTotals = {
+          Sukunimi: "Kaikki yhteensä",
+          Etunimi: "",
+          ...totals,
+        };
+
+        groupedDataWithTotal.push(newTotals);
+
         setTableData(groupedDataWithTotal);
 
         const newColumns = reportNames.map((reportName) => ({
@@ -151,41 +172,6 @@ const Salary = () => {
         columns={columns}
         dataSource={tableData}
         pagination={false}
-        summary={(pageData) => {
-          const totals = {};
-
-          for (const item of pageData) {
-            for (const [key, value] of Object.entries(item)) {
-              if (typeof value === "number") {
-                if (!totals[key]) {
-                  totals[key] = 0;
-                }
-                totals[key] += value;
-              }
-            }
-          }
-
-          return (
-            <Table.Summary.Row>
-              {columns.map((column) => (
-                <Table.Summary.Cell
-                  key={column.key}
-                  align={
-                    column.key === "Sukunimi" || column.key === "Etunimi"
-                      ? "left"
-                      : "right"
-                  }
-                >
-                  {column.key === "Sukunimi"
-                    ? "Kaikki yhteensä"
-                    : column.key === "Etunimi"
-                    ? ""
-                    : totals[column.key]}
-                </Table.Summary.Cell>
-              ))}
-            </Table.Summary.Row>
-          );
-        }}
       ></Table>
     </>
   );
