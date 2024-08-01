@@ -196,6 +196,21 @@ app.delete("/user-list/:uid", (req, res) => {
   res.json(uid);
 });
 
+app.get("/modify-user/:id", (req, res) => {
+  const id = req.params.id;
+  getNames(id);
+});
+
+async function getNames(id) {
+  const nameRef = firebaseDb.collection("users").doc(id);
+  const doc = await nameRef.get();
+  if (!doc.exists) {
+    console.log("No such document!");
+  } else {
+    console.log("Document data:", doc.data());
+  }
+}
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}.`);
 });

@@ -1,11 +1,21 @@
 import { Button, Form, Input, Typography } from "antd";
 import { useParams } from "react-router-dom";
+import axios from "axios";
+import { useEffect } from "react";
 
 const { Title } = Typography;
 
 const ModifyUser = () => {
   const { id } = useParams();
   console.log("id", id);
+
+  const fetchNames = async () => {
+    const response = await axios.get(`http://localhost:3000/modify-user/${id}`);
+  };
+
+  useEffect(() => {
+    fetchNames();
+  }, []);
 
   return (
     <Form
