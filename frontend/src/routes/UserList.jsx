@@ -50,7 +50,7 @@ const UserList = () => {
           >
             <Button icon={<DeleteOutlined />}>Poista</Button>
           </Popconfirm>
-          <NavLink style={{ color: "white" }} to={`/modify-user`}>
+          <NavLink style={{ color: "white" }} to={`/modify-user/${record.id}`}>
             Add user
             <Button icon={<ToolOutlined />}>Muokkaa tietoja</Button>
           </NavLink>
