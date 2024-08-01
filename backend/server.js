@@ -196,8 +196,9 @@ app.delete("/user-list/:uid", (req, res) => {
   res.json(uid);
 });
 
-app.get("/modify-user/:id", (req, res) => {
+app.get("/modify-user/:id", async (req, res) => {
   const id = req.params.id;
+
   async function getNames(id) {
     const nameRef = firebaseDb.collection("users").doc(id);
     const doc = await nameRef.get();
@@ -205,21 +206,23 @@ app.get("/modify-user/:id", (req, res) => {
       console.log("No such document!");
     } else {
       console.log("Document data:", doc.data());
-      res.json(doc.data());
+      return doc.data();
     }
   }
-  async function getEmailPassword(id) {
-    const emailPassword = getAuth()
-      .getUser(id)
-      .then((userRecord) => {
-        console.log("userRecord.email", userRecord.email);
-      })
-      .catch((error) => {
-        console.log("Error fetching user data:", error);
-      });
+
+  async function getEmail(id) {
+    try {
+      const userRecord = await getAuth().getUser(id);
+      return userRecord.email;
+    } catch (error) {
+      console.log("Error fetching user data:", error);
+      return null;
+    }
   }
-  getEmailPassword(id);
-  getNames(id);
+  const email = await getEmail(id);
+  const names = await getNames(id);
+  const data = { ...names, email };
+  res.json(data);
 });
 
 app.listen(port, () => {
