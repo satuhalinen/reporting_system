@@ -208,6 +208,17 @@ app.get("/modify-user/:id", (req, res) => {
       res.json(doc.data());
     }
   }
+  async function getEmailPassword(id) {
+    const emailPassword = getAuth()
+      .getUser(id)
+      .then((userRecord) => {
+        console.log("userRecord.email", userRecord.email);
+      })
+      .catch((error) => {
+        console.log("Error fetching user data:", error);
+      });
+  }
+  getEmailPassword(id);
   getNames(id);
 });
 
