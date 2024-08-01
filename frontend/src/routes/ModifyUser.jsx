@@ -2,17 +2,20 @@ import { Button, Form, Input, Typography } from "antd";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect } from "react";
+import { useState } from "react";
 
 const { Title } = Typography;
 
 const ModifyUser = () => {
+  const [initialValues, setInitialValues] = useState({});
   const { id } = useParams();
-  console.log("id", id);
+  const [form] = Form.useForm();
 
   const fetchNames = async () => {
     const response = await axios.get(`http://localhost:3000/modify-user/${id}`);
     const names = response.data;
-    console.log("names", names);
+    setInitialValues(names);
+    form.setFieldsValue(names);
   };
 
   useEffect(() => {
@@ -32,6 +35,8 @@ const ModifyUser = () => {
         maxWidth: 600,
       }}
       autoComplete="off"
+      initialValues={initialValues}
+      form={form}
     >
       <Title>Käyttäjän tietojen muokkaaminen</Title>
       <Form.Item label="Sukunimi" name="lastname">
