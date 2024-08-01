@@ -11,6 +11,8 @@ const ModifyUser = () => {
 
   const fetchNames = async () => {
     const response = await axios.get(`http://localhost:3000/modify-user/${id}`);
+    const names = response.data;
+    console.log("names", names);
   };
 
   useEffect(() => {

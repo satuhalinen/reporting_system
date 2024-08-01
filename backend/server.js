@@ -198,18 +198,18 @@ app.delete("/user-list/:uid", (req, res) => {
 
 app.get("/modify-user/:id", (req, res) => {
   const id = req.params.id;
+  async function getNames(id) {
+    const nameRef = firebaseDb.collection("users").doc(id);
+    const doc = await nameRef.get();
+    if (!doc.exists) {
+      console.log("No such document!");
+    } else {
+      console.log("Document data:", doc.data());
+      res.json(doc.data());
+    }
+  }
   getNames(id);
 });
-
-async function getNames(id) {
-  const nameRef = firebaseDb.collection("users").doc(id);
-  const doc = await nameRef.get();
-  if (!doc.exists) {
-    console.log("No such document!");
-  } else {
-    console.log("Document data:", doc.data());
-  }
-}
 
 app.listen(port, () => {
   console.log(`Listening on port ${port}.`);
