@@ -77,6 +77,27 @@ const Salary = () => {
           }
         );
 
+        const totals = {};
+
+        for (const item of groupedDataWithTotal) {
+          for (const [key, value] of Object.entries(item)) {
+            if (typeof value === "number") {
+              if (!totals[key]) {
+                totals[key] = 0;
+              }
+              totals[key] += value;
+            }
+          }
+        }
+
+        const newTotals = {
+          Sukunimi: "Kaikki yhteensä",
+          Etunimi: "",
+          ...totals,
+        };
+
+        groupedDataWithTotal.push(newTotals);
+
         setTableData(groupedDataWithTotal);
 
         const newColumns = reportNames.map((reportName) => ({
