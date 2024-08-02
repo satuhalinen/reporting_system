@@ -50,40 +50,13 @@ const ChangePassword = () => {
       onFinish={onFinish}
     >
       <Title>Käyttäjän salasanan vaihtaminen</Title>
-      <Form.Item
-        label="Sukunimi"
-        name="lastname"
-        rules={[
-          {
-            required: true,
-            message: "Syötä käyttäjän sukunimi!",
-          },
-        ]}
-      >
+      <Form.Item label="Sukunimi" name="lastname">
         <Input disabled />
       </Form.Item>
-      <Form.Item
-        label="Etunimi"
-        name="firstname"
-        rules={[
-          {
-            required: true,
-            message: "Syötä käyttäjän etunimi!",
-          },
-        ]}
-      >
+      <Form.Item label="Etunimi" name="firstname">
         <Input disabled />
       </Form.Item>
-      <Form.Item
-        label="Sähköpostiosoite"
-        name="email"
-        rules={[
-          {
-            required: true,
-            message: "Syötä käyttäjän sähköpostiosoite!",
-          },
-        ]}
-      >
+      <Form.Item label="Sähköpostiosoite" name="email">
         <Input disabled />
       </Form.Item>
       <Form.Item
