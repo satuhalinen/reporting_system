@@ -1,9 +1,11 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, Typography } from "antd";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../auth/authentication";
+
+const { Title } = Typography;
 
 const onFinish = (values) => {
   signInWithEmailAndPassword(auth, values.email, values.password).then(
@@ -34,14 +36,15 @@ const Login = () => {
       onFinish={onFinish}
       autoComplete="off"
     >
+      <Title>Kirjautuminen</Title>
       <Form.Item
-        label="email"
+        label="Sähköpostiosoite"
         name="email"
         value="email"
         rules={[
           {
             required: true,
-            message: "Please input your username!",
+            message: "Syötä sähköpostiosoitteesi!",
           },
         ]}
       >
@@ -49,13 +52,13 @@ const Login = () => {
       </Form.Item>
 
       <Form.Item
-        label="Password"
+        label="Salasana"
         name="password"
         value="password"
         rules={[
           {
             required: true,
-            message: "Please input your password!",
+            message: "Syötä salasanasi!",
           },
         ]}
       >
@@ -68,7 +71,7 @@ const Login = () => {
         }}
       >
         <Button type="primary" htmlType="submit">
-          Login
+          Kirjaudu sisään
         </Button>
       </Form.Item>
     </Form>
