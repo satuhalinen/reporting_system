@@ -225,6 +225,38 @@ app.get("/modify-user/:id", async (req, res) => {
   res.json(data);
 });
 
+app.post("/modify-user/:id", (req, res) => {
+  const uid = req.params.id;
+  const email = req.body.email;
+  const lastname = req.body.lastname;
+  const firstname = req.body.firstname;
+
+  async function modifyUser(email, lastname, firstname) {
+    const userRecord = await getAuth().updateUser(uid, {
+      email: email,
+    });
+
+    const data = {
+      firstname: firstname,
+      lastname: lastname,
+    };
+
+    const res = await firebaseDb
+      .collection("users")
+      .doc(userRecord.uid)
+      .set(data);
+    return { userRecord, res };
+  }
+
+  modifyUser(email, lastname, firstname)
+    .then(() => {
+      res.status(201).json({ message: "Käyttäjää muokattu!" });
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "Virhe!" });
+    });
+});
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}.`);
 });

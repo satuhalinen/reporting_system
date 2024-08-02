@@ -1,15 +1,15 @@
 import { Button, Form, Input, Typography } from "antd";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const ModifyUser = () => {
   const [initialValues, setInitialValues] = useState({});
   const { id } = useParams();
   const [form] = Form.useForm();
+  const [message, setMessage] = useState("");
 
   const fetchNames = async () => {
     const response = await axios.get(`http://localhost:3000/modify-user/${id}`);
@@ -21,6 +21,21 @@ const ModifyUser = () => {
   useEffect(() => {
     fetchNames();
   }, []);
+
+  const onFinish = (values) => {
+    axios
+      .post(`http://localhost:3000/modify-user/${id}`, {
+        email: values.email,
+        lastname: values.lastname,
+        firstname: values.firstname,
+      })
+      .then((response) => {
+        setMessage(response.data.message);
+      })
+      .catch((error) => {
+        setMessage(error.response.data.message);
+      });
+  };
 
   return (
     <Form
@@ -37,20 +52,44 @@ const ModifyUser = () => {
       autoComplete="off"
       initialValues={initialValues}
       form={form}
+      onFinish={onFinish}
     >
       <Title>Käyttäjän tietojen muokkaaminen</Title>
-      <Form.Item label="Sukunimi" name="lastname">
+      <Form.Item
+        label="Sukunimi"
+        name="lastname"
+        rules={[
+          {
+            required: true,
+            message: "Syötä käyttäjän sukunimi!",
+          },
+        ]}
+      >
         <Input />
       </Form.Item>
-      <Form.Item label="Etunimi" name="firstname">
+      <Form.Item
+        label="Etunimi"
+        name="firstname"
+        rules={[
+          {
+            required: true,
+            message: "Syötä käyttäjän etunimi!",
+          },
+        ]}
+      >
         <Input />
       </Form.Item>
-      <Form.Item label="Sähköpostiosoite" name="email">
+      <Form.Item
+        label="Sähköpostiosoite"
+        name="email"
+        rules={[
+          {
+            required: true,
+            message: "Syötä käyttäjän sähköpostiosoite!",
+          },
+        ]}
+      >
         <Input />
-      </Form.Item>
-
-      <Form.Item label="Salasana" name="password">
-        <Input.Password />
       </Form.Item>
       <Form.Item
         wrapperCol={{
@@ -61,6 +100,7 @@ const ModifyUser = () => {
         <Button type="primary" htmlType="submit">
           Tallenna käyttäjän tiedot
         </Button>
+        <Text>{message}</Text>
       </Form.Item>
     </Form>
   );
