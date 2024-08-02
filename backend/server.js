@@ -257,6 +257,26 @@ app.post("/modify-user/:id", (req, res) => {
     });
 });
 
+app.post("/change-password/:id", (req, res) => {
+  const uid = req.params.id;
+  const password = req.body.password;
+
+  async function changePassword(password) {
+    const userRecord = await getAuth().updateUser(uid, {
+      password: password,
+    });
+    return { userRecord };
+  }
+
+  changePassword(password)
+    .then(() => {
+      res.status(201).json({ message: "Käyttäjän salasana tallennettu" });
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "Virhe!" });
+    });
+});
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}.`);
 });

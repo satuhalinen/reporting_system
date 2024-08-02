@@ -11,7 +11,7 @@ const ModifyUser = () => {
   const [form] = Form.useForm();
   const [message, setMessage] = useState("");
 
-  const fetchNames = async () => {
+  const fetchNamesAndEmail = async () => {
     const response = await axios.get(`http://localhost:3000/modify-user/${id}`);
     const userData = response.data;
     setInitialValues(userData);
@@ -19,7 +19,7 @@ const ModifyUser = () => {
   };
 
   useEffect(() => {
-    fetchNames();
+    fetchNamesAndEmail();
   }, []);
 
   const onFinish = (values) => {
