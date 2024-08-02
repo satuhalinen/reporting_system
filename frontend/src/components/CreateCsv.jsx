@@ -1,4 +1,5 @@
 import { Button } from "antd";
+import renderFormattedNumber from "../helpers";
 
 const CreateCsv = ({ tableData, fileName }) => {
   const generateCsv = () => {
@@ -10,11 +11,7 @@ const CreateCsv = ({ tableData, fileName }) => {
       let transformedRow = [];
 
       Object.values(row).forEach((value) => {
-        let transformedValue = value;
-
-        if (typeof value === "number" && value.toString().includes(".")) {
-          transformedValue = value.toString().replace(".", ",");
-        }
+        let transformedValue = renderFormattedNumber(value);
         transformedRow.push(transformedValue);
       });
 
