@@ -147,7 +147,11 @@ const Salary = () => {
         selectedSalaryDate={selectedSalaryDate}
         fileName={fileName}
       ></CreateCsv>
-      <Table columns={columns} dataSource={tableData}></Table>
+      <Table
+        columns={columns}
+        dataSource={tableData}
+        pagination={false}
+      ></Table>
     </>
   );
 };

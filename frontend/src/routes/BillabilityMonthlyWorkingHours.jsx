@@ -137,11 +137,19 @@ const BillabilityMonthlyWorkingHours = () => {
       </Col>
       <Col span={19} push={5}>
         <Title level={2}>Laskutettavat tunnit</Title>
-        <Table columns={columns} dataSource={billableTableData} />
+        <Table
+          columns={columns}
+          dataSource={billableTableData}
+          pagination={false}
+        />
       </Col>
       <Col span={19} push={5}>
         <Title level={2}>Ei-laskutettavat tunnit</Title>
-        <Table columns={columns} dataSource={nonBillableTableData} />
+        <Table
+          columns={columns}
+          dataSource={nonBillableTableData}
+          pagination={false}
+        />
       </Col>
     </Row>
   );
