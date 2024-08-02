@@ -1,17 +1,31 @@
 import { Button, Form, Input, Typography } from "antd";
+import { useParams } from "react-router-dom";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const { Title, Text } = Typography;
 
-const AddUser = () => {
+const ModifyUser = () => {
+  const [initialValues, setInitialValues] = useState({});
+  const { id } = useParams();
+  const [form] = Form.useForm();
   const [message, setMessage] = useState("");
+
+  const fetchNamesAndEmail = async () => {
+    const response = await axios.get(`http://localhost:3000/users/${id}`);
+    const userData = response.data;
+    setInitialValues(userData);
+    form.setFieldsValue(userData);
+  };
+
+  useEffect(() => {
+    fetchNamesAndEmail();
+  }, []);
 
   const onFinish = (values) => {
     axios
-      .post("http://localhost:3000/users", {
+      .post(`http://localhost:3000/users/${id}`, {
         email: values.email,
-        password: values.password,
         lastname: values.lastname,
         firstname: values.firstname,
       })
@@ -36,9 +50,11 @@ const AddUser = () => {
         maxWidth: 600,
       }}
       autoComplete="off"
+      initialValues={initialValues}
+      form={form}
       onFinish={onFinish}
     >
-      <Title>Käyttäjän lisääminen</Title>
+      <Title>Käyttäjän tietojen muokkaaminen</Title>
       <Form.Item
         label="Sukunimi"
         name="lastname"
@@ -75,19 +91,6 @@ const AddUser = () => {
       >
         <Input />
       </Form.Item>
-
-      <Form.Item
-        label="Salasana"
-        name="password"
-        rules={[
-          {
-            required: true,
-            message: "Syötä käyttäjän salasana!",
-          },
-        ]}
-      >
-        <Input.Password />
-      </Form.Item>
       <Form.Item
         wrapperCol={{
           offset: 8,
@@ -95,11 +98,12 @@ const AddUser = () => {
         }}
       >
         <Button type="primary" htmlType="submit">
-          Lisää käyttäjä
+          Tallenna käyttäjän tiedot
         </Button>
-        <Text style={{ margin: "10px" }}>{message}</Text>
+        <Text>{message}</Text>
       </Form.Item>
     </Form>
   );
 };
-export default AddUser;
+
+export default ModifyUser;

@@ -114,7 +114,7 @@ async function addUser(email, password, lastname, firstname) {
   return { userRecord, res };
 }
 
-app.post("/add-user", (req, res) => {
+app.post("/users", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const lastname = req.body.lastname;
@@ -128,7 +128,7 @@ app.post("/add-user", (req, res) => {
     });
 });
 
-app.get("/user-list", (req, res) => {
+app.get("/users", (req, res) => {
   const listAllUsers = async (nextPageToken) => {
     const listUsersResult = await getAuth().listUsers(1000, nextPageToken);
     const records = listUsersResult.users.map((userRecord) =>
@@ -191,11 +191,92 @@ async function deleteDatabaseUser(id) {
   return res;
 }
 
-app.delete("/user-list/:uid", (req, res) => {
-  const uid = req.params.uid;
-  deleteAuthUser(uid);
-  deleteDatabaseUser(uid);
-  res.json(uid);
+app.delete("/users/:id", (req, res) => {
+  const id = req.params.id;
+  deleteAuthUser(id);
+  deleteDatabaseUser(id);
+  res.json(id);
+});
+
+app.get("/users/:id", async (req, res) => {
+  const id = req.params.id;
+
+  async function getNames(id) {
+    const nameRef = firebaseDb.collection("users").doc(id);
+    const doc = await nameRef.get();
+    if (!doc.exists) {
+      console.log("No such document!");
+    } else {
+      console.log("Document data:", doc.data());
+      return doc.data();
+    }
+  }
+
+  async function getEmail(id) {
+    try {
+      const userRecord = await getAuth().getUser(id);
+      return userRecord.email;
+    } catch (error) {
+      console.log("Error fetching user data:", error);
+      return null;
+    }
+  }
+  const email = await getEmail(id);
+  const names = await getNames(id);
+  const data = { ...names, email };
+  res.json(data);
+});
+
+app.post("/users/:id", (req, res) => {
+  const uid = req.params.id;
+  const email = req.body.email;
+  const lastname = req.body.lastname;
+  const firstname = req.body.firstname;
+
+  async function modifyUser(email, lastname, firstname) {
+    const userRecord = await getAuth().updateUser(uid, {
+      email: email,
+    });
+
+    const data = {
+      firstname: firstname,
+      lastname: lastname,
+    };
+
+    const res = await firebaseDb
+      .collection("users")
+      .doc(userRecord.uid)
+      .set(data);
+    return { userRecord, res };
+  }
+
+  modifyUser(email, lastname, firstname)
+    .then(() => {
+      res.status(201).json({ message: "Käyttäjää muokattu!" });
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "Virhe!" });
+    });
+});
+
+app.post("/users/:id/change-password", (req, res) => {
+  const uid = req.params.id;
+  const password = req.body.password;
+
+  async function changePassword(password) {
+    const userRecord = await getAuth().updateUser(uid, {
+      password: password,
+    });
+    return { userRecord };
+  }
+
+  changePassword(password)
+    .then(() => {
+      res.status(201).json({ message: "Käyttäjän salasana tallennettu" });
+    })
+    .catch((error) => {
+      res.status(500).json({ message: "Virhe!" });
+    });
 });
 
 app.listen(port, () => {
