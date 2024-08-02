@@ -13,6 +13,7 @@ import Salary from "./routes/Salary";
 import AddUser from "./routes/AddUser";
 import UserList from "./routes/UserList";
 import ModifyUser from "./routes/ModifyUser";
+import ChangePassword from "./routes/ChangePassword";
 
 const { Header, Content, Footer } = Layout;
 
@@ -112,6 +113,10 @@ const App = () => {
                 <Route path="add-user" element={<AddUser />} />
                 <Route path="user-list" element={<UserList />} />
                 <Route path="modify-user/:id" element={<ModifyUser />} />
+                <Route
+                  path="change-password/:id"
+                  element={<ChangePassword />}
+                />
               </Route>
             </Routes>
           </div>
