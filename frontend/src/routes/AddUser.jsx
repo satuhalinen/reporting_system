@@ -9,7 +9,7 @@ const AddUser = () => {
 
   const onFinish = (values) => {
     axios
-      .post("http://localhost:3000/add-user", {
+      .post("http://localhost:3000/users", {
         email: values.email,
         password: values.password,
         lastname: values.lastname,

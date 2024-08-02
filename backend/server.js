@@ -112,7 +112,7 @@ async function addUser(email, password, lastname, firstname) {
   return { userRecord, res };
 }
 
-app.post("/add-user", (req, res) => {
+app.post("/users", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   const lastname = req.body.lastname;
@@ -126,7 +126,7 @@ app.post("/add-user", (req, res) => {
     });
 });
 
-app.get("/user-list", (req, res) => {
+app.get("/users", (req, res) => {
   const listAllUsers = async (nextPageToken) => {
     const listUsersResult = await getAuth().listUsers(1000, nextPageToken);
     const records = listUsersResult.users.map((userRecord) =>
@@ -189,14 +189,14 @@ async function deleteDatabaseUser(id) {
   return res;
 }
 
-app.delete("/user-list/:uid", (req, res) => {
-  const uid = req.params.uid;
-  deleteAuthUser(uid);
-  deleteDatabaseUser(uid);
-  res.json(uid);
+app.delete("/users/:id", (req, res) => {
+  const id = req.params.id;
+  deleteAuthUser(id);
+  deleteDatabaseUser(id);
+  res.json(id);
 });
 
-app.get("/modify-user/:id", async (req, res) => {
+app.get("/users/:id", async (req, res) => {
   const id = req.params.id;
 
   async function getNames(id) {
@@ -225,7 +225,7 @@ app.get("/modify-user/:id", async (req, res) => {
   res.json(data);
 });
 
-app.post("/modify-user/:id", (req, res) => {
+app.post("/users/:id", (req, res) => {
   const uid = req.params.id;
   const email = req.body.email;
   const lastname = req.body.lastname;
@@ -257,7 +257,7 @@ app.post("/modify-user/:id", (req, res) => {
     });
 });
 
-app.post("/change-password/:id", (req, res) => {
+app.post("/users/:id/change-password", (req, res) => {
   const uid = req.params.id;
   const password = req.body.password;
 

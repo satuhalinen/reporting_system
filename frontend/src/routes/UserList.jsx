@@ -10,13 +10,13 @@ const UserList = () => {
   const [userData, setUserData] = useState([]);
 
   const fetchEmails = async () => {
-    const response = await axios.get("http://localhost:3000/user-list");
+    const response = await axios.get("http://localhost:3000/users");
     const emailsNamesWithIds = response.data;
     setUserData(emailsNamesWithIds);
   };
 
   const deleteUser = async (record) => {
-    await axios.delete(`http://localhost:3000/user-list/${record.id}`);
+    await axios.delete(`http://localhost:3000/users/${record.id}`);
     await fetchEmails();
   };
 

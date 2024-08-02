@@ -12,7 +12,7 @@ const ModifyUser = () => {
   const [message, setMessage] = useState("");
 
   const fetchNamesAndEmail = async () => {
-    const response = await axios.get(`http://localhost:3000/modify-user/${id}`);
+    const response = await axios.get(`http://localhost:3000/users/${id}`);
     const userData = response.data;
     setInitialValues(userData);
     form.setFieldsValue(userData);
@@ -24,7 +24,7 @@ const ModifyUser = () => {
 
   const onFinish = (values) => {
     axios
-      .post(`http://localhost:3000/modify-user/${id}`, {
+      .post(`http://localhost:3000/users/${id}`, {
         email: values.email,
         lastname: values.lastname,
         firstname: values.firstname,

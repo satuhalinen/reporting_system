@@ -11,7 +11,7 @@ const ChangePassword = () => {
   const [message, setMessage] = useState("");
 
   const fetchNamesAndEmail = async () => {
-    const response = await axios.get(`http://localhost:3000/modify-user/${id}`);
+    const response = await axios.get(`http://localhost:3000/users/${id}`);
     const userData = response.data;
     form.setFieldsValue(userData);
   };
@@ -22,7 +22,7 @@ const ChangePassword = () => {
 
   const onFinish = (values) => {
     axios
-      .post(`http://localhost:3000/change-password/${id}`, {
+      .post(`http://localhost:3000/users/${id}/change-password/`, {
         password: values.password,
       })
       .then((response) => {
