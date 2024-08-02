@@ -25,6 +25,7 @@ dist-ssr
 
 # Environment files
 .env
+
 # Database: SQLite
 db.sqlite3
 

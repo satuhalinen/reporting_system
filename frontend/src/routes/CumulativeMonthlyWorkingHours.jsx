@@ -227,7 +227,7 @@ const CumulativeMonthlyWorkingHours = () => {
         />
       </Col>
       <Col span={19} push={5}>
-        <Table columns={columns} dataSource={tableData} />
+        <Table columns={columns} dataSource={tableData} pagination={false} />
       </Col>
     </Row>
   );

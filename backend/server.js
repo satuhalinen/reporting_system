@@ -1,11 +1,21 @@
+const { initializeApp, cert } = require("firebase-admin/app");
 const express = require("express");
 const cors = require("cors");
 const app = express();
 const port = 3000;
 
+const serviceAccount = require("./serviceAccountKey.json");
+const { getAuth } = require("firebase-admin/auth");
+const { getFirestore } = require("firebase-admin/firestore");
 app.use(cors());
+app.use(express.json());
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("db.sqlite3");
+
+initializeApp({
+  credential: cert(serviceAccount),
+});
+const firebaseDb = getFirestore();
 
 app.get("/working-hours", (req, res) => {
   db.all(
@@ -84,6 +94,108 @@ app.get("/salary_report/:selected_date", (req, res) => {
       res.json({ data: rows });
     }
   );
+});
+
+async function addUser(email, password, lastname, firstname) {
+  const userRecord = await getAuth().createUser({
+    email: email,
+    password: password,
+  });
+
+  const data = {
+    firstname: firstname,
+    lastname: lastname,
+  };
+
+  const res = await firebaseDb
+    .collection("users")
+    .doc(userRecord.uid)
+    .set(data);
+  return { userRecord, res };
+}
+
+app.post("/add-user", (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+  const lastname = req.body.lastname;
+  const firstname = req.body.firstname;
+  addUser(email, password, lastname, firstname)
+    .then(() => {
+      res.status(201).json({ message: "Käyttäjä luotu!" });
+    })
+    .catch(() => {
+      res.status(500).json({ message: "Virhe!" });
+    });
+});
+
+app.get("/user-list", (req, res) => {
+  const listAllUsers = async (nextPageToken) => {
+    const listUsersResult = await getAuth().listUsers(1000, nextPageToken);
+    const records = listUsersResult.users.map((userRecord) =>
+      userRecord.toJSON()
+    );
+    const emails = records.map((record) => ({
+      uid: record.uid,
+      email: record.email,
+    }));
+
+    const usersRef = firebaseDb.collection("users");
+    const snapshot = await usersRef.get();
+    const names = snapshot.docs.map((doc) => ({
+      id: doc.id,
+      data: doc.data(),
+    }));
+
+    const transformedUsers = names.map((user) => ({
+      id: user.id,
+      firstname: user.data.firstname,
+      lastname: user.data.lastname,
+    }));
+
+    const emailsNamesWithIds = [];
+
+    for (let i = 0; i < transformedUsers.length; i++) {
+      const name = transformedUsers[i];
+      let emailObj = null;
+      for (let j = 0; j < emails.length; j++) {
+        if (emails[j].uid === name.id) {
+          emailObj = emails[j];
+          break;
+        }
+      }
+
+      const newEmailsNamesWithIds = {
+        ...name,
+        email: emailObj ? emailObj.email : null,
+      };
+
+      emailsNamesWithIds.push(newEmailsNamesWithIds);
+    }
+
+    res.json(emailsNamesWithIds);
+
+    if (listUsersResult.pageToken) {
+      listAllUsers(listUsersResult.pageToken);
+    }
+  };
+  listAllUsers();
+});
+
+async function deleteAuthUser(id) {
+  const userRecord = await getAuth().deleteUser(id);
+  return userRecord;
+}
+
+async function deleteDatabaseUser(id) {
+  const res = await firebaseDb.collection("users").doc(id).delete();
+  return res;
+}
+
+app.delete("/user-list/:uid", (req, res) => {
+  const uid = req.params.uid;
+  deleteAuthUser(uid);
+  deleteDatabaseUser(uid);
+  res.json(uid);
 });
 
 app.listen(port, () => {

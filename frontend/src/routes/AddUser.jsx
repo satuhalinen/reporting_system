@@ -1,6 +1,28 @@
-import { Button, Form, Input } from "antd";
+import { Button, Form, Input, Typography } from "antd";
+import axios from "axios";
+import { useState } from "react";
+
+const { Title, Text } = Typography;
 
 const AddUser = () => {
+  const [message, setMessage] = useState("");
+
+  const onFinish = (values) => {
+    axios
+      .post("http://localhost:3000/add-user", {
+        email: values.email,
+        password: values.password,
+        lastname: values.lastname,
+        firstname: values.firstname,
+      })
+      .then((response) => {
+        setMessage(response.data.message);
+      })
+      .catch((error) => {
+        setMessage(error.response.data.message);
+      });
+  };
+
   return (
     <Form
       name="basic"
@@ -14,7 +36,9 @@ const AddUser = () => {
         maxWidth: 600,
       }}
       autoComplete="off"
+      onFinish={onFinish}
     >
+      <Title>Käyttäjän lisääminen</Title>
       <Form.Item
         label="Sukunimi"
         name="lastname"
@@ -42,7 +66,6 @@ const AddUser = () => {
       <Form.Item
         label="Sähköpostiosoite"
         name="email"
-        value="email"
         rules={[
           {
             required: true,
@@ -56,7 +79,6 @@ const AddUser = () => {
       <Form.Item
         label="Salasana"
         name="password"
-        value="password"
         rules={[
           {
             required: true,
@@ -75,6 +97,7 @@ const AddUser = () => {
         <Button type="primary" htmlType="submit">
           Lisää käyttäjä
         </Button>
+        <Text style={{ margin: "10px" }}>{message}</Text>
       </Form.Item>
     </Form>
   );
