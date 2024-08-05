@@ -14,6 +14,8 @@ import AddUser from "./routes/AddUser";
 import UserList from "./routes/UserList";
 import ModifyUser from "./routes/ModifyUser";
 import ChangePassword from "./routes/ChangePassword";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { AuthProvider } from "./components/AuthContext";
 
 const { Header, Content, Footer } = Layout;
 
@@ -90,35 +92,50 @@ const App = () => {
               borderRadius: borderRadiusLG,
             }}
           >
-            <Routes>
-              <Route path="/" element={<Root />}>
-                <Route index element={<Home />} />
-                <Route path="login" element={<Login />} />
-                <Route path="first-page" element={<FirstPage />} />
-                <Route path="working-hours" element={<WorkingHours />} />
-                <Route
-                  path="monthly-working-hours"
-                  element={<MonthlyWorkingHours />}
-                />
+            <AuthProvider>
+              <Routes>
+                <Route path="/" element={<Root />}>
+                  <Route index element={<Home />} />
+                  <Route path="login" element={<Login />} />
+                  <Route path="first-page" element={<FirstPage />} />
+                  <Route path="working-hours" element={<WorkingHours />} />
+                  <Route
+                    path="monthly-working-hours"
+                    element={<MonthlyWorkingHours />}
+                  />
 
-                <Route
-                  path="cumulative-monthly-working-hours"
-                  element={<CumulativeMonthlyWorkingHours />}
-                />
-                <Route
-                  path="billability-monthly-working-hours"
-                  element={<BillabilityMonthlyWorkingHours />}
-                />
-                <Route path="salary" element={<Salary />} />
-                <Route path="add-user" element={<AddUser />} />
-                <Route path="user-list" element={<UserList />} />
-                <Route path="modify-user/:id" element={<ModifyUser />} />
-                <Route
-                  path="change-password/:id"
-                  element={<ChangePassword />}
-                />
-              </Route>
-            </Routes>
+                  <Route
+                    path="cumulative-monthly-working-hours"
+                    element={<CumulativeMonthlyWorkingHours />}
+                  />
+                  <Route
+                    path="billability-monthly-working-hours"
+                    element={<BillabilityMonthlyWorkingHours />}
+                  />
+                  <Route path="salary" element={<Salary />} />
+                  <Route
+                    path="add-user"
+                    element={<ProtectedRoute adminOnly component={AddUser} />}
+                  />
+                  <Route
+                    path="user-list"
+                    element={<ProtectedRoute adminOnly component={UserList} />}
+                  />
+                  <Route
+                    path="modify-user/:id"
+                    element={
+                      <ProtectedRoute adminOnly component={ModifyUser} />
+                    }
+                  />
+                  <Route
+                    path="change-password/:id"
+                    element={
+                      <ProtectedRoute adminOnly component={ChangePassword} />
+                    }
+                  />
+                </Route>
+              </Routes>
+            </AuthProvider>
           </div>
         </Content>
         <Footer style={{ textAlign: "center" }}>
