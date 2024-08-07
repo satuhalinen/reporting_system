@@ -4,6 +4,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import renderFormattedNumber from "../helpers";
 import CreateCsv from "../components/CreateCsv";
+import { auth } from "../auth/authentication";
 
 const { Title } = Typography;
 
@@ -26,24 +27,38 @@ const Salary = () => {
     fileName = `palkat_${finnishDateNoDots}`;
   }
 
-  const getDate = () => {
-    axios.get(`http://localhost:3000/salary`).then((response) => {
-      const rawSalaryDateData = response.data.data;
-      const transformedSalaryDate = rawSalaryDateData.map((dateObject) => ({
-        value: dateObject.date,
-        label: dateObject.date,
-      }));
-      setSalaryDates(transformedSalaryDate);
-    });
+  const getDate = async () => {
+    const token = await auth.currentUser.getIdToken();
+    axios
+      .get(`http://localhost:3000/salary`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        const rawSalaryDateData = response.data.data;
+        const transformedSalaryDate = rawSalaryDateData.map((dateObject) => ({
+          value: dateObject.date,
+          label: dateObject.date,
+        }));
+        setSalaryDates(transformedSalaryDate);
+      });
   };
 
   useEffect(() => {
     getDate();
   }, []);
 
-  const getHours = () => {
+  const getHours = async () => {
+    const token = await auth.currentUser.getIdToken();
     axios
-      .get(`http://localhost:3000/salary_report/${selectedSalaryDate}`)
+      .get(`http://localhost:3000/salary_report/${selectedSalaryDate}`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
       .then((response) => {
         const rawSalaryHoursData = response.data.data;
         const groupedData = {};

@@ -1,20 +1,31 @@
 import { Button, Form, Input, Typography } from "antd";
 import axios from "axios";
 import { useState } from "react";
+import { auth } from "../auth/authentication";
 
 const { Title, Text } = Typography;
 
 const AddUser = () => {
   const [message, setMessage] = useState("");
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
+    const token = await auth.currentUser.getIdToken();
     axios
-      .post("http://localhost:3000/users", {
-        email: values.email,
-        password: values.password,
-        lastname: values.lastname,
-        firstname: values.firstname,
-      })
+      .post(
+        "http://localhost:3000/users",
+        {
+          email: values.email,
+          password: values.password,
+          lastname: values.lastname,
+          firstname: values.firstname,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
         setMessage(response.data.message);
       })

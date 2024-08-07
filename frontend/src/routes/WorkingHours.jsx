@@ -1,14 +1,28 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { Table } from "antd";
+import { auth } from "../auth/authentication";
 
 const WorkingHours = () => {
   const [data, setData] = useState([]);
+
   useEffect(() => {
-    axios.get("http://localhost:3000/working-hours").then((response) => {
-      setData(response.data.data);
-    });
+    getWorkingHours();
   }, []);
+
+  const getWorkingHours = async () => {
+    const token = await auth.currentUser.getIdToken();
+    axios
+      .get("http://localhost:3000/working-hours", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setData(response.data.data);
+      });
+  };
 
   const columns = [
     {

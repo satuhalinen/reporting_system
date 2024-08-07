@@ -23,7 +23,13 @@ const UserList = () => {
   };
 
   const deleteUser = async (record) => {
-    await axios.delete(`http://localhost:3000/users/${record.id}`);
+    const token = await auth.currentUser.getIdToken();
+    await axios.delete(`http://localhost:3000/users/${record.id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     await fetchEmailsNamesIds();
   };
 
