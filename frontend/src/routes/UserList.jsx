@@ -5,19 +5,26 @@ import DeleteOutlined from "@ant-design/icons/DeleteOutlined";
 import ToolOutlined from "@ant-design/icons/ToolOutlined";
 import KeyOutlined from "@ant-design/icons/KeyOutlined";
 import { NavLink } from "react-router-dom";
+import { auth } from "../auth/authentication";
 
 const UserList = () => {
   const [userData, setUserData] = useState([]);
 
-  const fetchEmails = async () => {
-    const response = await axios.get("http://localhost:3000/users");
+  const fetchEmailsNamesIds = async () => {
+    const token = await auth.currentUser.getIdToken();
+    const response = await axios.get("http://localhost:3000/users", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const emailsNamesWithIds = response.data;
     setUserData(emailsNamesWithIds);
   };
 
   const deleteUser = async (record) => {
     await axios.delete(`http://localhost:3000/users/${record.id}`);
-    await fetchEmails();
+    await fetchEmailsNamesIds();
   };
 
   const columns = [
@@ -66,7 +73,7 @@ const UserList = () => {
   ];
 
   useEffect(() => {
-    fetchEmails();
+    fetchEmailsNamesIds();
   }, []);
 
   const confirm = async (user) => {

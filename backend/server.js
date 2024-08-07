@@ -128,7 +128,10 @@ app.post("/users", (req, res) => {
     });
 });
 
-app.get("/users", (req, res) => {
+app.get("/users", validateToken, (req, res) => {
+  if (req.user.admin !== true) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   const listAllUsers = async (nextPageToken) => {
     const listUsersResult = await getAuth().listUsers(1000, nextPageToken);
     const records = listUsersResult.users.map((userRecord) =>
@@ -273,7 +276,7 @@ app.post("/users/:id/change-password", (req, res) => {
     .then(() => {
       res.status(201).json({ message: "Käyttäjän salasana tallennettu" });
     })
-    .catch((error) => {
+    .catch(() => {
       res.status(500).json({ message: "Virhe!" });
     });
 });
@@ -295,6 +298,7 @@ async function validateToken(req, res, next) {
 
 app.get("/test-endpoint", validateToken, (req, res) => {
   res.send(`Hello ${req.user.email}, your token is valid!`);
+  console.log("req.user", req.user);
 });
 
 app.listen(port, () => {
