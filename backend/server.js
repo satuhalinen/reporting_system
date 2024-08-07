@@ -278,6 +278,25 @@ app.post("/users/:id/change-password", (req, res) => {
     });
 });
 
+async function validateToken(req, res, next) {
+  const idToken = req.headers.authorization?.split("Bearer ")[1];
+  if (!idToken) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  try {
+    const decodedToken = await getAuth().verifyIdToken(idToken);
+    req.user = decodedToken;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
+}
+
+app.get("/test-endpoint", validateToken, (req, res) => {
+  res.send(`Hello ${req.user.email}, your token is valid!`);
+});
+
 app.listen(port, () => {
   console.log(`Listening on port ${port}.`);
 });
