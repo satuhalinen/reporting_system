@@ -6,6 +6,7 @@ import ToolOutlined from "@ant-design/icons/ToolOutlined";
 import KeyOutlined from "@ant-design/icons/KeyOutlined";
 import { NavLink } from "react-router-dom";
 import { auth } from "../auth/authentication";
+import { HddOutlined } from "@ant-design/icons";
 
 const UserList = () => {
   const [userData, setUserData] = useState([]);
@@ -72,6 +73,9 @@ const UserList = () => {
             to={`/change-password/${record.id}`}
           >
             <Button icon={<KeyOutlined />}>Vaihda salasana</Button>
+          </NavLink>
+          <NavLink style={{ color: "white" }} to={`/permissions/${record.id}`}>
+            <Button icon={<HddOutlined />}>Hallitse käyttöoikeuksia</Button>
           </NavLink>
         </>
       ),

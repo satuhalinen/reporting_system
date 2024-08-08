@@ -16,6 +16,7 @@ import ModifyUser from "./routes/ModifyUser";
 import ChangePassword from "./routes/ChangePassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./components/AuthContext";
+import Permissions from "./routes/Permissions";
 
 const { Header, Content, Footer } = Layout;
 
@@ -131,6 +132,12 @@ const App = () => {
                     path="change-password/:id"
                     element={
                       <ProtectedRoute adminOnly component={ChangePassword} />
+                    }
+                  />
+                  <Route
+                    path="permissions/:id"
+                    element={
+                      <ProtectedRoute adminOnly component={Permissions} />
                     }
                   />
                 </Route>
