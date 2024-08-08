@@ -1,14 +1,16 @@
-import { Form, Input, Typography, Checkbox, Col, Row } from "antd";
+import { Form, Input, Typography, Checkbox, Button } from "antd";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { auth } from "../auth/authentication";
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const Permissions = () => {
   const { id } = useParams();
   const [form] = Form.useForm();
+  const [checkedList, setCheckedList] = useState([]);
+  const [message, setMessage] = useState("");
 
   const fetchNamesAndEmail = async () => {
     const token = await auth.currentUser.getIdToken();
@@ -26,8 +28,48 @@ const Permissions = () => {
     fetchNamesAndEmail();
   }, []);
 
-  const onChange = (checkedValues) => {
-    console.log("checked = ", checkedValues);
+  const options = [
+    {
+      label: "Kaikki tunnit kumulatiivinen",
+      value: "Kaikki tunnit kumulatiivinen",
+    },
+    { label: "Kaikki tunnit", value: "Kaikki tunnit" },
+    {
+      label: "Laskutettavat tunnit",
+      value: "Laskutettavat tunnit",
+    },
+    {
+      label: "Palkka",
+      value: "Palkka",
+    },
+  ];
+
+  const handleChange = (list) => {
+    setCheckedList(list);
+  };
+
+  const handleSave = async (values) => {
+    const token = await auth.currentUser.getIdToken();
+    axios
+      .post(
+        `http://localhost:3000/users/${id}/permissions`,
+        {
+          id: values.id,
+          checkboxes: checkedList,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        setMessage(response.data.message);
+      })
+      .catch((error) => {
+        setMessage(error.response.data.message);
+      });
   };
 
   return (
@@ -46,14 +88,7 @@ const Permissions = () => {
       form={form}
     >
       <Title>Käyttöoikeudet raportteihin</Title>
-      <Typography.Title
-        level={2}
-        style={{
-          marginLeft: "200px",
-        }}
-      >
-        Käyttäjän tiedot
-      </Typography.Title>
+      <Typography.Title level={2}>Käyttäjän tiedot</Typography.Title>
       <Form.Item label="Sukunimi" name="lastname">
         <Input disabled />
       </Form.Item>
@@ -63,33 +98,30 @@ const Permissions = () => {
       <Form.Item label="Sähköpostiosoite" name="email">
         <Input disabled />
       </Form.Item>
-      <Form.Item style={{ marginLeft: "200px" }}>
-        <Typography.Title level={2}>
-          Käyttäjän oikeudet raportteihin
-        </Typography.Title>
+      <Typography.Title level={2}>
+        Käyttäjän oikeudet raportteihin
+      </Typography.Title>
+      <Form.Item name="checkboxes" valuePropName="checked">
         <Checkbox.Group
+          options={options}
+          value={checkedList}
+          onChange={handleChange}
           style={{
             width: "100%",
+            marginLeft: "50%",
           }}
-          onChange={onChange}
-        >
-          <Row>
-            <Col span={24}>
-              <Checkbox value="A">
-                Kaikki tunnit kumulatiivinen raportti
-              </Checkbox>
-            </Col>
-            <Col span={24}>
-              <Checkbox value="B">Kaikki tunnit raportti</Checkbox>
-            </Col>
-            <Col span={24}>
-              <Checkbox value="C">Laskutettavat tunnit raportti</Checkbox>
-            </Col>
-            <Col span={24}>
-              <Checkbox value="D">Palkkaraportti</Checkbox>
-            </Col>
-          </Row>
-        </Checkbox.Group>
+        ></Checkbox.Group>
+      </Form.Item>
+      <Form.Item
+        wrapperCol={{
+          offset: 8,
+          span: 16,
+        }}
+      >
+        <Button onClick={handleSave} type="primary" htmlType="submit">
+          Tallenna käyttöoikeudet
+        </Button>
+        <Text>{message}</Text>
       </Form.Item>
     </Form>
   );
