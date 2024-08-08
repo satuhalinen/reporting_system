@@ -318,14 +318,28 @@ async function validateToken(req, res, next) {
     return res.status(401).json({ message: "Invalid token" });
   }
 }
-app.post("/users/:id/permissions", validateToken, (req, res) => {
+app.post("/users/:id/permissions", validateToken, async (req, res) => {
   if (req.user.admin !== true) {
     return res.status(401).json({ message: "Unauthorized" });
   }
+
   const uid = req.params.id;
   const checkboxes = req.body.checkboxes;
-  console.log("uid", uid);
-  console.log("checkboxes", checkboxes);
+  const reports = [
+    "Kaikki tunnit kumulatiivinen",
+    "Kaikki tunnit",
+    "Laskutettavat tunnit",
+    "Palkka",
+  ];
+  const customClaims = {};
+  reports.forEach((item) => {
+    if (checkboxes.includes(item)) {
+      customClaims[item] = true;
+    } else {
+      customClaims[item] = false;
+    }
+  });
+  await getAuth().setCustomUserClaims(uid, customClaims);
   res.status(201).json({ message: "Käyttäjän käyttöoikeudet tallennettu" });
 });
 
