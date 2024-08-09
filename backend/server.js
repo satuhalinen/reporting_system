@@ -324,6 +324,7 @@ app.post("/users/:id/permissions", validateToken, async (req, res) => {
   }
 
   const uid = req.params.id;
+  const userRecord = await getAuth().getUser(req.user.uid);
   const checkboxes = req.body.checkboxes;
   const reports = [
     "Kaikki tunnit kumulatiivinen",
@@ -331,14 +332,23 @@ app.post("/users/:id/permissions", validateToken, async (req, res) => {
     "Laskutettavat tunnit",
     "Palkka",
   ];
-  const customClaims = {};
+  const customClaimsReports = {};
+  let customClaims = {};
   reports.forEach((item) => {
     if (checkboxes.includes(item)) {
-      customClaims[item] = true;
+      customClaimsReports[item] = true;
     } else {
-      customClaims[item] = false;
+      customClaimsReports[item] = false;
     }
   });
+
+  if (userRecord.customClaims.admin) {
+    const adminClaims = userRecord.customClaims;
+    customClaims = { ...adminClaims, ...customClaimsReports };
+  } else {
+    customClaims = { ...customClaimsReports };
+  }
+
   await getAuth().setCustomUserClaims(uid, customClaims);
   res.status(201).json({ message: "Käyttäjän käyttöoikeudet tallennettu" });
 });
@@ -348,11 +358,9 @@ app.get("/users/:id/permissions", validateToken, async (req, res) => {
     return res.status(401).json({ message: "Unauthorized" });
   }
   const uid = req.params.id;
-  getAuth()
-    .getUser(uid)
-    .then((userRecord) => {
-      res.json(userRecord.customClaims);
-    });
+  const userRecord = await getAuth().getUser(uid);
+  const customClaims = userRecord.customClaims;
+  res.json(customClaims);
 });
 
 app.listen(port, () => {
