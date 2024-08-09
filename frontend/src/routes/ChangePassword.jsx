@@ -2,6 +2,7 @@ import { Button, Form, Input, Typography } from "antd";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { auth } from "../auth/authentication";
 
 const { Title, Text } = Typography;
 
@@ -11,7 +12,13 @@ const ChangePassword = () => {
   const [message, setMessage] = useState("");
 
   const fetchNamesAndEmail = async () => {
-    const response = await axios.get(`http://localhost:3000/users/${id}`);
+    const token = await auth.currentUser.getIdToken();
+    const response = await axios.get(`http://localhost:3000/users/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const userData = response.data;
     form.setFieldsValue(userData);
   };
@@ -20,11 +27,21 @@ const ChangePassword = () => {
     fetchNamesAndEmail();
   }, []);
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
+    const token = await auth.currentUser.getIdToken();
     axios
-      .post(`http://localhost:3000/users/${id}/change-password/`, {
-        password: values.password,
-      })
+      .post(
+        `http://localhost:3000/users/${id}/change-password/`,
+        {
+          password: values.password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
         setMessage(response.data.message);
       })

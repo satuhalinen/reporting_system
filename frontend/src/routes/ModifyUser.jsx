@@ -2,6 +2,7 @@ import { Button, Form, Input, Typography } from "antd";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { auth } from "../auth/authentication";
 
 const { Title, Text } = Typography;
 
@@ -12,7 +13,13 @@ const ModifyUser = () => {
   const [message, setMessage] = useState("");
 
   const fetchNamesAndEmail = async () => {
-    const response = await axios.get(`http://localhost:3000/users/${id}`);
+    const token = await auth.currentUser.getIdToken();
+    const response = await axios.get(`http://localhost:3000/users/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const userData = response.data;
     setInitialValues(userData);
     form.setFieldsValue(userData);
@@ -22,13 +29,23 @@ const ModifyUser = () => {
     fetchNamesAndEmail();
   }, []);
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
+    const token = await auth.currentUser.getIdToken();
     axios
-      .post(`http://localhost:3000/users/${id}`, {
-        email: values.email,
-        lastname: values.lastname,
-        firstname: values.firstname,
-      })
+      .post(
+        `http://localhost:3000/users/${id}`,
+        {
+          email: values.email,
+          lastname: values.lastname,
+          firstname: values.firstname,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       .then((response) => {
         setMessage(response.data.message);
       })

@@ -5,19 +5,33 @@ import DeleteOutlined from "@ant-design/icons/DeleteOutlined";
 import ToolOutlined from "@ant-design/icons/ToolOutlined";
 import KeyOutlined from "@ant-design/icons/KeyOutlined";
 import { NavLink } from "react-router-dom";
+import { auth } from "../auth/authentication";
+import { HddOutlined } from "@ant-design/icons";
 
 const UserList = () => {
   const [userData, setUserData] = useState([]);
 
-  const fetchEmails = async () => {
-    const response = await axios.get("http://localhost:3000/users");
+  const fetchEmailsNamesIds = async () => {
+    const token = await auth.currentUser.getIdToken();
+    const response = await axios.get("http://localhost:3000/users", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
     const emailsNamesWithIds = response.data;
     setUserData(emailsNamesWithIds);
   };
 
   const deleteUser = async (record) => {
-    await axios.delete(`http://localhost:3000/users/${record.id}`);
-    await fetchEmails();
+    const token = await auth.currentUser.getIdToken();
+    await axios.delete(`http://localhost:3000/users/${record.id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    await fetchEmailsNamesIds();
   };
 
   const columns = [
@@ -60,13 +74,16 @@ const UserList = () => {
           >
             <Button icon={<KeyOutlined />}>Vaihda salasana</Button>
           </NavLink>
+          <NavLink style={{ color: "white" }} to={`/permissions/${record.id}`}>
+            <Button icon={<HddOutlined />}>Hallitse käyttöoikeuksia</Button>
+          </NavLink>
         </>
       ),
     },
   ];
 
   useEffect(() => {
-    fetchEmails();
+    fetchEmailsNamesIds();
   }, []);
 
   const confirm = async (user) => {

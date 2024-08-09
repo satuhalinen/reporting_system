@@ -4,6 +4,7 @@ import { Table, Col, Row, Typography } from "antd";
 import StackedGroupedBar from "../components/StackedGroupedBar";
 import SideBar from "../components/SideBar";
 import renderFormattedNumber from "../helpers";
+import { auth } from "../auth/authentication";
 
 const { Title } = Typography;
 
@@ -26,10 +27,17 @@ const BillabilityMonthlyWorkingHours = () => {
     setSelectedYear(e.target.value);
   };
 
-  const applyFilters = () => {
+  const applyFilters = async () => {
+    const token = await auth.currentUser.getIdToken();
     axios
       .get(
-        `http://localhost:3000/billability-working-hours/${selectedYear}/${selectedYearsBack}`
+        `http://localhost:3000/billability-working-hours/${selectedYear}/${selectedYearsBack}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
       )
       .then((response) => {
         const transformedTableData = {};
