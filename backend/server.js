@@ -343,9 +343,16 @@ app.post("/users/:id/permissions", validateToken, async (req, res) => {
   res.status(201).json({ message: "Käyttäjän käyttöoikeudet tallennettu" });
 });
 
-app.get("/test-endpoint", validateToken, (req, res) => {
-  res.send(`Hello ${req.user.email}, your token is valid!`);
-  console.log("req.user", req.user);
+app.get("/users/:id/permissions", validateToken, async (req, res) => {
+  if (req.user.admin !== true) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const uid = req.params.id;
+  getAuth()
+    .getUser(uid)
+    .then((userRecord) => {
+      res.json(userRecord.customClaims);
+    });
 });
 
 app.listen(port, () => {

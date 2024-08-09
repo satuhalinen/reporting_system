@@ -72,6 +72,27 @@ const Permissions = () => {
       });
   };
 
+  const getCustomClaims = async () => {
+    const token = await auth.currentUser.getIdToken();
+    const response = await axios.get(
+      `http://localhost:3000/users/${id}/permissions`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    const permissions = Object.entries(response.data);
+    const filteredPermissions = permissions.filter((item) => item[1] === true);
+    const newPermissions = filteredPermissions.map((item) => item[0]);
+    setCheckedList(newPermissions);
+  };
+
+  useEffect(() => {
+    getCustomClaims();
+  }, []);
+
   return (
     <Form
       name="basic"
