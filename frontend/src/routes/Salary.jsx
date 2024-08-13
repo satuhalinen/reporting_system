@@ -1,10 +1,10 @@
 import { Select, Button, Typography, Table } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import renderFormattedNumber from "../helpers";
 import CreateCsv from "../components/CreateCsv";
-import { auth } from "../auth/authentication";
+import { AuthContext } from "../components/AuthContext";
 
 const { Title } = Typography;
 
@@ -13,6 +13,8 @@ const Salary = () => {
   const [selectedSalaryDate, setSelectedSalaryDate] = useState(null);
   const [columns, setColumns] = useState([]);
   const [tableData, setTableData] = useState([]);
+
+  const { user, loading } = useContext(AuthContext);
 
   let finnishDate = "";
   let finnishDateNoDots = "";
@@ -28,12 +30,11 @@ const Salary = () => {
   }
 
   const getDate = async () => {
-    const token = await auth.currentUser.getIdToken();
     axios
       .get(`http://localhost:3000/salary`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.accessToken}`,
         },
       })
       .then((response) => {
@@ -47,16 +48,15 @@ const Salary = () => {
   };
 
   useEffect(() => {
-    getDate();
-  }, []);
+    if (user) getDate();
+  }, [user]);
 
   const getHours = async () => {
-    const token = await auth.currentUser.getIdToken();
     axios
       .get(`http://localhost:3000/salary_report/${selectedSalaryDate}`, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.accessToken}`,
         },
       })
       .then((response) => {
@@ -159,6 +159,10 @@ const Salary = () => {
         setColumns(newColumns);
       });
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
