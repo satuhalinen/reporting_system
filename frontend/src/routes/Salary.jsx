@@ -5,6 +5,7 @@ import { useEffect, useState, useContext } from "react";
 import renderFormattedNumber from "../helpers";
 import CreateCsv from "../components/CreateCsv";
 import { AuthContext } from "../components/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -15,6 +16,7 @@ const Salary = () => {
   const [tableData, setTableData] = useState([]);
 
   const { user, loading } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   let finnishDate = "";
   let finnishDateNoDots = "";
@@ -44,6 +46,9 @@ const Salary = () => {
           label: dateObject.date,
         }));
         setSalaryDates(transformedSalaryDate);
+      })
+      .catch(() => {
+        navigate("/first-page");
       });
   };
 
@@ -157,6 +162,9 @@ const Salary = () => {
         });
 
         setColumns(newColumns);
+      })
+      .catch(() => {
+        navigate("/first-page");
       });
   };
 

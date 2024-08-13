@@ -96,32 +96,52 @@ app.get(
   }
 );
 
-app.get("/salary", validateToken, (req, res) => {
-  db.all(
-    "SELECT date FROM payday_payday WHERE deleted = 0 ORDER BY date DESC",
-    (err, rows) => {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
-      }
-      res.json({ data: rows });
+app.get("/salary", validateToken, async (req, res) => {
+  const uid = req.user.uid;
+  const userRecord = await getAuth().getUser(uid);
+  try {
+    if (userRecord.customClaims["Palkka"]) {
+      db.all(
+        "SELECT date FROM payday_payday WHERE deleted = 0 ORDER BY date DESC",
+        (err, rows) => {
+          if (err) {
+            res.status(400).json({ error: err.message });
+            return;
+          }
+          res.json({ data: rows });
+        }
+      );
+    } else {
+      return res.status(401).json({ message: "Unauthorized" });
     }
-  );
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
-app.get("/salary_report/:selected_date", validateToken, (req, res) => {
+app.get("/salary_report/:selected_date", validateToken, async (req, res) => {
   const selectedDate = req.params.selected_date;
-  db.all(
-    "SELECT tuntikirjaus_employee.lastname, tuntikirjaus_employee.firstname, workphase_workphase.report_name, SUM(worklog_worklog.worker_hours) AS hours FROM worklog_worklog JOIN payday_payday ON worklog_worklog.payday_id = payday_payday.id JOIN workphase_workphase ON worklog_worklog.workphase_id = workphase_workphase.id JOIN tuntikirjaus_employee ON worklog_worklog.employee_id = tuntikirjaus_employee.id WHERE payday_payday.date= ? GROUP BY tuntikirjaus_employee.id, workphase_workphase.report_name ORDER BY tuntikirjaus_employee.lastname, tuntikirjaus_employee.firstname",
-    [selectedDate],
-    (err, rows) => {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
-      }
-      res.json({ data: rows });
+  const uid = req.user.uid;
+  const userRecord = await getAuth().getUser(uid);
+  try {
+    if (userRecord.customClaims["Palkka"]) {
+      db.all(
+        "SELECT tuntikirjaus_employee.lastname, tuntikirjaus_employee.firstname, workphase_workphase.report_name, SUM(worklog_worklog.worker_hours) AS hours FROM worklog_worklog JOIN payday_payday ON worklog_worklog.payday_id = payday_payday.id JOIN workphase_workphase ON worklog_worklog.workphase_id = workphase_workphase.id JOIN tuntikirjaus_employee ON worklog_worklog.employee_id = tuntikirjaus_employee.id WHERE payday_payday.date= ? GROUP BY tuntikirjaus_employee.id, workphase_workphase.report_name ORDER BY tuntikirjaus_employee.lastname, tuntikirjaus_employee.firstname",
+        [selectedDate],
+        (err, rows) => {
+          if (err) {
+            res.status(400).json({ error: err.message });
+            return;
+          }
+          res.json({ data: rows });
+        }
+      );
+    } else {
+      return res.status(401).json({ message: "Unauthorized" });
     }
-  );
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 async function addUser(email, password, lastname, firstname) {
