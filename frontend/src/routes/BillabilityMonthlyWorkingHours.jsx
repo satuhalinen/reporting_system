@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Table, Col, Row, Typography } from "antd";
 import StackedGroupedBar from "../components/StackedGroupedBar";
 import SideBar from "../components/SideBar";
 import renderFormattedNumber from "../helpers";
-import { auth } from "../auth/authentication";
+import { AuthContext } from "../components/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -23,19 +24,21 @@ const BillabilityMonthlyWorkingHours = () => {
 
   const stackKeys = ["billable", "non_billable"];
 
+  const { user, loading } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const onYearChange = (e) => {
     setSelectedYear(e.target.value);
   };
 
   const applyFilters = async () => {
-    const token = await auth.currentUser.getIdToken();
     axios
       .get(
         `http://localhost:3000/billability-working-hours/${selectedYear}/${selectedYearsBack}`,
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.accessToken}`,
           },
         }
       )
@@ -84,12 +87,15 @@ const BillabilityMonthlyWorkingHours = () => {
         setBillableTableData(Object.values(transformedTableData));
         setNonBillableTableData(Object.values(transformedNonBillableTableData));
         setGraphData(Object.values(transformedData));
+      })
+      .catch(() => {
+        navigate("/first-page");
       });
   };
 
   useEffect(() => {
-    applyFilters();
-  }, []);
+    if (user) applyFilters();
+  }, [user]);
 
   const columns = [];
   columns.push({
@@ -115,6 +121,10 @@ const BillabilityMonthlyWorkingHours = () => {
     render: renderFormattedNumber,
     align: "right",
   });
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Row>
