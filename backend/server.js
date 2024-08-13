@@ -33,23 +33,33 @@ app.get("/working-hours", validateToken, (req, res) => {
 app.get(
   "/monthly-working-hours/:endYear/:years_back",
   validateToken,
-  (req, res) => {
-    let endYear = req.params.endYear;
-    const yearsBack = req.params.years_back;
-    let startYear = Number(endYear) - Number(yearsBack);
-    endYear = endYear.toString();
-    startYear = startYear.toString();
-    db.all(
-      "SELECT CAST(strftime('%Y', date) AS INTEGER) AS year, CAST(strftime('%m', date) AS INTEGER) AS month, SUM(hours) AS total_hours FROM worklog_worklog WHERE (strftime('%Y', date) between ? AND ?) AND (deleted = 0) GROUP BY year, month ORDER BY year, month",
-      [startYear, endYear],
-      (err, rows) => {
-        if (err) {
-          res.status(400).json({ error: err.message });
-          return;
-        }
-        res.json({ data: rows });
+  async (req, res) => {
+    const uid = req.user.uid;
+    const userRecord = await getAuth().getUser(uid);
+    try {
+      if (userRecord.customClaims["Kaikki tunnit"]) {
+        let endYear = req.params.endYear;
+        const yearsBack = req.params.years_back;
+        let startYear = Number(endYear) - Number(yearsBack);
+        endYear = endYear.toString();
+        startYear = startYear.toString();
+        db.all(
+          "SELECT CAST(strftime('%Y', date) AS INTEGER) AS year, CAST(strftime('%m', date) AS INTEGER) AS month, SUM(hours) AS total_hours FROM worklog_worklog WHERE (strftime('%Y', date) between ? AND ?) AND (deleted = 0) GROUP BY year, month ORDER BY year, month",
+          [startYear, endYear],
+          (err, rows) => {
+            if (err) {
+              res.status(400).json({ error: err.message });
+              return;
+            }
+            res.json({ data: rows });
+          }
+        );
+      } else {
+        return res.status(401).json({ message: "Unauthorized" });
       }
-    );
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
   }
 );
 

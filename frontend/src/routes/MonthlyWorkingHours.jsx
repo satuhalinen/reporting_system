@@ -5,6 +5,7 @@ import SideBar from "../components/SideBar";
 import { ResponsiveBar } from "@nivo/bar";
 import renderFormattedNumber from "../helpers";
 import { AuthContext } from "../components/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -15,6 +16,7 @@ const MonthlyWorkingHours = () => {
   const [graphData, setGraphData] = useState([]);
 
   const { user, loading } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const onYearChange = (e) => {
     setSelectedYear(e.target.value);
@@ -78,6 +80,9 @@ const MonthlyWorkingHours = () => {
         }
         dataForGraph.sort((a, b) => a.month - b.month);
         setGraphData(dataForGraph);
+      })
+      .catch(() => {
+        navigate("/first-page");
       });
   };
 
