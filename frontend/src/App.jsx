@@ -17,6 +17,7 @@ import ChangePassword from "./routes/ChangePassword";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { AuthProvider } from "./components/AuthContext";
 import Permissions from "./routes/Permissions";
+import { useState } from "react";
 
 const { Header, Content, Footer } = Layout;
 
@@ -25,6 +26,83 @@ const App = () => {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
 
+  const [current, setCurrent] = useState("");
+
+  const onClick = (e) => {
+    setCurrent(e.key);
+  };
+
+  const items = [
+    {
+      label: "Henkilöstö",
+      key: "SubMenu1",
+
+      children: [
+        {
+          type: "group",
+          children: [
+            {
+              label: (
+                <NavLink to="/monthly-working-hours">Kaikki tunnit</NavLink>
+              ),
+              key: "setting:1",
+            },
+            {
+              label: (
+                <NavLink to="/cumulative-monthly-working-hours">
+                  Kaikki tunnit kumulatiivinen{" "}
+                </NavLink>
+              ),
+
+              key: "setting:2",
+            },
+            {
+              label: <NavLink to="/salary">Palkkaraportti</NavLink>,
+              key: "setting:3",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      label: "Tilastot",
+      key: "SubMenu2",
+      children: [
+        {
+          type: "group",
+          children: [
+            {
+              label: (
+                <NavLink to="/billability-monthly-working-hours">
+                  Laskutettavat tunnit
+                </NavLink>
+              ),
+              key: "setting:4",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      label: "Käyttöoikeuksien hallinta",
+      key: "SubMenu3",
+      children: [
+        {
+          type: "group",
+          children: [
+            {
+              label: <NavLink to="/user-list">Käyttäjälista</NavLink>,
+              key: "setting:5",
+            },
+            {
+              label: <NavLink to="/add-user">Käyttäjän lisääminen</NavLink>,
+              key: "setting:6",
+            },
+          ],
+        },
+      ],
+    },
+  ];
   return (
     <BrowserRouter>
       <Layout>
@@ -42,38 +120,16 @@ const App = () => {
           <Menu
             theme="dark"
             mode="horizontal"
-            defaultSelectedKeys={["2"]}
             style={{ flex: 1, minWidth: 0 }}
+            onClick={onClick}
+            selectedKeys={[current]}
+            items={items}
           />
-          <NavLink style={{ color: "white" }} to={`/user-list`}>
-            User list
-          </NavLink>
-          <NavLink style={{ color: "white" }} to={`/add-user`}>
-            Add user
-          </NavLink>
-          <NavLink style={{ color: "white" }} to={`/salary`}>
-            Salary
-          </NavLink>
-          <NavLink
-            style={{ color: "white" }}
-            to={`/cumulative-monthly-working-hours`}
-          >
-            Cumulative monthly working hours
-          </NavLink>
-          <NavLink
-            style={{ color: "white" }}
-            to={`/billability-monthly-working-hours`}
-          >
-            Billability monthly working hours
+          <NavLink style={{ color: "white" }} to={`/first-page`}>
+            Firstpage
           </NavLink>
           <NavLink style={{ color: "white" }} to={`/working-hours`}>
             Working hours
-          </NavLink>
-          <NavLink style={{ color: "white" }} to={`/monthly-working-hours`}>
-            Monthly working hours
-          </NavLink>
-          <NavLink style={{ color: "white" }} to={`/first-page`}>
-            Firstpage
           </NavLink>
           <NavLink style={{ color: "white" }} to={`/login`}>
             Login
