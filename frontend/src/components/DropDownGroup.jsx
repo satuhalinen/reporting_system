@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { useContext } from "react";
 import { AuthContext } from "../components/AuthContext";
+import Logout from "../components/Logout";
 
 const DropDownGroup = () => {
   const [current, setCurrent] = useState("");
@@ -134,6 +135,26 @@ const DropDownGroup = () => {
       items[2].children.push({
         label: <NavLink to="/add-user">Käyttäjän lisääminen</NavLink>,
         key: "setting:6",
+      });
+    } else {
+      items.push({});
+    }
+
+    items.push({
+      label: "Käyttäjä",
+      key: "SubMenu4",
+      children: [],
+    });
+
+    if (user) {
+      items[3].children.push({
+        label: <Logout></Logout>,
+        key: "setting:7",
+      });
+    } else {
+      items[3].children.push({
+        label: <NavLink to="/login">Kirjautuminen</NavLink>,
+        key: "setting:8",
       });
     }
 
