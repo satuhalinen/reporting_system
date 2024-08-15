@@ -1,15 +1,15 @@
 import { Button, Form, Input, Typography } from "antd";
 import axios from "axios";
-import { useState } from "react";
-import { auth } from "../auth/authentication";
+import { useState, useContext } from "react";
+import { AuthContext } from "../components/AuthContext";
 
 const { Title, Text } = Typography;
 
 const AddUser = () => {
   const [message, setMessage] = useState("");
+  const { user, loading } = useContext(AuthContext);
 
   const onFinish = async (values) => {
-    const token = await auth.currentUser.getIdToken();
     axios
       .post(
         "http://localhost:3000/users",
@@ -22,7 +22,7 @@ const AddUser = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.accessToken}`,
           },
         }
       )
@@ -33,6 +33,10 @@ const AddUser = () => {
         setMessage(error.response.data.message);
       });
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Form

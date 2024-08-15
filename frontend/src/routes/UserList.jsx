@@ -1,22 +1,24 @@
 import axios from "axios";
-import { Table, Button, Popconfirm, message } from "antd";
-import { useState, useEffect } from "react";
+import { Table, Button, Popconfirm, message, Typography } from "antd";
+import { useState, useEffect, useContext } from "react";
 import DeleteOutlined from "@ant-design/icons/DeleteOutlined";
 import ToolOutlined from "@ant-design/icons/ToolOutlined";
 import KeyOutlined from "@ant-design/icons/KeyOutlined";
 import { NavLink } from "react-router-dom";
-import { auth } from "../auth/authentication";
+import { AuthContext } from "../components/AuthContext";
 import { HddOutlined } from "@ant-design/icons";
+
+const { Title } = Typography;
 
 const UserList = () => {
   const [userData, setUserData] = useState([]);
+  const { user, loading } = useContext(AuthContext);
 
   const fetchEmailsNamesIds = async () => {
-    const token = await auth.currentUser.getIdToken();
     const response = await axios.get("http://localhost:3000/users", {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${user.accessToken}`,
       },
     });
     const emailsNamesWithIds = response.data;
@@ -24,11 +26,10 @@ const UserList = () => {
   };
 
   const deleteUser = async (record) => {
-    const token = await auth.currentUser.getIdToken();
     await axios.delete(`http://localhost:3000/users/${record.id}`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${user.accessToken}`,
       },
     });
     await fetchEmailsNamesIds();
@@ -83,8 +84,8 @@ const UserList = () => {
   ];
 
   useEffect(() => {
-    fetchEmailsNamesIds();
-  }, []);
+    if (user) fetchEmailsNamesIds();
+  }, [user]);
 
   const confirm = async (user) => {
     await deleteUser(user);
@@ -95,7 +96,16 @@ const UserList = () => {
     message.error("Käyttäjää ei poistettu.");
   };
 
-  return <Table columns={columns} dataSource={userData} rowKey="id"></Table>;
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <>
+      <Title>Käyttäjälista</Title>
+      <Table columns={columns} dataSource={userData} rowKey="id"></Table>
+    </>
+  );
 };
 
 export default UserList;

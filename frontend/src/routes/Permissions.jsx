@@ -1,8 +1,8 @@
 import { Form, Input, Typography, Checkbox, Button } from "antd";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import { auth } from "../auth/authentication";
+import { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../components/AuthContext";
 
 const { Title, Text } = Typography;
 
@@ -12,12 +12,13 @@ const Permissions = () => {
   const [checkedList, setCheckedList] = useState([]);
   const [message, setMessage] = useState("");
 
+  const { user, loading } = useContext(AuthContext);
+
   const fetchNamesAndEmail = async () => {
-    const token = await auth.currentUser.getIdToken();
     const response = await axios.get(`http://localhost:3000/users/${id}`, {
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
+        Authorization: `Bearer ${user.accessToken}`,
       },
     });
     const userData = response.data;
@@ -25,8 +26,8 @@ const Permissions = () => {
   };
 
   useEffect(() => {
-    fetchNamesAndEmail();
-  }, []);
+    if (user) fetchNamesAndEmail();
+  }, [user]);
 
   const options = [
     {
@@ -49,7 +50,6 @@ const Permissions = () => {
   };
 
   const handleSave = async (values) => {
-    const token = await auth.currentUser.getIdToken();
     axios
       .post(
         `http://localhost:3000/users/${id}/permissions`,
@@ -60,7 +60,7 @@ const Permissions = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.accessToken}`,
           },
         }
       )
@@ -73,13 +73,12 @@ const Permissions = () => {
   };
 
   const getCustomClaims = async () => {
-    const token = await auth.currentUser.getIdToken();
     const response = await axios.get(
       `http://localhost:3000/users/${id}/permissions`,
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${user.accessToken}`,
         },
       }
     );
@@ -90,8 +89,12 @@ const Permissions = () => {
   };
 
   useEffect(() => {
-    getCustomClaims();
-  }, []);
+    if (user) getCustomClaims();
+  }, [user]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Form
