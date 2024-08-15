@@ -1,10 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import axios from "axios";
 import { Table, Col, Row, Typography } from "antd";
 import SideBar from "../components/SideBar";
 import { ResponsiveBar } from "@nivo/bar";
 import renderFormattedNumber from "../helpers";
-import { auth } from "../auth/authentication";
+import { AuthContext } from "../components/AuthContext";
 
 const { Title } = Typography;
 
@@ -14,19 +14,20 @@ const CumulativeMonthlyWorkingHours = () => {
   const [selectedYearsBack, setSelectedYearsBack] = useState(3);
   const [graphData, setGraphData] = useState([]);
 
+  const { user, loading } = useContext(AuthContext);
+
   const onYearChange = (e) => {
     setSelectedYear(e.target.value);
   };
 
   const applyFilters = async () => {
-    const token = await auth.currentUser.getIdToken();
     axios
       .get(
         `http://localhost:3000/monthly-working-hours/${selectedYear}/${selectedYearsBack}`,
         {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${user.accessToken}`,
           },
         }
       )
@@ -89,8 +90,8 @@ const CumulativeMonthlyWorkingHours = () => {
   };
 
   useEffect(() => {
-    applyFilters();
-  }, []);
+    if (user) applyFilters();
+  }, [user]);
 
   const columns = [];
   columns.push({
@@ -120,6 +121,10 @@ const CumulativeMonthlyWorkingHours = () => {
 
   const years = tableData.map((item) => item.year);
   const yearsAmount = years.length;
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Row>
