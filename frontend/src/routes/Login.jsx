@@ -16,7 +16,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) navigate("/first-page");
+    if (user) navigate("/");
   }, [user]);
 
   return (

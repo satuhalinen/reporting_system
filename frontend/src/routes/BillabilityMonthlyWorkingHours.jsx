@@ -89,7 +89,7 @@ const BillabilityMonthlyWorkingHours = () => {
         setGraphData(Object.values(transformedData));
       })
       .catch(() => {
-        navigate("/first-page");
+        navigate("/");
       });
   };
 

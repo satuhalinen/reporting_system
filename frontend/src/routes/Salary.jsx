@@ -48,7 +48,7 @@ const Salary = () => {
         setSalaryDates(transformedSalaryDate);
       })
       .catch(() => {
-        navigate("/first-page");
+        navigate("/");
       });
   };
 
@@ -164,7 +164,7 @@ const Salary = () => {
         setColumns(newColumns);
       })
       .catch(() => {
-        navigate("/first-page");
+        navigate("/");
       });
   };
 

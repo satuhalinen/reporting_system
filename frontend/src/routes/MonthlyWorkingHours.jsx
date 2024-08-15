@@ -82,7 +82,7 @@ const MonthlyWorkingHours = () => {
         setGraphData(dataForGraph);
       })
       .catch(() => {
-        navigate("/first-page");
+        navigate("/");
       });
   };
 

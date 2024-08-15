@@ -18,44 +18,60 @@ const DropDownGroup = () => {
     if (!user) {
       return null;
     } else {
-      const parsedClaims = JSON.parse(
-        user.proactiveRefresh.user.reloadUserInfo.customAttributes
-      );
-      const parsedKaikkiTunnit = parsedClaims["Kaikki tunnit"];
-      return parsedKaikkiTunnit;
+      try {
+        const parsedClaims = JSON.parse(
+          user.proactiveRefresh.user.reloadUserInfo.customAttributes
+        );
+        const parsedPalkka = parsedClaims["Kaikki tunnit"];
+        return parsedPalkka;
+      } catch (error) {
+        return null;
+      }
     }
   };
   const userCheckCumulativeHours = () => {
     if (!user) {
       return null;
     } else {
-      const parsedClaims = JSON.parse(
-        user.proactiveRefresh.user.reloadUserInfo.customAttributes
-      );
-      const parsedKaikkiTunnit = parsedClaims["Kaikki tunnit kumulatiivinen"];
-      return parsedKaikkiTunnit;
+      try {
+        const parsedClaims = JSON.parse(
+          user.proactiveRefresh.user.reloadUserInfo.customAttributes
+        );
+        const parsedPalkka = parsedClaims["Kaikki tunnit kumulatiivinen"];
+        return parsedPalkka;
+      } catch (error) {
+        return null;
+      }
     }
   };
   const userCheckSalary = () => {
     if (!user) {
       return null;
     } else {
-      const parsedClaims = JSON.parse(
-        user.proactiveRefresh.user.reloadUserInfo.customAttributes
-      );
-      const parsedPalkka = parsedClaims["Palkka"];
-      return parsedPalkka;
+      try {
+        const parsedClaims = JSON.parse(
+          user.proactiveRefresh.user.reloadUserInfo.customAttributes
+        );
+        const parsedPalkka = parsedClaims["Palkka"];
+        return parsedPalkka;
+      } catch (error) {
+        return null;
+      }
     }
   };
   const userCheckBillability = () => {
     if (!user) {
       return null;
     } else {
-      const parsedClaims = JSON.parse(
-        user.proactiveRefresh.user.reloadUserInfo.customAttributes
-      );
-      const parsedPalkka = parsedClaims["Laskutettavat tunnit"];
-      return parsedPalkka;
+      try {
+        const parsedClaims = JSON.parse(
+          user.proactiveRefresh.user.reloadUserInfo.customAttributes
+        );
+        const parsedPalkka = parsedClaims["Laskutettavat tunnit"];
+        return parsedPalkka;
+      } catch (error) {
+        return null;
+      }
     }
   };
 
@@ -63,12 +79,17 @@ const DropDownGroup = () => {
     if (!user) {
       return null;
     } else {
-      const parsedClaims = JSON.parse(
-        user.proactiveRefresh.user.reloadUserInfo.customAttributes
-      );
-      const parsedAdmin = parsedClaims["admin"];
-      return parsedAdmin;
+      try {
+        const parsedClaims = JSON.parse(
+          user.proactiveRefresh.user.reloadUserInfo.customAttributes
+        );
+        const parsedAdmin = parsedClaims["admin"];
+        return parsedAdmin;
+      } catch (error) {
+        return null;
+      }
     }
+    //
   };
 
   const items = [];
