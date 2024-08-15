@@ -23,7 +23,7 @@ const CumulativeMonthlyWorkingHours = () => {
   const applyFilters = async () => {
     axios
       .get(
-        `http://localhost:3000/monthly-working-hours/${selectedYear}/${selectedYearsBack}`,
+        `http://localhost:3000/cumulative-working-hours/${selectedYear}/${selectedYearsBack}`,
         {
           headers: {
             "Content-Type": "application/json",

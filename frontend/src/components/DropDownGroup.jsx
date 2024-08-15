@@ -78,6 +78,8 @@ const DropDownGroup = () => {
         key: "SubMenu1",
         children: [],
       });
+    } else {
+      items.push({});
     }
     if (userCheckHours()) {
       items[0].children.push({
@@ -107,8 +109,6 @@ const DropDownGroup = () => {
         key: "SubMenu2",
         children: [],
       });
-    }
-    if (userCheckBillability()) {
       items[1].children.push({
         label: (
           <NavLink to="/billability-monthly-working-hours">
@@ -117,6 +117,8 @@ const DropDownGroup = () => {
         ),
         key: "setting:4",
       });
+    } else {
+      items.push({});
     }
 
     if (userCheckAdmin()) {
@@ -125,8 +127,6 @@ const DropDownGroup = () => {
         key: "SubMenu3",
         children: [],
       });
-    }
-    if (userCheckAdmin()) {
       items[2].children.push({
         label: <NavLink to="/user-list">Käyttäjälista</NavLink>,
         key: "setting:5",
