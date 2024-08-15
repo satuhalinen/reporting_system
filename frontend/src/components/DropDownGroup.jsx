@@ -154,7 +154,7 @@ const DropDownGroup = () => {
     } else {
       items[3].children.push({
         label: <NavLink to="/login">Kirjautuminen</NavLink>,
-        key: "setting:8",
+        key: "setting:7",
       });
     }
 

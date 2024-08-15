@@ -1,11 +1,7 @@
 import { Breadcrumb, Layout, theme } from "antd";
 import Login from "./routes/Login";
-import { BrowserRouter, Route, Routes, NavLink } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Root from "./routes/Root";
-import FirstPage from "./routes/FirstPage";
-import Home from "./routes/Home";
-import Logout from "./components/Logout";
-import WorkingHours from "./routes/WorkingHours";
 import MonthlyWorkingHours from "./routes/MonthlyWorkingHours";
 import CumulativeMonthlyWorkingHours from "./routes/CumulativeMonthlyWorkingHours";
 import BillabilityMonthlyWorkingHours from "./routes/BillabilityMonthlyWorkingHours";
@@ -41,16 +37,6 @@ const App = () => {
             }}
           >
             <DropDownGroup />
-            <NavLink style={{ color: "white" }} to={`/first-page`}>
-              Firstpage
-            </NavLink>
-            <NavLink style={{ color: "white" }} to={`/working-hours`}>
-              Working hours
-            </NavLink>
-            <NavLink style={{ color: "white" }} to={`/login`}>
-              Login
-            </NavLink>
-            <Logout></Logout>
           </Header>
           <Content style={{ padding: "0 48px" }}>
             <Breadcrumb style={{ margin: "16px 0" }}>
@@ -67,10 +53,7 @@ const App = () => {
             >
               <Routes>
                 <Route path="/" element={<Root />}>
-                  <Route index element={<Home />} />
                   <Route path="login" element={<Login />} />
-                  <Route path="first-page" element={<FirstPage />} />
-                  <Route path="working-hours" element={<WorkingHours />} />
                   <Route
                     path="monthly-working-hours"
                     element={<MonthlyWorkingHours />}

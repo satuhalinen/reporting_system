@@ -17,19 +17,6 @@ initializeApp({
 });
 const firebaseDb = getFirestore();
 
-app.get("/working-hours", validateToken, (req, res) => {
-  db.all(
-    "SELECT tuntikirjaus_employee.firstname, tuntikirjaus_employee.lastname, worklog_worklog.hours FROM tuntikirjaus_employee JOIN worklog_worklog ON tuntikirjaus_employee.id = worklog_worklog.employee_id",
-    (err, rows) => {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
-      }
-      res.json({ data: rows });
-    }
-  );
-});
-
 app.get(
   "/monthly-working-hours/:endYear/:years_back",
   validateToken,
