@@ -25,7 +25,7 @@ const App = () => {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Layout>
+        <Layout style={{ minHeight: "100vh" }}>
           <Header
             style={{
               position: "sticky",
@@ -46,7 +46,7 @@ const App = () => {
             <div
               style={{
                 padding: 24,
-                minHeight: 380,
+                minHeight: "85vh",
                 background: colorBgContainer,
                 borderRadius: borderRadiusLG,
               }}
@@ -99,7 +99,7 @@ const App = () => {
             </div>
           </Content>
           <Footer style={{ textAlign: "center" }}>
-            Ant Design ©{new Date().getFullYear()} Created by Ant UED
+            Copyright &copy; 2024 Satu Halinen
           </Footer>
         </Layout>
       </BrowserRouter>

@@ -101,7 +101,7 @@ const ChangePassword = () => {
         <Button type="primary" htmlType="submit">
           Tallenna käyttäjän salasana
         </Button>
-        <Text>{message}</Text>
+        <Text style={{ margin: "10px" }}>{message}</Text>
       </Form.Item>
     </Form>
   );

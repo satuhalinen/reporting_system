@@ -145,7 +145,7 @@ const Permissions = () => {
         <Button onClick={handleSave} type="primary" htmlType="submit">
           Tallenna käyttöoikeudet
         </Button>
-        <Text>{message}</Text>
+        <Text style={{ margin: "10px" }}>{message}</Text>
       </Form.Item>
     </Form>
   );
