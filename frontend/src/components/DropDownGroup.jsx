@@ -1,9 +1,9 @@
-import { Menu } from "antd";
-import { useState, useEffect } from "react";
+import { Menu, Button } from "antd";
+import { useState, useEffect, useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { useContext } from "react";
 import { AuthContext } from "../components/AuthContext";
 import Logout from "../components/Logout";
+import "./DropDownGroupStyling.css";
 
 const DropDownGroup = () => {
   const [current, setCurrent] = useState("");
@@ -164,6 +164,7 @@ const DropDownGroup = () => {
     items.push({
       label: "Käyttäjä",
       key: "SubMenu4",
+      className: "user",
       children: [],
     });
 
@@ -174,7 +175,11 @@ const DropDownGroup = () => {
       });
     } else {
       items[3].children.push({
-        label: <NavLink to="/login">Kirjautuminen</NavLink>,
+        label: (
+          <NavLink to="/login">
+            <Button style={{ color: "black" }}>Kirjautuminen</Button>
+          </NavLink>
+        ),
         key: "setting:7",
       });
     }
@@ -194,7 +199,7 @@ const DropDownGroup = () => {
     <Menu
       theme="dark"
       mode="horizontal"
-      style={{ flex: 1, minWidth: 0 }}
+      style={{ flex: 1 }}
       onClick={onClick}
       selectedKeys={[current]}
       items={links}
