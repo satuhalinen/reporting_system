@@ -9,6 +9,9 @@ This is going to be a SERN (SQLite + Express + React + Node.js) app!
 ## Technologies used
 
 - SQLite
+- Firebase
 - Express
 - React
 - Node.js
+- Nivo (https://nivo.rocks/)
+- Vitest

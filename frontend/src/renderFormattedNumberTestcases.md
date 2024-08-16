@@ -18,6 +18,8 @@ Testing
 renderFormattedNumber(1.11);
 ```
 
+returns "1,11"
+
 ### 2. hours is type of number and has no decimals
 
 Testing
@@ -25,6 +27,8 @@ Testing
 ```js
 renderFormattedNumber(1);
 ```
+
+returns 1,0
 
 ### 3. hours is type of number and has one decimal
 
@@ -34,6 +38,8 @@ Testing
 renderFormattedNumber(1.1);
 ```
 
+returns 1,1
+
 ### 4. hours is type of string
 
 Testing
@@ -41,6 +47,8 @@ Testing
 ```js
 renderFormattedNumber("test");
 ```
+
+returns "test"
 
 ### 5. hours is type of boolean
 
@@ -50,6 +58,8 @@ Testing
 renderFormattedNumber(true);
 ```
 
+returns true
+
 ### 6. hours is type of null
 
 Testing
@@ -58,6 +68,8 @@ Testing
 renderFormattedNumber(null);
 ```
 
+returns null
+
 ### 7. hours is type of undefined
 
 Testing
@@ -65,3 +77,5 @@ Testing
 ```js
 renderFormattedNumber(undefined);
 ```
+
+returns undefined
