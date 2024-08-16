@@ -28,7 +28,7 @@ Testing
 renderFormattedNumber(1);
 ```
 
-returns 1,0
+returns "1,0"
 
 ### 3. hours is type of number and has one decimal
 
@@ -38,7 +38,7 @@ Testing
 renderFormattedNumber(1.1);
 ```
 
-returns 1,1
+returns "1,1"
 
 ### 4. hours is type of string
 
@@ -79,3 +79,19 @@ renderFormattedNumber(undefined);
 ```
 
 returns undefined
+
+### 8. hours is missing
+
+```js
+renderFormattedNumber();
+```
+
+returns undefined
+
+### 9. hours is type of number and at least 1000
+
+```js
+renderFormattedNumber(1000);
+```
+
+returns "1 000"
