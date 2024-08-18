@@ -14,101 +14,36 @@ const DropDownGroup = () => {
     setCurrent(e.key);
   };
 
-  const userCheckHours = () => {
-    if (!user) {
-      return null;
-    } else {
-      try {
-        const parsedClaims = JSON.parse(
-          user.proactiveRefresh.user.reloadUserInfo.customAttributes
-        );
-        const parsedPalkka = parsedClaims["Kaikki tunnit"];
-        return parsedPalkka;
-      } catch (error) {
-        return null;
-      }
-    }
-  };
-  const userCheckCumulativeHours = () => {
-    if (!user) {
-      return null;
-    } else {
-      try {
-        const parsedClaims = JSON.parse(
-          user.proactiveRefresh.user.reloadUserInfo.customAttributes
-        );
-        const parsedPalkka = parsedClaims["Kaikki tunnit kumulatiivinen"];
-        return parsedPalkka;
-      } catch (error) {
-        return null;
-      }
-    }
-  };
-  const userCheckSalary = () => {
-    if (!user) {
-      return null;
-    } else {
-      try {
-        const parsedClaims = JSON.parse(
-          user.proactiveRefresh.user.reloadUserInfo.customAttributes
-        );
-        const parsedPalkka = parsedClaims["Palkka"];
-        return parsedPalkka;
-      } catch (error) {
-        return null;
-      }
-    }
-  };
-  const userCheckBillability = () => {
-    if (!user) {
-      return null;
-    } else {
-      try {
-        const parsedClaims = JSON.parse(
-          user.proactiveRefresh.user.reloadUserInfo.customAttributes
-        );
-        const parsedPalkka = parsedClaims["Laskutettavat tunnit"];
-        return parsedPalkka;
-      } catch (error) {
-        return null;
-      }
-    }
-  };
-
-  const userCheckAdmin = () => {
-    if (!user) {
-      return null;
-    } else {
-      try {
-        const parsedClaims = JSON.parse(
-          user.proactiveRefresh.user.reloadUserInfo.customAttributes
-        );
-        const parsedAdmin = parsedClaims["admin"];
-        return parsedAdmin;
-      } catch (error) {
-        return null;
-      }
-    }
-    //
-  };
-
   const items = [];
   const itemsConstructor = () => {
-    if (userCheckHours() || userCheckCumulativeHours() || userCheckSalary()) {
-      items.push({
-        label: "Henkilöstö",
-        key: "SubMenu1",
-        children: [],
-      });
-    } else {
-      items.push({});
-    }
-    if (userCheckHours()) {
-      items[0].children.push({
-        label: <NavLink to="/monthly-working-hours">Kaikki tunnit</NavLink>,
-        key: "setting:1",
-      });
-      if (userCheckCumulativeHours()) {
+    if (user) {
+      const parsedClaims = JSON.parse(
+        user.proactiveRefresh.user.reloadUserInfo.customAttributes
+      );
+
+      const parsedMonthlyHours = parsedClaims["Kaikki tunnit"];
+      const parsedCumulativeMonthlyHours =
+        parsedClaims["Kaikki tunnit kumulatiivinen"];
+      const parsedSalary = parsedClaims["Palkka"];
+      const parsedBillability = parsedClaims["Laskutettavat tunnit"];
+      const parsedAdmin = parsedClaims["admin"];
+
+      if (parsedMonthlyHours || parsedCumulativeMonthlyHours || parsedSalary) {
+        items.push({
+          label: "Henkilöstö",
+          key: "SubMenu1",
+          children: [],
+        });
+      } else {
+        items.push({});
+      }
+      if (parsedMonthlyHours) {
+        items[0].children.push({
+          label: <NavLink to="/monthly-working-hours">Kaikki tunnit</NavLink>,
+          key: "setting:1",
+        });
+      }
+      if (parsedCumulativeMonthlyHours) {
         items[0].children.push({
           label: (
             <NavLink to="/cumulative-monthly-working-hours">
@@ -118,68 +53,69 @@ const DropDownGroup = () => {
           key: "setting:2",
         });
       }
-      if (userCheckSalary()) {
+      if (parsedSalary) {
         items[0].children.push({
           label: <NavLink to="/salary">Palkkaraportti</NavLink>,
           key: "setting:3",
         });
       }
-    }
-    if (userCheckBillability()) {
+
+      if (parsedBillability) {
+        items.push({
+          label: "Tilastot",
+          key: "SubMenu2",
+          children: [],
+        });
+        items[1].children.push({
+          label: (
+            <NavLink to="/billability-monthly-working-hours">
+              Laskutettavat tunnit
+            </NavLink>
+          ),
+          key: "setting:4",
+        });
+      } else {
+        items.push({});
+      }
+
+      if (parsedAdmin) {
+        items.push({
+          label: "Käyttöoikeuksien hallinta",
+          key: "SubMenu3",
+          children: [],
+        });
+        items[2].children.push({
+          label: <NavLink to="/user-list">Käyttäjälista</NavLink>,
+          key: "setting:5",
+        });
+        items[2].children.push({
+          label: <NavLink to="/add-user">Käyttäjän lisääminen</NavLink>,
+          key: "setting:6",
+        });
+      } else {
+        items.push({});
+      }
+
       items.push({
-        label: "Tilastot",
-        key: "SubMenu2",
+        label: "Käyttäjä",
+        key: "SubMenu4",
         children: [],
       });
-      items[1].children.push({
-        label: (
-          <NavLink to="/billability-monthly-working-hours">
-            Laskutettavat tunnit
-          </NavLink>
-        ),
-        key: "setting:4",
-      });
-    } else {
-      items.push({});
+
+      if (user) {
+        items[3].children.push({
+          label: <Logout></Logout>,
+          key: "setting:7",
+        });
+      } else {
+        items[3].children.push({
+          label: <NavLink to="/login">Kirjautuminen</NavLink>,
+          key: "setting:7",
+        });
+      }
+
+      setLinks(items);
     }
-
-    if (userCheckAdmin()) {
-      items.push({
-        label: "Käyttöoikeuksien hallinta",
-        key: "SubMenu3",
-        children: [],
-      });
-      items[2].children.push({
-        label: <NavLink to="/user-list">Käyttäjälista</NavLink>,
-        key: "setting:5",
-      });
-      items[2].children.push({
-        label: <NavLink to="/add-user">Käyttäjän lisääminen</NavLink>,
-        key: "setting:6",
-      });
-    } else {
-      items.push({});
-    }
-
-    items.push({
-      label: "Käyttäjä",
-      key: "SubMenu4",
-      children: [],
-    });
-
-    if (user) {
-      items[3].children.push({
-        label: <Logout></Logout>,
-        key: "setting:7",
-      });
-    } else {
-      items[3].children.push({
-        label: <NavLink to="/login">Kirjautuminen</NavLink>,
-        key: "setting:7",
-      });
-    }
-
-    setLinks(items);
   };
 
   useEffect(() => {
