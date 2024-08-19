@@ -16,7 +16,12 @@ const DropDownGroup = () => {
 
   const itemsConstructor = () => {
     const items = [];
-    const userMenu = { label: "Käyttäjä", key: "SubMenu4", children: [] };
+    const userMenu = {
+      label: "Käyttäjä",
+      className: "user",
+      key: "SubMenu4",
+      children: [],
+    };
     if (user) {
       let parsedClaims = {};
       try {

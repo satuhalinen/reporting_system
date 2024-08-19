@@ -125,6 +125,7 @@ const Permissions = () => {
           style={{
             width: "100%",
             marginLeft: "50%",
+            display: "grid",
           }}
         ></Checkbox.Group>
       </Form.Item>
