@@ -116,7 +116,7 @@ const ModifyUser = () => {
         <Button type="primary" htmlType="submit">
           Tallenna käyttäjän tiedot
         </Button>
-        <Text>{message}</Text>
+        <Text style={{ margin: "10px" }}>{message}</Text>
       </Form.Item>
     </Form>
   );

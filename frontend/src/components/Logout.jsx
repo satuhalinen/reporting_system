@@ -10,7 +10,7 @@ const Logout = () => {
   };
   return (
     <Button style={{ color: "black" }} onClick={logout}>
-      Logout
+      Kirjaudu ulos
     </Button>
   );
 };

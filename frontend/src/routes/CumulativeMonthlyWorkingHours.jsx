@@ -237,7 +237,9 @@ const CumulativeMonthlyWorkingHours = () => {
         />
       </Col>
       <Col span={19} push={5}>
-        <Table columns={columns} dataSource={tableData} pagination={false} />
+        <div style={{ overflowX: "auto" }}>
+          <Table columns={columns} dataSource={tableData} pagination={false} />
+        </div>
       </Col>
     </Row>
   );

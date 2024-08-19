@@ -3,6 +3,7 @@ import { useState, useEffect, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../components/AuthContext";
 import Logout from "../components/Logout";
+import "./DropDownGroupStyling.css";
 
 const DropDownGroup = () => {
   const [current, setCurrent] = useState("");
@@ -130,7 +131,7 @@ const DropDownGroup = () => {
     <Menu
       theme="dark"
       mode="horizontal"
-      style={{ flex: 1, minWidth: 0 }}
+      style={{ flex: 1 }}
       onClick={onClick}
       selectedKeys={[current]}
       items={links}

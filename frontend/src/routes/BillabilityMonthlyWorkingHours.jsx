@@ -152,19 +152,23 @@ const BillabilityMonthlyWorkingHours = () => {
       </Col>
       <Col span={19} push={5}>
         <Title level={2}>Laskutettavat tunnit</Title>
-        <Table
-          columns={columns}
-          dataSource={billableTableData}
-          pagination={false}
-        />
+        <div style={{ overflowX: "auto" }}>
+          <Table
+            columns={columns}
+            dataSource={billableTableData}
+            pagination={false}
+          />
+        </div>
       </Col>
       <Col span={19} push={5}>
         <Title level={2}>Ei-laskutettavat tunnit</Title>
-        <Table
-          columns={columns}
-          dataSource={nonBillableTableData}
-          pagination={false}
-        />
+        <div style={{ overflowX: "auto" }}>
+          <Table
+            columns={columns}
+            dataSource={nonBillableTableData}
+            pagination={false}
+          />
+        </div>
       </Col>
     </Row>
   );
