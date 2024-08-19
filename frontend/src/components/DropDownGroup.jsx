@@ -1,7 +1,6 @@
 import { Menu } from "antd";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { NavLink } from "react-router-dom";
-import { useContext } from "react";
 import { AuthContext } from "../components/AuthContext";
 import Logout from "../components/Logout";
 
@@ -14,12 +13,20 @@ const DropDownGroup = () => {
     setCurrent(e.key);
   };
 
-  const items = [];
   const itemsConstructor = () => {
+    const items = [];
+    const userMenu = { label: "Käyttäjä", key: "SubMenu4", children: [] };
     if (user) {
-      const parsedClaims = JSON.parse(
-        user.proactiveRefresh.user.reloadUserInfo.customAttributes
-      );
+      let parsedClaims = {};
+      try {
+        const customAttributes =
+          user.proactiveRefresh.user.reloadUserInfo.customAttributes;
+        if (customAttributes) {
+          parsedClaims = JSON.parse(customAttributes);
+        }
+      } catch (error) {
+        console.error("Error parsing claims", error);
+      }
 
       const parsedMonthlyHours = parsedClaims["Kaikki tunnit"];
       const parsedCumulativeMonthlyHours =
@@ -97,24 +104,18 @@ const DropDownGroup = () => {
         items.push(userRights);
       }
 
-      const userMenu = { label: "Käyttäjä", key: "SubMenu4", children: [] };
-
-      if (user) {
-        userMenu.children.push({
-          label: <Logout></Logout>,
-          key: "setting:7",
-        });
-      } else {
-        userMenu.children.push({
-          label: <NavLink to="/login">Kirjautuminen</NavLink>,
-          key: "setting:7",
-        });
-      }
-
-      items.push(userMenu);
-
-      setLinks(items);
+      userMenu.children.push({
+        label: <Logout></Logout>,
+        key: "setting:7",
+      });
+    } else {
+      userMenu.children.push({
+        label: <NavLink to="/login">Kirjautuminen</NavLink>,
+        key: "setting:7",
+      });
     }
+    items.push(userMenu);
+    setLinks(items);
   };
 
   useEffect(() => {
