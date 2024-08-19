@@ -18,7 +18,7 @@ Testing
 renderFormattedNumber(1.11);
 ```
 
-returns "1,11"
+returns "1,1"
 
 ### 2. hours is type of number and has no decimals
 
@@ -94,4 +94,12 @@ returns undefined
 renderFormattedNumber(1000);
 ```
 
-returns "1 000"
+returns "1 000,0"
+
+### 10. hours is type of number and has 12 decimals
+
+```js
+renderFormattedNumber(1.201938012407);
+```
+
+returns "1,2"

@@ -5,7 +5,7 @@ const finnishThousandSeparator = String.fromCharCode(160);
 
 describe("Test cases for renderFormattedNumber", () => {
   test("hours is type of number and has two decimals", () => {
-    expect(renderFormattedNumber(1.11)).toEqual("1,11");
+    expect(renderFormattedNumber(1.11)).toEqual("1,1");
   });
   test("hours is type of number and has no decimals", () => {
     expect(renderFormattedNumber(1)).toEqual("1,0");
@@ -32,5 +32,8 @@ describe("Test cases for renderFormattedNumber", () => {
     const formattedNumber = renderFormattedNumber(1000);
     const expected = "1" + finnishThousandSeparator + "000,0";
     expect(formattedNumber).toEqual(expected);
+  });
+  test("hours is type of number and has 12 decimals", () => {
+    expect(renderFormattedNumber(1.201938012407)).toEqual("1,2");
   });
 });

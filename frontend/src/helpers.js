@@ -2,6 +2,7 @@ const renderFormattedNumber = (hours) => {
   if (typeof hours === "number") {
     return hours.toLocaleString("fi-FI", {
       minimumFractionDigits: 1,
+      maximumFractionDigits: 1,
     });
   }
   return hours;
