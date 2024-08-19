@@ -8,9 +8,7 @@ import { auth } from "../auth/authentication";
 const { Title } = Typography;
 
 const onFinish = (values) => {
-  signInWithEmailAndPassword(auth, values.email, values.password).then(
-    () => {}
-  );
+  signInWithEmailAndPassword(auth, values.email, values.password);
 };
 
 const Login = () => {
@@ -18,7 +16,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user) navigate("/first-page");
+    if (user) navigate("/");
   }, [user]);
 
   return (

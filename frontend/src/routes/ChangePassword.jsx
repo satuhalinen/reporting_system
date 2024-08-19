@@ -1,7 +1,9 @@
 import { Button, Form, Input, Typography } from "antd";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { AuthContext } from "../components/AuthContext";
+import { makeHeaders } from "../helpers";
 
 const { Title, Text } = Typography;
 
@@ -10,21 +12,31 @@ const ChangePassword = () => {
   const [form] = Form.useForm();
   const [message, setMessage] = useState("");
 
+  const { user, loading } = useContext(AuthContext);
+
   const fetchNamesAndEmail = async () => {
-    const response = await axios.get(`http://localhost:3000/users/${id}`);
+    const response = await axios.get(`http://localhost:3000/users/${id}`, {
+      headers: makeHeaders(user),
+    });
     const userData = response.data;
     form.setFieldsValue(userData);
   };
 
   useEffect(() => {
-    fetchNamesAndEmail();
-  }, []);
+    if (user) fetchNamesAndEmail();
+  }, [user]);
 
-  const onFinish = (values) => {
+  const onFinish = async (values) => {
     axios
-      .post(`http://localhost:3000/users/${id}/change-password/`, {
-        password: values.password,
-      })
+      .post(
+        `http://localhost:3000/users/${id}/change-password/`,
+        {
+          password: values.password,
+        },
+        {
+          headers: makeHeaders(user),
+        }
+      )
       .then((response) => {
         setMessage(response.data.message);
       })
@@ -32,6 +44,10 @@ const ChangePassword = () => {
         setMessage(error.response.data.message);
       });
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Form

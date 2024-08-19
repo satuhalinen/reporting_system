@@ -1,20 +1,29 @@
 import { Button, Form, Input, Typography } from "antd";
 import axios from "axios";
-import { useState } from "react";
+import { useState, useContext } from "react";
+import { AuthContext } from "../components/AuthContext";
+import { makeHeaders } from "../helpers";
 
 const { Title, Text } = Typography;
 
 const AddUser = () => {
   const [message, setMessage] = useState("");
+  const { user, loading } = useContext(AuthContext);
 
   const onFinish = (values) => {
     axios
-      .post("http://localhost:3000/users", {
-        email: values.email,
-        password: values.password,
-        lastname: values.lastname,
-        firstname: values.firstname,
-      })
+      .post(
+        "http://localhost:3000/users",
+        {
+          email: values.email,
+          password: values.password,
+          lastname: values.lastname,
+          firstname: values.firstname,
+        },
+        {
+          headers: makeHeaders(user),
+        }
+      )
       .then((response) => {
         setMessage(response.data.message);
       })
@@ -22,6 +31,10 @@ const AddUser = () => {
         setMessage(error.response.data.message);
       });
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Form

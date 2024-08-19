@@ -17,83 +17,151 @@ initializeApp({
 });
 const firebaseDb = getFirestore();
 
-app.get("/working-hours", (req, res) => {
-  db.all(
-    "SELECT tuntikirjaus_employee.firstname, tuntikirjaus_employee.lastname, worklog_worklog.hours FROM tuntikirjaus_employee JOIN worklog_worklog ON tuntikirjaus_employee.id = worklog_worklog.employee_id",
-    (err, rows) => {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
+app.get(
+  "/monthly-working-hours/:endYear/:years_back",
+  validateToken,
+  async (req, res) => {
+    const uid = req.user.uid;
+    const userRecord = await getAuth().getUser(uid);
+    try {
+      if (userRecord.customClaims["Kaikki tunnit"]) {
+        let endYear = req.params.endYear;
+        const yearsBack = req.params.years_back;
+        let startYear = Number(endYear) - Number(yearsBack);
+        endYear = endYear.toString();
+        startYear = startYear.toString();
+        db.all(
+          "SELECT CAST(strftime('%Y', date) AS INTEGER) AS year, CAST(strftime('%m', date) AS INTEGER) AS month, SUM(hours) AS total_hours FROM worklog_worklog WHERE (strftime('%Y', date) between ? AND ?) AND (deleted = 0) GROUP BY year, month ORDER BY year, month",
+          [startYear, endYear],
+          (err, rows) => {
+            if (err) {
+              res.status(400).json({ error: err.message });
+              return;
+            }
+            res.json({ data: rows });
+          }
+        );
+      } else {
+        return res.status(401).json({ message: "Unauthorized" });
       }
-      res.json({ data: rows });
+    } catch (err) {
+      res.status(400).json({ error: err.message });
     }
-  );
+  }
+);
+
+app.get(
+  "/cumulative-working-hours/:endYear/:years_back",
+  validateToken,
+  async (req, res) => {
+    const uid = req.user.uid;
+    const userRecord = await getAuth().getUser(uid);
+    try {
+      if (userRecord.customClaims["Kaikki tunnit kumulatiivinen"]) {
+        let endYear = req.params.endYear;
+        const yearsBack = req.params.years_back;
+        let startYear = Number(endYear) - Number(yearsBack);
+        endYear = endYear.toString();
+        startYear = startYear.toString();
+        db.all(
+          "SELECT CAST(strftime('%Y', date) AS INTEGER) AS year, CAST(strftime('%m', date) AS INTEGER) AS month, SUM(hours) AS total_hours FROM worklog_worklog WHERE (strftime('%Y', date) between ? AND ?) AND (deleted = 0) GROUP BY year, month ORDER BY year, month",
+          [startYear, endYear],
+          (err, rows) => {
+            if (err) {
+              res.status(400).json({ error: err.message });
+              return;
+            }
+            res.json({ data: rows });
+          }
+        );
+      } else {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  }
+);
+
+app.get(
+  "/billability-working-hours/:endYear/:years_back",
+  validateToken,
+  async (req, res) => {
+    const uid = req.user.uid;
+    const userRecord = await getAuth().getUser(uid);
+    try {
+      if (userRecord.customClaims["Laskutettavat tunnit"]) {
+        let endYear = req.params.endYear;
+        const yearsBack = req.params.years_back;
+        let startYear = Number(endYear) - Number(yearsBack);
+        endYear = endYear.toString();
+        startYear = startYear.toString();
+        db.all(
+          "SELECT CAST(strftime('%Y', date) AS INTEGER) AS year, CAST(strftime('%m', date) AS INTEGER) AS month, SUM(hours) AS total_hours, billable FROM worklog_worklog WHERE (strftime('%Y', date) between ? AND ?) AND (deleted = 0) GROUP BY year, month, billable ORDER BY year, month",
+          [startYear, endYear],
+          (err, rows) => {
+            if (err) {
+              res.status(400).json({ error: err.message });
+              return;
+            }
+            res.json({ data: rows });
+          }
+        );
+      } else {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+    } catch (err) {
+      res.status(400).json({ error: err.message });
+    }
+  }
+);
+
+app.get("/salary", validateToken, async (req, res) => {
+  const uid = req.user.uid;
+  const userRecord = await getAuth().getUser(uid);
+  try {
+    if (userRecord.customClaims["Palkka"]) {
+      db.all(
+        "SELECT date FROM payday_payday WHERE deleted = 0 ORDER BY date DESC",
+        (err, rows) => {
+          if (err) {
+            res.status(400).json({ error: err.message });
+            return;
+          }
+          res.json({ data: rows });
+        }
+      );
+    } else {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
-app.get("/monthly-working-hours/:endYear/:years_back", (req, res) => {
-  let endYear = req.params.endYear;
-  const yearsBack = req.params.years_back;
-  let startYear = Number(endYear) - Number(yearsBack);
-  endYear = endYear.toString();
-  startYear = startYear.toString();
-  db.all(
-    "SELECT CAST(strftime('%Y', date) AS INTEGER) AS year, CAST(strftime('%m', date) AS INTEGER) AS month, SUM(hours) AS total_hours FROM worklog_worklog WHERE (strftime('%Y', date) between ? AND ?) AND (deleted = 0) GROUP BY year, month ORDER BY year, month",
-    [startYear, endYear],
-    (err, rows) => {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
-      }
-      res.json({ data: rows });
-    }
-  );
-});
-
-app.get("/billability-working-hours/:endYear/:years_back", (req, res) => {
-  let endYear = req.params.endYear;
-  const yearsBack = req.params.years_back;
-  let startYear = Number(endYear) - Number(yearsBack);
-  endYear = endYear.toString();
-  startYear = startYear.toString();
-  db.all(
-    "SELECT CAST(strftime('%Y', date) AS INTEGER) AS year, CAST(strftime('%m', date) AS INTEGER) AS month, SUM(hours) AS total_hours, billable FROM worklog_worklog WHERE (strftime('%Y', date) between ? AND ?) AND (deleted = 0) GROUP BY year, month, billable ORDER BY year, month",
-    [startYear, endYear],
-    (err, rows) => {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
-      }
-      res.json({ data: rows });
-    }
-  );
-});
-
-app.get("/salary", (req, res) => {
-  db.all(
-    "SELECT date FROM payday_payday WHERE deleted = 0 ORDER BY date DESC",
-    (err, rows) => {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
-      }
-      res.json({ data: rows });
-    }
-  );
-});
-
-app.get("/salary_report/:selected_date", (req, res) => {
+app.get("/salary_report/:selected_date", validateToken, async (req, res) => {
   const selectedDate = req.params.selected_date;
-  db.all(
-    "SELECT tuntikirjaus_employee.lastname, tuntikirjaus_employee.firstname, workphase_workphase.report_name, SUM(worklog_worklog.worker_hours) AS hours FROM worklog_worklog JOIN payday_payday ON worklog_worklog.payday_id = payday_payday.id JOIN workphase_workphase ON worklog_worklog.workphase_id = workphase_workphase.id JOIN tuntikirjaus_employee ON worklog_worklog.employee_id = tuntikirjaus_employee.id WHERE payday_payday.date= ? GROUP BY tuntikirjaus_employee.id, workphase_workphase.report_name ORDER BY tuntikirjaus_employee.lastname, tuntikirjaus_employee.firstname",
-    [selectedDate],
-    (err, rows) => {
-      if (err) {
-        res.status(400).json({ error: err.message });
-        return;
-      }
-      res.json({ data: rows });
+  const uid = req.user.uid;
+  const userRecord = await getAuth().getUser(uid);
+  try {
+    if (userRecord.customClaims["Palkka"]) {
+      db.all(
+        "SELECT tuntikirjaus_employee.lastname, tuntikirjaus_employee.firstname, workphase_workphase.report_name, SUM(worklog_worklog.worker_hours) AS hours FROM worklog_worklog JOIN payday_payday ON worklog_worklog.payday_id = payday_payday.id JOIN workphase_workphase ON worklog_worklog.workphase_id = workphase_workphase.id JOIN tuntikirjaus_employee ON worklog_worklog.employee_id = tuntikirjaus_employee.id WHERE payday_payday.date= ? GROUP BY tuntikirjaus_employee.id, workphase_workphase.report_name ORDER BY tuntikirjaus_employee.lastname, tuntikirjaus_employee.firstname",
+        [selectedDate],
+        (err, rows) => {
+          if (err) {
+            res.status(400).json({ error: err.message });
+            return;
+          }
+          res.json({ data: rows });
+        }
+      );
+    } else {
+      return res.status(401).json({ message: "Unauthorized" });
     }
-  );
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 async function addUser(email, password, lastname, firstname) {
@@ -114,7 +182,10 @@ async function addUser(email, password, lastname, firstname) {
   return { userRecord, res };
 }
 
-app.post("/users", (req, res) => {
+app.post("/users", validateToken, (req, res) => {
+  if (req.user.admin !== true) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   const email = req.body.email;
   const password = req.body.password;
   const lastname = req.body.lastname;
@@ -128,7 +199,10 @@ app.post("/users", (req, res) => {
     });
 });
 
-app.get("/users", (req, res) => {
+app.get("/users", validateToken, (req, res) => {
+  if (req.user.admin !== true) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   const listAllUsers = async (nextPageToken) => {
     const listUsersResult = await getAuth().listUsers(1000, nextPageToken);
     const records = listUsersResult.users.map((userRecord) =>
@@ -191,14 +265,20 @@ async function deleteDatabaseUser(id) {
   return res;
 }
 
-app.delete("/users/:id", (req, res) => {
+app.delete("/users/:id", validateToken, (req, res) => {
+  if (req.user.admin !== true) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   const id = req.params.id;
   deleteAuthUser(id);
   deleteDatabaseUser(id);
   res.json(id);
 });
 
-app.get("/users/:id", async (req, res) => {
+app.get("/users/:id", validateToken, async (req, res) => {
+  if (req.user.admin !== true) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   const id = req.params.id;
 
   async function getNames(id) {
@@ -207,7 +287,6 @@ app.get("/users/:id", async (req, res) => {
     if (!doc.exists) {
       console.log("No such document!");
     } else {
-      console.log("Document data:", doc.data());
       return doc.data();
     }
   }
@@ -227,7 +306,10 @@ app.get("/users/:id", async (req, res) => {
   res.json(data);
 });
 
-app.post("/users/:id", (req, res) => {
+app.post("/users/:id", validateToken, (req, res) => {
+  if (req.user.admin !== true) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   const uid = req.params.id;
   const email = req.body.email;
   const lastname = req.body.lastname;
@@ -259,7 +341,10 @@ app.post("/users/:id", (req, res) => {
     });
 });
 
-app.post("/users/:id/change-password", (req, res) => {
+app.post("/users/:id/change-password", validateToken, (req, res) => {
+  if (req.user.admin !== true) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
   const uid = req.params.id;
   const password = req.body.password;
 
@@ -274,9 +359,59 @@ app.post("/users/:id/change-password", (req, res) => {
     .then(() => {
       res.status(201).json({ message: "Käyttäjän salasana tallennettu" });
     })
-    .catch((error) => {
+    .catch(() => {
       res.status(500).json({ message: "Virhe!" });
     });
+});
+
+async function validateToken(req, res, next) {
+  const idToken = req.headers.authorization?.split("Bearer ")[1];
+  if (!idToken) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  try {
+    const decodedToken = await getAuth().verifyIdToken(idToken);
+    req.user = decodedToken;
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
+}
+app.post("/users/:id/permissions", validateToken, async (req, res) => {
+  if (req.user.admin !== true) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const uid = req.params.id;
+  const userRecord = await getAuth().getUser(uid);
+  const checkboxes = req.body.checkboxes;
+  const reports = [
+    "Kaikki tunnit kumulatiivinen",
+    "Kaikki tunnit",
+    "Laskutettavat tunnit",
+    "Palkka",
+  ];
+  const customClaimsReports = {};
+  let customClaims = {};
+  reports.forEach((item) => {
+    customClaimsReports[item] = checkboxes.includes(item);
+  });
+
+  customClaims = { ...userRecord.customClaims, ...customClaimsReports };
+
+  await getAuth().setCustomUserClaims(uid, customClaims);
+  res.status(201).json({ message: "Käyttäjän käyttöoikeudet tallennettu" });
+});
+
+app.get("/users/:id/permissions", validateToken, async (req, res) => {
+  if (req.user.admin !== true) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+  const uid = req.params.id;
+  const userRecord = await getAuth().getUser(uid);
+  const customClaims = userRecord.customClaims;
+  res.json(customClaims);
 });
 
 app.listen(port, () => {

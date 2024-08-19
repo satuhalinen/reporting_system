@@ -1,9 +1,11 @@
 import { Select, Button, Typography, Table } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
-import { useEffect, useState } from "react";
-import renderFormattedNumber from "../helpers";
+import { useEffect, useState, useContext } from "react";
+import { renderFormattedNumber, makeHeaders } from "../helpers";
 import CreateCsv from "../components/CreateCsv";
+import { AuthContext } from "../components/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -12,6 +14,9 @@ const Salary = () => {
   const [selectedSalaryDate, setSelectedSalaryDate] = useState(null);
   const [columns, setColumns] = useState([]);
   const [tableData, setTableData] = useState([]);
+
+  const { user, loading } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   let finnishDate = "";
   let finnishDateNoDots = "";
@@ -26,24 +31,33 @@ const Salary = () => {
     fileName = `palkat_${finnishDateNoDots}`;
   }
 
-  const getDate = () => {
-    axios.get(`http://localhost:3000/salary`).then((response) => {
-      const rawSalaryDateData = response.data.data;
-      const transformedSalaryDate = rawSalaryDateData.map((dateObject) => ({
-        value: dateObject.date,
-        label: dateObject.date,
-      }));
-      setSalaryDates(transformedSalaryDate);
-    });
+  const getDate = async () => {
+    axios
+      .get(`http://localhost:3000/salary`, {
+        headers: makeHeaders(user),
+      })
+      .then((response) => {
+        const rawSalaryDateData = response.data.data;
+        const transformedSalaryDate = rawSalaryDateData.map((dateObject) => ({
+          value: dateObject.date,
+          label: dateObject.date,
+        }));
+        setSalaryDates(transformedSalaryDate);
+      })
+      .catch(() => {
+        navigate("/");
+      });
   };
 
   useEffect(() => {
-    getDate();
-  }, []);
+    if (user) getDate();
+  }, [user]);
 
-  const getHours = () => {
+  const getHours = async () => {
     axios
-      .get(`http://localhost:3000/salary_report/${selectedSalaryDate}`)
+      .get(`http://localhost:3000/salary_report/${selectedSalaryDate}`, {
+        headers: makeHeaders(user),
+      })
       .then((response) => {
         const rawSalaryHoursData = response.data.data;
         const groupedData = {};
@@ -142,8 +156,15 @@ const Salary = () => {
         });
 
         setColumns(newColumns);
+      })
+      .catch(() => {
+        navigate("/");
       });
   };
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
