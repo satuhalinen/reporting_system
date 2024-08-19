@@ -3,7 +3,7 @@ import axios from "axios";
 import { Table, Col, Row, Typography } from "antd";
 import SideBar from "../components/SideBar";
 import { ResponsiveBar } from "@nivo/bar";
-import renderFormattedNumber from "../helpers";
+import { renderFormattedNumber, makeHeaders } from "../helpers";
 import { AuthContext } from "../components/AuthContext";
 
 const { Title } = Typography;
@@ -25,10 +25,7 @@ const CumulativeMonthlyWorkingHours = () => {
       .get(
         `http://localhost:3000/cumulative-working-hours/${selectedYear}/${selectedYearsBack}`,
         {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.accessToken}`,
-          },
+          headers: makeHeaders(user),
         }
       )
       .then((response) => {

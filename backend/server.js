@@ -384,7 +384,7 @@ app.post("/users/:id/permissions", validateToken, async (req, res) => {
   }
 
   const uid = req.params.id;
-  const userRecord = await getAuth().getUser(req.user.uid);
+  const userRecord = await getAuth().getUser(uid);
   const checkboxes = req.body.checkboxes;
   const reports = [
     "Kaikki tunnit kumulatiivinen",
@@ -395,19 +395,10 @@ app.post("/users/:id/permissions", validateToken, async (req, res) => {
   const customClaimsReports = {};
   let customClaims = {};
   reports.forEach((item) => {
-    if (checkboxes.includes(item)) {
-      customClaimsReports[item] = true;
-    } else {
-      customClaimsReports[item] = false;
-    }
+    customClaimsReports[item] = checkboxes.includes(item);
   });
 
-  if (userRecord.customClaims.admin) {
-    const adminClaims = userRecord.customClaims;
-    customClaims = { ...adminClaims, ...customClaimsReports };
-  } else {
-    customClaims = { ...customClaimsReports };
-  }
+  customClaims = { ...userRecord.customClaims, ...customClaimsReports };
 
   await getAuth().setCustomUserClaims(uid, customClaims);
   res.status(201).json({ message: "Käyttäjän käyttöoikeudet tallennettu" });

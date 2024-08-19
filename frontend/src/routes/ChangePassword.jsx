@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../components/AuthContext";
+import { makeHeaders } from "../helpers";
 
 const { Title, Text } = Typography;
 
@@ -15,10 +16,7 @@ const ChangePassword = () => {
 
   const fetchNamesAndEmail = async () => {
     const response = await axios.get(`http://localhost:3000/users/${id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.accessToken}`,
-      },
+      headers: makeHeaders(user),
     });
     const userData = response.data;
     form.setFieldsValue(userData);
@@ -36,10 +34,7 @@ const ChangePassword = () => {
           password: values.password,
         },
         {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.accessToken}`,
-          },
+          headers: makeHeaders(user),
         }
       )
       .then((response) => {

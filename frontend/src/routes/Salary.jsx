@@ -2,7 +2,7 @@ import { Select, Button, Typography, Table } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import axios from "axios";
 import { useEffect, useState, useContext } from "react";
-import renderFormattedNumber from "../helpers";
+import { renderFormattedNumber, makeHeaders } from "../helpers";
 import CreateCsv from "../components/CreateCsv";
 import { AuthContext } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -34,10 +34,7 @@ const Salary = () => {
   const getDate = async () => {
     axios
       .get(`http://localhost:3000/salary`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.accessToken}`,
-        },
+        headers: makeHeaders(user),
       })
       .then((response) => {
         const rawSalaryDateData = response.data.data;
@@ -59,10 +56,7 @@ const Salary = () => {
   const getHours = async () => {
     axios
       .get(`http://localhost:3000/salary_report/${selectedSalaryDate}`, {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${user.accessToken}`,
-        },
+        headers: makeHeaders(user),
       })
       .then((response) => {
         const rawSalaryHoursData = response.data.data;

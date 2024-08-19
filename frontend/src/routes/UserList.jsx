@@ -7,6 +7,7 @@ import KeyOutlined from "@ant-design/icons/KeyOutlined";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../components/AuthContext";
 import { HddOutlined } from "@ant-design/icons";
+import { makeHeaders } from "../helpers";
 
 const { Title } = Typography;
 
@@ -16,10 +17,7 @@ const UserList = () => {
 
   const fetchEmailsNamesIds = async () => {
     const response = await axios.get("http://localhost:3000/users", {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.accessToken}`,
-      },
+      headers: makeHeaders(user),
     });
     const emailsNamesWithIds = response.data;
     setUserData(emailsNamesWithIds);
@@ -27,10 +25,7 @@ const UserList = () => {
 
   const deleteUser = async (record) => {
     await axios.delete(`http://localhost:3000/users/${record.id}`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${user.accessToken}`,
-      },
+      headers: makeHeaders(user),
     });
     await fetchEmailsNamesIds();
   };

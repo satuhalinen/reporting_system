@@ -1,5 +1,5 @@
 import { Button } from "antd";
-import renderFormattedNumber from "../helpers";
+import { renderFormattedNumber } from "../helpers";
 
 const CreateCsv = ({ tableData, fileName }) => {
   const generateCsv = () => {

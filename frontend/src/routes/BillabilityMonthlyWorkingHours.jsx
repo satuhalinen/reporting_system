@@ -3,7 +3,7 @@ import axios from "axios";
 import { Table, Col, Row, Typography } from "antd";
 import StackedGroupedBar from "../components/StackedGroupedBar";
 import SideBar from "../components/SideBar";
-import renderFormattedNumber from "../helpers";
+import { renderFormattedNumber, makeHeaders } from "../helpers";
 import { AuthContext } from "../components/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -31,15 +31,12 @@ const BillabilityMonthlyWorkingHours = () => {
     setSelectedYear(e.target.value);
   };
 
-  const applyFilters = async () => {
+  const applyFilters = () => {
     axios
       .get(
         `http://localhost:3000/billability-working-hours/${selectedYear}/${selectedYearsBack}`,
         {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.accessToken}`,
-          },
+          headers: makeHeaders(user),
         }
       )
       .then((response) => {
