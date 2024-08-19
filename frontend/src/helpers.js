@@ -1,4 +1,4 @@
-const renderFormattedNumber = (hours) => {
+export const renderFormattedNumber = (hours) => {
   if (typeof hours === "number") {
     return hours.toLocaleString("fi-FI", {
       minimumFractionDigits: 1,
@@ -7,4 +7,9 @@ const renderFormattedNumber = (hours) => {
   return hours;
 };
 
-export default renderFormattedNumber;
+export const makeHeaders = (user) => {
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${user.accessToken}`,
+  };
+};

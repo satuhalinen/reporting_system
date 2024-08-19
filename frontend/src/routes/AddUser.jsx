@@ -2,6 +2,7 @@ import { Button, Form, Input, Typography } from "antd";
 import axios from "axios";
 import { useState, useContext } from "react";
 import { AuthContext } from "../components/AuthContext";
+import { makeHeaders } from "../helpers";
 
 const { Title, Text } = Typography;
 
@@ -9,7 +10,7 @@ const AddUser = () => {
   const [message, setMessage] = useState("");
   const { user, loading } = useContext(AuthContext);
 
-  const onFinish = async (values) => {
+  const onFinish = (values) => {
     axios
       .post(
         "http://localhost:3000/users",
@@ -20,10 +21,7 @@ const AddUser = () => {
           firstname: values.firstname,
         },
         {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${user.accessToken}`,
-          },
+          headers: makeHeaders(user),
         }
       )
       .then((response) => {

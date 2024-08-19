@@ -384,7 +384,7 @@ app.post("/users/:id/permissions", validateToken, async (req, res) => {
   }
 
   const uid = req.params.id;
-  const userRecord = await getAuth().getUser(req.user.uid);
+  const userRecord = await getAuth().getUser(uid);
   const checkboxes = req.body.checkboxes;
   const reports = [
     "Kaikki tunnit kumulatiivinen",
