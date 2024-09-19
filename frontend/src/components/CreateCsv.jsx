@@ -10,7 +10,8 @@ const CreateCsv = ({ tableData, fileName }) => {
     tableData.forEach((row) => {
       let transformedRow = [];
 
-      Object.values(row).forEach((value) => {
+      titleKeys.forEach((key) => {
+        const value = row[key];
         let transformedValue = renderFormattedNumber(value);
         transformedRow.push(transformedValue);
       });
